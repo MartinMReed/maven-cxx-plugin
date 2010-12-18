@@ -65,14 +65,14 @@ public final class LinkMojo extends JoJoMojoImpl {
         cmd.add( "c++".equals( language ) ? "g++" : "gcc" );
 
         cmd.add( "-o" );
-        cmd.add( ProjectService.getProject().getArtifactId() + ".o" );
+        cmd.add( getProject().getArtifactId() + ".o" );
 
         for (int i = 0; i < sources.length; i++) {
             cmd.add( Sources.generateSource( sources[i], "o" ) );
         }
 
         try {
-            buildArguments( cmd, ProjectService.getProject(), TargetDirectoryService.getTargetDirectory() );
+            buildArguments( cmd, getProject(), TargetDirectoryService.getTargetDirectory() );
         }
         catch (Exception e) {
             throw new IllegalStateException( e.getMessage(), e );

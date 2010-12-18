@@ -23,7 +23,6 @@ import java.io.IOException;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.core.TargetDirectoryService;
 
 public abstract class PreparePackageMojo extends JoJoMojoImpl {
@@ -52,7 +51,7 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
     protected void prepareArtifact() {
 
-        String artifactId = ProjectService.getProject().getArtifactId();
+        String artifactId = getProject().getArtifactId();
         prepareTargetFile( artifactId + "." + classifier );
     }
 
