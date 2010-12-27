@@ -74,7 +74,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     private void packageSketch( Sketch sketch, Target target ) {
 
         String packageFilePath = target.getKey() + File.separator + sketch.getName();
-        org.hardisonbrewing.maven.cxx.PreparePackageMojo.prepareTargetFile( packageFilePath + ".eep" );
-        org.hardisonbrewing.maven.cxx.PreparePackageMojo.prepareTargetFile( packageFilePath + ".hex" );
+        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( packageFilePath + ".eep" );
+        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( packageFilePath + ".hex" );
     }
 }

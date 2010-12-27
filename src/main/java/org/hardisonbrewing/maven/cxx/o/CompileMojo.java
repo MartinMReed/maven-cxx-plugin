@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.core.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.Sources;
 
 /**
@@ -35,13 +36,10 @@ public class CompileMojo extends JoJoMojoImpl {
      */
     public String language;
 
-    /**
-     * @parameter
-     */
-    public String[] sources;
-
     @Override
     public void execute() {
+
+        String[] sources = TargetDirectoryService.getSourceFilePaths();
 
         if ( sources == null ) {
             return;
@@ -58,7 +56,7 @@ public class CompileMojo extends JoJoMojoImpl {
             }
 
             cmd.add( "-o" );
-            cmd.add( Sources.generateSource( sources[i], "s" ) );
+            cmd.add( Sources.replaceExtension( sources[i], "s" ) );
 
             cmd.add( "-S" );
             cmd.add( Sources.escapeFileName( sources[i] ) );

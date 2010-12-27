@@ -17,16 +17,13 @@
 
 package org.hardisonbrewing.maven.cxx;
 
-import java.io.File;
-
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.core.FileUtils;
 
 public class Sources {
 
-    public static final String generateSource( String source, String extension ) {
+    public static final String replaceExtension( String filePath, String extension ) {
 
-        source = source.substring( 0, source.lastIndexOf( '.' ) );
-        return escapeFileName( source + "." + extension );
+        return escapeFileName( FileUtils.replaceExtension( filePath, extension ) );
     }
 
     public static final String escapeFileName( String filename ) {
@@ -37,8 +34,6 @@ public class Sources {
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( "\"" );
-        stringBuffer.append( TargetDirectoryService.getTargetDirectory() );
-        stringBuffer.append( File.separator );
         stringBuffer.append( filename );
         stringBuffer.append( "\"" );
         return stringBuffer.toString();

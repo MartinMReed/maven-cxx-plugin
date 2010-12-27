@@ -15,11 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx;
+package org.hardisonbrewing.maven.cxx.generic;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import org.apache.maven.model.Resource;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
@@ -32,61 +34,55 @@ import org.hardisonbrewing.maven.core.TargetDirectoryService;
  */
 public final class GenerateSourcesMojo extends JoJoMojoImpl {
 
-    /**
-     * @parameter
-     */
-    public String[] sources;
-
-    /**
-     * @parameter
-     */
-    public String[] includes;
-
     @Override
     public final void execute() {
 
-        copyFiles( null, ProjectService.getBaseDir().list() );
+        copyFiles( null, ProjectService.getSourceFilePaths(), ProjectService.getSourceDirectoryPath() );
+        copyResourceFilePaths();
     }
 
-    private final void copyFiles( String parentFileName, String[] fileNames ) {
+    public final void copyResourceFilePaths() {
 
-        for (String fileName : fileNames) {
-            StringBuffer srcChilePath = new StringBuffer();
-            if ( parentFileName != null ) {
-                srcChilePath.append( parentFileName );
-                srcChilePath.append( File.separator );
+        String filePathPrefix = ProjectService.getBaseDirPath();
+        for (Resource resource : (List<Resource>) getProject().getResources()) {
+            File resourceDirectory = new File( resource.getDirectory() );
+            String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory );
+            for (String filePath : filePaths) {
+                copyFile( filePath, resource.getDirectory() );
             }
-            srcChilePath.append( fileName );
-            copyFile( srcChilePath.toString() );
         }
     }
 
-    private final void copyFile( String fileName ) {
+    private final void copyFiles( String parentFileName, String[] fileNames, String filePathPrefix ) {
+
+        for (String fileName : fileNames) {
+            StringBuffer srcChildPath = new StringBuffer();
+            if ( parentFileName != null ) {
+                srcChildPath.append( parentFileName );
+                srcChildPath.append( File.separator );
+            }
+            srcChildPath.append( fileName );
+            copyFile( srcChildPath.toString(), filePathPrefix );
+        }
+    }
+
+    private final void copyFile( String fileName, String filePathPrefix ) {
 
         if ( ".svn".equalsIgnoreCase( fileName ) ) {
             return;
         }
-        if ( "target".equalsIgnoreCase( fileName ) ) {
-            return;
-        }
 
-        StringBuffer srcPath = new StringBuffer();
-        srcPath.append( ProjectService.getBaseDirPath() );
-        srcPath.append( File.separator );
-        srcPath.append( fileName );
-        File src = new File( srcPath.toString() );
+        File src = new File( fileName );
 
-        StringBuffer destPath = new StringBuffer();
-        destPath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        destPath.append( File.separator );
-        destPath.append( FileUtils.getProjectCanonicalPath( srcPath.toString() ) );
-        File dest = new File( destPath.toString() );
+        String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
+        String destPath = fileName.replace( filePathPrefix, targetDirectoryPath );
+        File dest = new File( destPath );
 
         getLog().info( "Copying " + src + " to " + dest );
 
         if ( src.isDirectory() ) {
             dest.mkdir();
-            copyFiles( fileName, src.list() );
+            copyFiles( fileName, src.list(), filePathPrefix );
         }
         else {
             try {
@@ -96,5 +92,7 @@ public final class GenerateSourcesMojo extends JoJoMojoImpl {
                 throw new IllegalStateException( e.getMessage(), e );
             }
         }
+
+        dest.setLastModified( src.lastModified() );
     }
 }

@@ -26,7 +26,7 @@ import org.hardisonbrewing.maven.core.TargetDirectoryService;
  * @phase prepare-package
  * @requiresDependencyResolution prepare-package
  */
-public final class PreparePackageMojo extends org.hardisonbrewing.maven.cxx.PreparePackageMojo {
+public final class PreparePackageMojo extends org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo {
 
     /**
      * @parameter expression="${configuration.project}"

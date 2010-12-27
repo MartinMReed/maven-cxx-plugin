@@ -26,7 +26,7 @@ import org.hardisonbrewing.maven.core.TargetDirectoryService;
  * @phase install
  * @requiresDependencyResolution install
  */
-public final class InstallMojo extends org.hardisonbrewing.maven.cxx.InstallMojo {
+public final class InstallMojo extends org.hardisonbrewing.maven.cxx.generic.InstallMojo {
 
     /**
      * @parameter

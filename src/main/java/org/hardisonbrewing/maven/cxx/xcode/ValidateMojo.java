@@ -38,6 +38,6 @@ public final class ValidateMojo extends JoJoMojoImpl {
             throw new IllegalArgumentException( "<project /> must be set." );
         }
 
-        org.hardisonbrewing.maven.cxx.ValidateMojo.validate( project + ".xcodeproj" );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.validate( project + ".xcodeproj" );
     }
 }

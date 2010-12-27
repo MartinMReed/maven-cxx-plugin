@@ -22,7 +22,7 @@ package org.hardisonbrewing.maven.cxx.a;
  * @phase install
  * @requiresDependencyResolution install
  */
-public final class InstallMojo extends org.hardisonbrewing.maven.cxx.InstallMojo {
+public final class InstallMojo extends org.hardisonbrewing.maven.cxx.generic.InstallMojo {
 
     @Override
     public final void execute() {

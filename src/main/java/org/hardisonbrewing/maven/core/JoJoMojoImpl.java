@@ -28,6 +28,7 @@ import org.apache.maven.project.MavenProjectBuilder;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
@@ -171,12 +172,12 @@ public abstract class JoJoMojoImpl extends JoJoMojo implements Contextualizable 
         this.plexusContainer = plexusContainer;
     }
 
-    protected <T> T lookup( Class<T> role ) throws Exception {
+    protected <T> T lookup( Class<T> role ) throws ComponentLookupException {
 
         return (T) getPlexusContainer().lookup( role );
     }
 
-    protected <T> T lookup( Class<T> role, String id ) throws Exception {
+    protected <T> T lookup( Class<T> role, String id ) throws ComponentLookupException {
 
         return (T) getPlexusContainer().lookup( role.getName(), id );
     }

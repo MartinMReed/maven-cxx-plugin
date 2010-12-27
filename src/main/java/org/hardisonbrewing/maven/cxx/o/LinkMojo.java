@@ -18,7 +18,6 @@
 package org.hardisonbrewing.maven.cxx.o;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,11 +45,6 @@ public final class LinkMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public String[] sources;
-
-    /**
-     * @parameter
-     */
     public String[] libs;
 
     /**
@@ -67,8 +61,9 @@ public final class LinkMojo extends JoJoMojoImpl {
         cmd.add( "-o" );
         cmd.add( getProject().getArtifactId() + ".o" );
 
+        String[] sources = TargetDirectoryService.getSourceFilePaths();
         for (int i = 0; i < sources.length; i++) {
-            cmd.add( Sources.generateSource( sources[i], "o" ) );
+            cmd.add( Sources.replaceExtension( sources[i], "o" ) );
         }
 
         try {
@@ -96,12 +91,8 @@ public final class LinkMojo extends JoJoMojoImpl {
 
     private final void buildArguments( List<String> cmd, MavenProject mavenProject, File dest ) throws Exception {
 
-        List<Dependency> dependencies = mavenProject.getDependencies();
-        Iterator<Dependency> iterator = dependencies.iterator();
-
-        while (iterator.hasNext()) {
-
-            buildArguments( cmd, iterator.next(), dest );
+        for (Dependency dependency : (List<Dependency>) mavenProject.getDependencies()) {
+            buildArguments( cmd, dependency, dest );
         }
     }
 

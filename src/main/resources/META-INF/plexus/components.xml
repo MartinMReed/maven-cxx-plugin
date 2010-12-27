@@ -37,6 +37,14 @@
 				<type>a</type>
 			</configuration>
 		</component>
+		<component>
+			<role-hint>a</role-hint>
+			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
+			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
+			<configuration>
+				<sourceDirectory>src/main/native</sourceDirectory>
+			</configuration>
+		</component>
 		
 		<!--
 			ARDUINO
@@ -77,6 +85,14 @@
 				<type>arduino</type>
 			</configuration>
 		</component>
+		<component>
+			<role-hint>arduino</role-hint>
+			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
+			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
+			<configuration>
+				<sourceDirectory>src/main/native</sourceDirectory>
+			</configuration>
+		</component>
 		
 		<!--
 			.O (GCC, Object File)
@@ -112,6 +128,14 @@
 				<extension>jar</extension>
 				<packaging>o</packaging>
 				<type>o</type>
+			</configuration>
+		</component>
+		<component>
+			<role-hint>o</role-hint>
+			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
+			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
+			<configuration>
+				<sourceDirectory>src/main/native</sourceDirectory>
 			</configuration>
 		</component>
 		
