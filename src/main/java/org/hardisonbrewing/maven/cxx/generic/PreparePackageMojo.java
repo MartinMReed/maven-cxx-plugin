@@ -27,11 +27,6 @@ import org.hardisonbrewing.maven.core.TargetDirectoryService;
 
 public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
-    /**
-     * @parameter
-     */
-    public String[] includes;
-
     protected String classifier;
 
     protected PreparePackageMojo() {
@@ -44,8 +39,9 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
         prepareArtifact();
 
-        for (int i = 0; includes != null && i < includes.length; i++) {
-            prepareTargetFile( includes[i] );
+        String[] resourceFilePaths = TargetDirectoryService.getResourceFilePaths();
+        for (int i = 0; resourceFilePaths != null && i < resourceFilePaths.length; i++) {
+            prepareFile( resourceFilePaths[i] );
         }
     }
 
@@ -55,6 +51,12 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
         prepareTargetFile( artifactId + "." + classifier );
     }
 
+    public static final void prepareFile( String fileName ) {
+
+        File src = new File( fileName );
+        prepareTargetFile( src, FileUtils.getProjectCanonicalPath( src.getPath() ) );
+    }
+
     public static final void prepareTargetFile( String fileName ) {
 
         StringBuffer srcPath = new StringBuffer();
@@ -62,15 +64,14 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
         srcPath.append( File.separator );
         srcPath.append( fileName );
         File src = new File( srcPath.toString() );
-        if ( !src.exists() ) {
-            throw new IllegalStateException( src.getAbsolutePath() + " does not exist." );
-        }
-
         prepareTargetFile( src, FileUtils.getProjectCanonicalPath( src.getPath() ) );
     }
 
     public static final void prepareTargetFile( File src, String fileName ) {
 
+        if ( !src.exists() ) {
+            throw new IllegalStateException( src.getAbsolutePath() + " does not exist." );
+        }
         StringBuffer destPath = new StringBuffer();
         destPath.append( TargetDirectoryService.getTempPackagePath() );
         destPath.append( File.separator );

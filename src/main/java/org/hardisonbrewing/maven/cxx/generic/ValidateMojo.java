@@ -29,18 +29,14 @@ import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
  */
 public final class ValidateMojo extends JoJoMojoImpl {
 
-    /**
-     * @parameter
-     */
-    public String[] includes;
-
     @Override
     public final void execute() {
 
         updateBuildConfiguration();
 
-        for (int i = 0; includes != null && i < includes.length; i++) {
-            validate( includes[i] );
+        String[] resourceFilePaths = TargetDirectoryService.getResourceFilePaths();
+        for (int i = 0; resourceFilePaths != null && i < resourceFilePaths.length; i++) {
+            validate( resourceFilePaths[i] );
         }
 
         TargetDirectoryService.ensureTargetDirectoryExists();
