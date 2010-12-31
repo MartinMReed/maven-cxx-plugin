@@ -17,9 +17,14 @@
 
 package org.hardisonbrewing.maven.cxx.generic;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.PropertiesService;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
 
 /**
@@ -40,6 +45,56 @@ public final class ValidateMojo extends JoJoMojoImpl {
         }
 
         TargetDirectoryService.ensureTargetDirectoryExists();
+
+        storePropertyDifferences();
+        PropertiesService.storeBuildProperties();
+    }
+
+    private final void storePropertyDifferences() {
+
+        Properties previousProperties = PropertiesService.loadBuildProperties();
+        if ( previousProperties == null ) {
+            getLog().info( "A previous build.properties file was not found... skipping difference check" );
+            return;
+        }
+
+        Properties currentProperties = PropertiesService.getProperties();
+
+        Properties differenceProperties = new Properties();
+
+        List<Object> keys = new LinkedList<Object>();
+        keys.addAll( previousProperties.keySet() );
+        keys.addAll( currentProperties.keySet() );
+
+        for (Object key : keys) {
+            String previousProperty = previousProperties.getProperty( (String) key );
+            String currentProperty = currentProperties.getProperty( (String) key );
+            boolean changed = false;
+            if ( previousProperty != null || currentProperty != null ) {
+                if ( currentProperty == null ) {
+                    getLog().info( key + " is missing from current properties..." );
+                    changed = true;
+                }
+                else if ( previousProperty == null ) {
+                    getLog().info( key + " is missing from previous properties..." );
+                    changed = true;
+                }
+                else if ( !previousProperty.equals( currentProperty ) ) {
+                    StringBuffer stringBuffer = new StringBuffer();
+                    stringBuffer.append( key );
+                    stringBuffer.append( " does not match previous property: previous[" );
+                    stringBuffer.append( previousProperty );
+                    stringBuffer.append( "] vs current[" );
+                    stringBuffer.append( currentProperty );
+                    stringBuffer.append( "]" );
+                    getLog().info( stringBuffer );
+                    changed = true;
+                }
+            }
+            differenceProperties.put( key, Boolean.toString( changed ) );
+        }
+
+        PropertiesService.storeBuildDifferenceProperties( differenceProperties );
     }
 
     private final void updateBuildConfiguration() {

@@ -23,6 +23,7 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.installer.ArtifactInstaller;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.codehaus.plexus.PlexusConstants;
@@ -87,6 +88,13 @@ public abstract class JoJoMojoImpl extends JoJoMojo implements Contextualizable 
      * @readonly
      */
     private ArtifactRepository localRepository;
+
+    /**
+     * @parameter expression="${session}"
+     * @readonly
+     * @required
+     */
+    private MavenSession mavenSession;
 
     private PlexusContainer plexusContainer;
 
@@ -160,6 +168,15 @@ public abstract class JoJoMojoImpl extends JoJoMojo implements Contextualizable 
     public final ArtifactInstaller getArtifactInstaller() {
 
         return artifactInstaller;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public MavenSession getMavenSession() {
+
+        return mavenSession;
     }
 
     public PlexusContainer getPlexusContainer() {
