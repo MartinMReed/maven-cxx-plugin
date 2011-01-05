@@ -1,5 +1,4 @@
-To build this you need to use Maven with the hbc-maven-core project:
-https://github.com/hardisonbrewing/hbc-maven-core
+To build this you need to use Maven with the [hbc-maven-core](https://github.com/hardisonbrewing/hbc-maven-core) project.
 
 OR add the following remote repository to download the latest snapshot:
 
