@@ -20,7 +20,6 @@ package org.hardisonbrewing.maven.cxx.a;
 /**
  * @goal a-install
  * @phase install
- * @requiresDependencyResolution install
  */
 public final class InstallMojo extends org.hardisonbrewing.maven.cxx.generic.InstallMojo {
 

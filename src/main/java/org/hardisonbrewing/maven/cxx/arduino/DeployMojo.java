@@ -30,7 +30,6 @@ import org.wayoda.ang.project.Target;
 /**
  * @goal arduino-deploy
  * @phase deploy
- * @requiresDependencyResolution deploy
  */
 public final class DeployMojo extends JoJoMojoImpl {
 

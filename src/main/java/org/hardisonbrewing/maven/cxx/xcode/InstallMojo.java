@@ -24,7 +24,6 @@ import org.hardisonbrewing.maven.core.TargetDirectoryService;
 /**
  * @goal xcode-install
  * @phase install
- * @requiresDependencyResolution install
  */
 public final class InstallMojo extends org.hardisonbrewing.maven.cxx.generic.InstallMojo {
 

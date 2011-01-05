@@ -33,7 +33,6 @@ import org.hardisonbrewing.maven.cxx.Sources;
 /**
  * @goal o-link
  * @phase compile
- * @requiresDependencyResolution o-compile
  */
 public final class LinkMojo extends JoJoMojoImpl {
 

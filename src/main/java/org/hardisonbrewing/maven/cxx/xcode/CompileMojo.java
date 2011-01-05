@@ -25,7 +25,6 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 /**
  * @goal xcode-compile
  * @phase compile
- * @requiresDependencyResolution compile
  */
 public final class CompileMojo extends JoJoMojoImpl {
 

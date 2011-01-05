@@ -33,7 +33,6 @@ import org.wayoda.ang.project.Target;
 /**
  * @goal arduino-link
  * @phase link
- * @requiresDependencyResolution link
  */
 public final class LinkMojo extends JoJoMojoImpl {
 

@@ -24,7 +24,6 @@ import org.hardisonbrewing.maven.core.TargetDirectoryService;
 /**
  * @goal dependency-copy
  * @phase generate-sources
- * @requiresDependencyResolution generate-sources
  */
 public final class DependencyCopyMojo extends JoJoMojoImpl {
 

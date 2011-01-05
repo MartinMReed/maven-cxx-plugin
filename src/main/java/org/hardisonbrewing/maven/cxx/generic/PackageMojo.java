@@ -27,7 +27,6 @@ import org.hardisonbrewing.maven.core.TargetDirectoryService;
 /**
  * @goal package
  * @phase package
- * @requiresDependencyResolution package
  */
 public final class PackageMojo extends JoJoMojoImpl {
 

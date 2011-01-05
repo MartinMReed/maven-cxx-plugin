@@ -29,7 +29,6 @@ import org.wayoda.ang.tools.HexFileSizer;
 /**
  * @goal arduino-verify
  * @phase verify
- * @requiresDependencyResolution verify
  */
 public final class VerifyMojo extends JoJoMojoImpl {
 

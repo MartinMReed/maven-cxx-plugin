@@ -27,7 +27,6 @@ import org.hardisonbrewing.maven.cxx.Sources;
 /**
  * @goal o-compile
  * @phase compile
- * @requiresDependencyResolution compile
  */
 public class CompileMojo extends JoJoMojoImpl {
 

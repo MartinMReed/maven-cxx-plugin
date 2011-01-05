@@ -34,7 +34,6 @@ import org.wayoda.ang.utils.FileUtils;
 /**
  * @goal arduino-archive
  * @phase archive
- * @requiresDependencyResolution archive
  */
 public final class ArchiveMojo extends JoJoMojoImpl {
 

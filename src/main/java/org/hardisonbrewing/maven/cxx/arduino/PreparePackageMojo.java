@@ -28,7 +28,6 @@ import org.wayoda.ang.project.Target;
 /**
  * @goal arduino-prepare-package
  * @phase prepare-package
- * @requiresDependencyResolution prepare-package
  */
 public final class PreparePackageMojo extends JoJoMojoImpl {
 

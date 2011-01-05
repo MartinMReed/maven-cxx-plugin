@@ -27,7 +27,6 @@ import org.hardisonbrewing.maven.core.ProjectService;
 /**
  * @goal xcode-clean
  * @phase clean
- * @requiresDependencyResolution clean
  */
 public final class CleanMojo extends JoJoMojoImpl {
 

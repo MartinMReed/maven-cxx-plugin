@@ -24,7 +24,6 @@ import org.hardisonbrewing.maven.core.TargetDirectoryService;
 /**
  * @goal xcode-prepare-package
  * @phase prepare-package
- * @requiresDependencyResolution prepare-package
  */
 public final class PreparePackageMojo extends org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo {
 

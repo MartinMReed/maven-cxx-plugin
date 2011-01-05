@@ -30,7 +30,6 @@ import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
 /**
  * @goal validate
  * @phase validate
- * @requiresDependencyResolution validate
  */
 public final class ValidateMojo extends JoJoMojoImpl {
 
@@ -54,7 +53,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
         Properties previousProperties = PropertiesService.loadBuildProperties();
         if ( previousProperties == null ) {
-            getLog().info( "A previous build.properties file was not found... skipping difference check" );
+            getLog().debug( "A previous build.properties file was not found... skipping difference check" );
             return;
         }
 
@@ -72,11 +71,11 @@ public final class ValidateMojo extends JoJoMojoImpl {
             boolean changed = false;
             if ( previousProperty != null || currentProperty != null ) {
                 if ( currentProperty == null ) {
-                    getLog().info( key + " is missing from current properties..." );
+                    getLog().debug( key + " is missing from current properties..." );
                     changed = true;
                 }
                 else if ( previousProperty == null ) {
-                    getLog().info( key + " is missing from previous properties..." );
+                    getLog().debug( key + " is missing from previous properties..." );
                     changed = true;
                 }
                 else if ( !previousProperty.equals( currentProperty ) ) {
@@ -87,7 +86,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
                     stringBuffer.append( "] vs current[" );
                     stringBuffer.append( currentProperty );
                     stringBuffer.append( "]" );
-                    getLog().info( stringBuffer );
+                    getLog().debug( stringBuffer );
                     changed = true;
                 }
             }
@@ -110,7 +109,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
         }
 
         if ( buildConfiguration != null ) {
-            getLog().info( "Using source directory: " + buildConfiguration.getSourceDirectory() );
+            getLog().debug( "Using source directory: " + buildConfiguration.getSourceDirectory() );
             getProject().getBuild().setSourceDirectory( buildConfiguration.getSourceDirectory() );
         }
     }

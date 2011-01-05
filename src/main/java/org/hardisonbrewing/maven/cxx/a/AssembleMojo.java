@@ -20,7 +20,6 @@ package org.hardisonbrewing.maven.cxx.a;
 /**
  * @goal a-assemble
  * @phase compile
- * @requiresDependencyResolution a-compile
  */
 public final class AssembleMojo extends org.hardisonbrewing.maven.cxx.o.AssembleMojo {
 

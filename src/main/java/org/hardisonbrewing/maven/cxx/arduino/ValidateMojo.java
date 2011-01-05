@@ -25,7 +25,6 @@ import org.hardisonbrewing.maven.core.ProjectService;
 /**
  * @goal arduino-validate
  * @phase validate
- * @requiresDependencyResolution validate
  */
 public final class ValidateMojo extends JoJoMojoImpl {
 

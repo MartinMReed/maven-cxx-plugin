@@ -31,7 +31,6 @@ import org.wayoda.ang.project.Target;
 /**
  * @goal arduino-post-compile
  * @phase compile
- * @requiresDependencyResolution compile
  */
 public final class PostCompileMojo extends JoJoMojoImpl {
 

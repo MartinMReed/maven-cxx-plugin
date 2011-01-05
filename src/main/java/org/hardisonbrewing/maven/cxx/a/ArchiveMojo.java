@@ -27,7 +27,6 @@ import org.hardisonbrewing.maven.cxx.Sources;
 /**
  * @goal a-archive
  * @phase compile
- * @requiresDependencyResolution a-assemble
  */
 public final class ArchiveMojo extends JoJoMojoImpl {
 

@@ -22,7 +22,6 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 /**
  * @goal xcode-validate
  * @phase validate
- * @requiresDependencyResolution validate
  */
 public final class ValidateMojo extends JoJoMojoImpl {
 

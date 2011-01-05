@@ -30,7 +30,6 @@ import org.hardisonbrewing.maven.core.TargetDirectoryService;
 /**
  * @goal generate-sources
  * @phase generate-sources
- * @requiresDependencyResolution generate-sources
  */
 public final class GenerateSourcesMojo extends JoJoMojoImpl {
 

@@ -20,7 +20,6 @@ package org.hardisonbrewing.maven.cxx.o;
 /**
  * @goal o-prepare-package
  * @phase prepare-package
- * @requiresDependencyResolution prepare-package
  */
 public final class PreparePackageMojo extends org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo {
 
