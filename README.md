@@ -1,3 +1,7 @@
+Usage Notes
+=====
+For detailed usage notes please visit: http://hardisonbrewing.org/x/EIAT
+
 Build or download
 -----------------
 To build this you need to use Maven with the [hbc-maven-core](https://github.com/hardisonbrewing/hbc-maven-core) project.
@@ -21,10 +25,6 @@ To download this plugin without building it manually, you can add the following 
 	      <url>http://repo.hardisonbrewing.org/nexus/content/groups/public</url>
 	   </pluginRepository>
 	</pluginRepositories>
-
-Usage
------
-For detailed usage notes please visit: http://hardisonbrewing.org/x/EIAT
 
 TODO Notes
 ----------
