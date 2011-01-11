@@ -1,6 +1,6 @@
 Usage Notes
 =====
-For detailed usage notes please visit: http://hardisonbrewing.org/x/EIAT
+For detailed usage notes please visit: [http://hardisonbrewing.org/x/EIAT](http://hardisonbrewing.org/x/EIAT)
 
 Build or Download
 -----------------
