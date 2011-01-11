@@ -1,3 +1,5 @@
+Build or download
+-----------------
 To build this you need to use Maven with the [hbc-maven-core](https://github.com/hardisonbrewing/hbc-maven-core) project.
 
 OR add the following remote repository to download the latest snapshot:
@@ -11,6 +13,7 @@ OR add the following remote repository to download the latest snapshot:
 	</repositories>
 
 To download this plugin without building it manually, you can add the following remote plugin repository:
+
 	<pluginRepositories>
 	   <pluginRepository>
 	      <id>hardisonbrewing-public</id>
@@ -19,7 +22,11 @@ To download this plugin without building it manually, you can add the following 
 	   </pluginRepository>
 	</pluginRepositories>
 
-TODO NOTES
+Usage
+-----
+For detailed usage notes please visit: http://hardisonbrewing.org/x/EIAT
+
+TODO Notes
 ----------
 * I think I forgot to handle additional resources besides the icon... I need to look into that.
 * I'll get a JIRA instance up eventually for tracking these TODO items.
