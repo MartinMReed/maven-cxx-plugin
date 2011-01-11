@@ -95,6 +95,53 @@
 		</component>
 		
 		<!--
+			.BAR (BLACKBERRY-AIRPACKAGER, BlackBerry TabletOS - AIR)
+		-->
+		<component>
+			<role-hint>bar</role-hint>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+			<configuration>
+				<lifecycles>
+					<lifecycle>
+						<id>default</id>
+						<phases>
+							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
+								org.hardisonbrewing:maven-cxx-plugin:bar-validate</validate>
+							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy,
+								org.hardisonbrewing:maven-cxx-plugin:generate-sources,
+								org.hardisonbrewing:maven-cxx-plugin:bar-generate-app-descriptor</generate-sources>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:bar-swf-compile,
+								org.hardisonbrewing:maven-cxx-plugin:bar-compile</compile>
+							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:bar-prepare-package</prepare-package>
+							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
+							<install>org.hardisonbrewing:maven-cxx-plugin:bar-install,
+								org.hardisonbrewing:maven-cxx-plugin:bar-device-install</install>
+						</phases>
+					</lifecycle>
+				</lifecycles>
+			</configuration>
+		</component>
+		<component>
+			<role-hint>bar</role-hint>
+			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+			<implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
+			<configuration>
+				<extension>jar</extension>
+				<packaging>bar</packaging>
+				<type>bar</type>
+			</configuration>
+		</component>
+		<component>
+			<role-hint>bar</role-hint>
+			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
+			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
+			<configuration>
+				<sourceDirectory>src/main/flex</sourceDirectory>
+			</configuration>
+		</component>
+		
+		<!--
 			.O (GCC, Object File)
 		-->
 		<component>
