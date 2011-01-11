@@ -2,7 +2,7 @@ Usage Notes
 =====
 For detailed usage notes please visit: http://hardisonbrewing.org/x/EIAT
 
-Build or download
+Build or Download
 -----------------
 To build this you need to use Maven with the [hbc-maven-core](https://github.com/hardisonbrewing/hbc-maven-core) project.
 
