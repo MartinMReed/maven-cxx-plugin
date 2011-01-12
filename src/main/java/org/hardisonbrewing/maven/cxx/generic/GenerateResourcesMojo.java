@@ -15,47 +15,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.o;
+package org.hardisonbrewing.maven.cxx.generic;
 
-import java.util.LinkedList;
+import java.io.File;
 import java.util.List;
 
+import org.apache.maven.model.Resource;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.Sources;
 
 /**
- * @goal o-assemble
- * @phase compile
+ * @goal generate-resources
+ * @phase generate-resources
  */
-public class AssembleMojo extends JoJoMojoImpl {
-
-    /**
-     * @parameter
-     */
-    public String language;
+public class GenerateResourcesMojo extends JoJoMojoImpl {
 
     @Override
     public void execute() {
 
-        String[] sources = TargetDirectoryService.getSourceFilePaths();
-
-        if ( sources == null ) {
-            return;
-        }
-
-        for (int i = 0; i < sources.length; i++) {
-
-            List<String> cmd = new LinkedList<String>();
-            cmd.add( "c++".equals( language ) ? "g++" : "gcc" );
-
-            cmd.add( "-o" );
-            cmd.add( Sources.replaceExtension( sources[i], "o" ) );
-
-            cmd.add( "-c" );
-            cmd.add( Sources.replaceExtension( sources[i], "s" ) );
-
-            execute( cmd );
+        String generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
+        for (Resource resource : (List<Resource>) getProject().getResources()) {
+            File resourceDirectory = new File( resource.getDirectory() );
+            String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory );
+            for (String filePath : filePaths) {
+                GenerateSourcesMojo.copyFile( filePath, resource.getDirectory(), generatedResourcesDirectory );
+            }
         }
     }
 }

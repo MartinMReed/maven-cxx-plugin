@@ -16,6 +16,7 @@
 							<validate>org.hardisonbrewing:maven-cxx-plugin:validate</validate>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy,
 								org.hardisonbrewing:maven-cxx-plugin:generate-sources</generate-sources>
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:a-compile,
 								org.hardisonbrewing:maven-cxx-plugin:a-assemble,
 								org.hardisonbrewing:maven-cxx-plugin:a-archive</compile>
@@ -62,6 +63,7 @@
 								org.hardisonbrewing:maven-cxx-plugin:arduino-validate</validate>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy,
 								org.hardisonbrewing:maven-cxx-plugin:generate-sources</generate-sources>
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:arduino-compile,
 								org.hardisonbrewing:maven-cxx-plugin:arduino-archive,
 								org.hardisonbrewing:maven-cxx-plugin:arduino-link,
@@ -111,6 +113,7 @@
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy,
 								org.hardisonbrewing:maven-cxx-plugin:generate-sources,
 								org.hardisonbrewing:maven-cxx-plugin:bar-generate-app-descriptor</generate-sources>
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:bar-generate-resources</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:bar-swf-compile,
 								org.hardisonbrewing:maven-cxx-plugin:bar-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:bar-prepare-package</prepare-package>
@@ -156,6 +159,7 @@
 							<validate>org.hardisonbrewing:maven-cxx-plugin:validate</validate>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy,
 								org.hardisonbrewing:maven-cxx-plugin:generate-sources</generate-sources>
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:o-compile,
 								org.hardisonbrewing:maven-cxx-plugin:o-assemble,
 								org.hardisonbrewing:maven-cxx-plugin:o-link</compile>
@@ -209,6 +213,7 @@
 								org.hardisonbrewing:maven-cxx-plugin:xcode-validate</validate>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy,
 								org.hardisonbrewing:maven-cxx-plugin:generate-sources</generate-sources>
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:xcode-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:xcode-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>

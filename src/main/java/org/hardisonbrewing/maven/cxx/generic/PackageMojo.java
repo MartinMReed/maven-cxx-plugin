@@ -22,7 +22,7 @@ import java.io.File;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.hardisonbrewing.maven.core.ArchiveService;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal package

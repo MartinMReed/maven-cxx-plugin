@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal bar-compile
@@ -67,6 +67,10 @@ public class BarCompileMojo extends JoJoMojoImpl {
         if ( icon != null ) {
             cmd.add( icon );
         }
+
+        cmd.add( "-e" );
+        cmd.add( TargetDirectoryService.RESOURCES_DIRECTORY );
+        cmd.add( "." );
 
         Commandline commandLine = buildCommandline( cmd );
 

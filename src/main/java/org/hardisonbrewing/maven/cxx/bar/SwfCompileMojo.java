@@ -24,8 +24,8 @@ import java.util.List;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal bar-swf-compile
@@ -56,7 +56,7 @@ public class SwfCompileMojo extends JoJoMojoImpl {
         }
 
         StringBuffer actionScriptPath = new StringBuffer();
-        actionScriptPath.append( TargetDirectoryService.getTargetDirectoryPath() );
+        actionScriptPath.append( TargetDirectoryService.getGeneratedSourcesDirectoryPath() );
         actionScriptPath.append( File.separator );
         actionScriptPath.append( artifactId );
         actionScriptPath.append( ".as" );

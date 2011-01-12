@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.PropertiesService;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
 

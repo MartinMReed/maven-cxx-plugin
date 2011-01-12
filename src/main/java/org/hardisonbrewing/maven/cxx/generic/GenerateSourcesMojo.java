@@ -19,13 +19,12 @@ package org.hardisonbrewing.maven.cxx.generic;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
-import org.apache.maven.model.Resource;
 import org.hardisonbrewing.maven.core.FileUtils;
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal generate-sources
@@ -37,23 +36,11 @@ public final class GenerateSourcesMojo extends JoJoMojoImpl {
     public final void execute() {
 
         copyFiles( null, ProjectService.getSourceFilePaths(), ProjectService.getSourceDirectoryPath() );
-        copyResourceFilePaths();
     }
 
-    public final void copyResourceFilePaths() {
+    private static final void copyFiles( String parentFileName, String[] fileNames, String filePathPrefix ) {
 
-        String filePathPrefix = ProjectService.getBaseDirPath();
-        for (Resource resource : (List<Resource>) getProject().getResources()) {
-            File resourceDirectory = new File( resource.getDirectory() );
-            String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory );
-            for (String filePath : filePaths) {
-                copyFile( filePath, resource.getDirectory() );
-            }
-        }
-    }
-
-    private final void copyFiles( String parentFileName, String[] fileNames, String filePathPrefix ) {
-
+        String generatedSourcesDirectory = TargetDirectoryService.getGeneratedSourcesDirectoryPath();
         for (String fileName : fileNames) {
             StringBuffer srcChildPath = new StringBuffer();
             if ( parentFileName != null ) {
@@ -61,37 +48,34 @@ public final class GenerateSourcesMojo extends JoJoMojoImpl {
                 srcChildPath.append( File.separator );
             }
             srcChildPath.append( fileName );
-            copyFile( srcChildPath.toString(), filePathPrefix );
+            copyFile( srcChildPath.toString(), filePathPrefix, generatedSourcesDirectory );
         }
     }
 
-    private final void copyFile( String fileName, String filePathPrefix ) {
+    public static final void copyFile( String srcFilePath, String filePathPrefix, String destDirectoryPath ) {
 
-        if ( ".svn".equalsIgnoreCase( fileName ) ) {
+        if ( ".svn".equalsIgnoreCase( srcFilePath ) ) {
             return;
         }
 
-        File src = new File( fileName );
+        File srcFile = new File( srcFilePath );
+        File destFile = new File( srcFilePath.replace( filePathPrefix, destDirectoryPath ) );
 
-        String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
-        String destPath = fileName.replace( filePathPrefix, targetDirectoryPath );
-        File dest = new File( destPath );
+        JoJoMojo.getMojo().getLog().info( "Copying " + srcFile + " to " + destFile );
 
-        getLog().info( "Copying " + src + " to " + dest );
-
-        if ( src.isDirectory() ) {
-            dest.mkdir();
-            copyFiles( fileName, src.list(), filePathPrefix );
+        if ( srcFile.isDirectory() ) {
+            destFile.mkdir();
+            copyFiles( srcFilePath, srcFile.list(), filePathPrefix );
         }
         else {
             try {
-                FileUtils.copyFileToDirectory( src, dest.getParentFile() );
+                FileUtils.copyFileToDirectory( srcFile, destFile.getParentFile() );
             }
             catch (IOException e) {
                 throw new IllegalStateException( e.getMessage(), e );
             }
         }
 
-        dest.setLastModified( src.lastModified() );
+        destFile.setLastModified( srcFile.lastModified() );
     }
 }

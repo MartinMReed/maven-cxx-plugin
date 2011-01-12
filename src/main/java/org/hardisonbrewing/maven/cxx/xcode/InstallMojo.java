@@ -19,7 +19,7 @@ package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
 
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal xcode-install
