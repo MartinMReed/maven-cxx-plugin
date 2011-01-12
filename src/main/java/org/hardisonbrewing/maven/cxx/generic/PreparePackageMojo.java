@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
@@ -39,9 +39,12 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
         prepareArtifact();
 
-        String[] resourceFilePaths = TargetDirectoryService.getResourceFilePaths();
-        for (int i = 0; resourceFilePaths != null && i < resourceFilePaths.length; i++) {
-            prepareFile( resourceFilePaths[i] );
+        String generatedResourceDirectoryPath = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
+        File generatedResourceDirectory = new File( generatedResourceDirectoryPath );
+        String[] resourceFilePaths = FileUtils.listFilePathsRecursive( generatedResourceDirectory );
+        for (String resourceFilePath : resourceFilePaths) {
+            File src = new File( resourceFilePath );
+            prepareTargetFile( src, FileUtils.getCanonicalPath( resourceFilePath, generatedResourceDirectoryPath ) );
         }
     }
 
@@ -49,12 +52,6 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
         String artifactId = getProject().getArtifactId();
         prepareTargetFile( artifactId + "." + classifier );
-    }
-
-    public static final void prepareFile( String fileName ) {
-
-        File src = new File( fileName );
-        prepareTargetFile( src, FileUtils.getProjectCanonicalPath( src.getPath() ) );
     }
 
     public static final void prepareTargetFile( String fileName ) {

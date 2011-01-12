@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.Sources;
 
 /**

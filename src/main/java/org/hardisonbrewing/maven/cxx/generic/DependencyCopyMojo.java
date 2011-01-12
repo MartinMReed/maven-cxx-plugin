@@ -19,7 +19,7 @@ package org.hardisonbrewing.maven.cxx.generic;
 
 import org.hardisonbrewing.maven.core.DependencyService;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal dependency-copy

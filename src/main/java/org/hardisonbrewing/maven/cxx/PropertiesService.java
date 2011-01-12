@@ -20,7 +20,7 @@ package org.hardisonbrewing.maven.cxx;
 import java.io.File;
 import java.util.Properties;
 
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 public class PropertiesService extends org.hardisonbrewing.maven.core.PropertiesService {
 
