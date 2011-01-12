@@ -25,8 +25,3 @@ To download this plugin without building it manually, you can add the following 
 	      <url>http://repo.hardisonbrewing.org/nexus/content/groups/public</url>
 	   </pluginRepository>
 	</pluginRepositories>
-
-TODO Notes
-----------
-* I think I forgot to handle additional resources besides the icon... I need to look into that.
-* I'll get a JIRA instance up eventually for tracking these TODO items.
