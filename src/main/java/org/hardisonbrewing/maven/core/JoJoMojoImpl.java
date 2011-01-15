@@ -52,7 +52,7 @@ public abstract class JoJoMojoImpl extends JoJoMojo implements Contextualizable 
 
     /**
      * The current {@link ArchiverManager} instance.
-     * @parameter expression="${component.org.codehaus.plexus.archiver.manager.ArchiverManager}"
+     * @component role="org.codehaus.plexus.archiver.manager.ArchiverManager"
      * @required
      */
     private ArchiverManager archiverManager;

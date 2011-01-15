@@ -27,7 +27,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
-    protected String classifier;
+    public String classifier;
 
     protected PreparePackageMojo() {
 
@@ -41,8 +41,7 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
         String generatedResourceDirectoryPath = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
         File generatedResourceDirectory = new File( generatedResourceDirectoryPath );
-        String[] resourceFilePaths = FileUtils.listFilePathsRecursive( generatedResourceDirectory );
-        for (String resourceFilePath : resourceFilePaths) {
+        for (String resourceFilePath : FileUtils.listFilePathsRecursive( generatedResourceDirectory )) {
             File src = new File( resourceFilePath );
             prepareTargetFile( src, FileUtils.getCanonicalPath( resourceFilePath, generatedResourceDirectoryPath ) );
         }

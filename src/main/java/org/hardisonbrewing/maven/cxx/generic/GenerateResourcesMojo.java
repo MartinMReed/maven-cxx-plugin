@@ -39,8 +39,13 @@ public class GenerateResourcesMojo extends JoJoMojoImpl {
             File resourceDirectory = new File( resource.getDirectory() );
             String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory );
             for (String filePath : filePaths) {
-                GenerateSourcesMojo.copyFile( filePath, resource.getDirectory(), generatedResourcesDirectory );
+                copyFile( filePath, resource.getDirectory(), generatedResourcesDirectory );
             }
         }
+    }
+
+    protected void copyFile( String srcFilePath, String filePathPrefix, String destDirectoryPath ) {
+
+        GenerateSourcesMojo.copyFile( srcFilePath, filePathPrefix, destDirectoryPath );
     }
 }
