@@ -24,8 +24,8 @@ import org.apache.maven.project.MavenProject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.core.TemplateService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal bar-generate-app-descriptor
@@ -44,7 +44,7 @@ public class GenerateAppDescriptorMojo extends JoJoMojoImpl {
             return;
         }
 
-        getLog().info( "Building " + artifactId + ".xml..." );
+        getLog().info( "Generating " + artifactId + ".xml..." );
 
         Template template = TemplateService.getTemplate( "/bar/appDescriptor.vm" );
 

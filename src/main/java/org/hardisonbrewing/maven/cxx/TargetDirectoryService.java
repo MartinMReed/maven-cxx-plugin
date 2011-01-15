@@ -19,12 +19,14 @@ package org.hardisonbrewing.maven.cxx;
 
 import java.io.File;
 
-public final class TargetDirectoryService extends org.hardisonbrewing.maven.core.TargetDirectoryService {
+import org.hardisonbrewing.maven.core.FileUtils;
+
+public class TargetDirectoryService extends org.hardisonbrewing.maven.core.TargetDirectoryService {
 
     public static final String SOURCES_DIRECTORY = "generated-sources";
     public static final String RESOURCES_DIRECTORY = "generated-resources";
 
-    private TargetDirectoryService() {
+    protected TargetDirectoryService() {
 
         // do nothing
     }
@@ -55,5 +57,25 @@ public final class TargetDirectoryService extends org.hardisonbrewing.maven.core
     public static File getGeneratedResourcesDirectory() {
 
         return new File( getGeneratedResourcesDirectoryPath() );
+    }
+
+    public static final String[] getSourceFilePaths() {
+
+        return FileUtils.listFilePathsRecursive( getGeneratedSourcesDirectory() );
+    }
+
+    public static final File[] getSourceFiles() {
+
+        return FileUtils.listFilesRecursive( getGeneratedSourcesDirectory() );
+    }
+
+    public static final String[] getResourceFilePaths() {
+
+        return FileUtils.listFilePathsRecursive( getGeneratedResourcesDirectory() );
+    }
+
+    public static final File[] getResourceFiles() {
+
+        return FileUtils.listFilesRecursive( getGeneratedResourcesDirectory() );
     }
 }

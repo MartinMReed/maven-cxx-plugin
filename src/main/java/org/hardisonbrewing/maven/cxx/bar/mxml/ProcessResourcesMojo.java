@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.bar;
+package org.hardisonbrewing.maven.cxx.bar.mxml;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -25,13 +25,14 @@ import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
+import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
 
 /**
- * @goal bar-swf-compile
- * @phase compile
+ * @goal mxml-process-resources
+ * @phase process-resources
  */
-public class SwfCompileMojo extends JoJoMojoImpl {
+public class ProcessResourcesMojo extends JoJoMojoImpl {
 
     @Override
     public void execute() {
@@ -39,53 +40,55 @@ public class SwfCompileMojo extends JoJoMojoImpl {
         String artifactId = getProject().getArtifactId();
 
         if ( !shouldExecute() ) {
-            getLog().info( artifactId + ".swf is up-to-date, not rebuilding!" );
+            getLog().info( artifactId + ".swc is up-to-date, not rebuilding!" );
             return;
         }
 
-        getLog().info( "Building " + artifactId + ".swf..." );
+        getLog().info( "Building " + artifactId + ".swc..." );
 
         List<String> cmd = new LinkedList<String>();
-        cmd.add( "amxmlc" );
+        cmd.add( "compc" );
 
         cmd.add( "-output" );
-        cmd.add( artifactId + ".swf" );
+        cmd.add( artifactId + ".swc" );
 
-        if ( PropertiesService.getPropertyAsBoolean( PropertiesService.DEBUG ) ) {
-            cmd.add( "-compiler.debug" );
+        File sdkHome = PropertiesService.getPropertyAsFile( PropertiesService.ADOBE_FLEX_HOME );
+
+        StringBuffer configPath = new StringBuffer();
+        configPath.append( sdkHome );
+        configPath.append( File.separator );
+        configPath.append( "frameworks" );
+        configPath.append( File.separator );
+        configPath.append( "airmobile-config.xml" );
+        cmd.add( "-load-config" );
+        cmd.add( configPath.toString() );
+
+        String generatedResourcesDirectoryPath = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
+        String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
+        for (File file : TargetDirectoryService.getResourceFiles()) {
+            cmd.add( "-include-file" );
+            cmd.add( FileUtils.getCanonicalPath( file.getPath(), generatedResourcesDirectoryPath ) );
+            cmd.add( FileUtils.getCanonicalPath( file.getPath(), targetDirectoryPath ) );
         }
-
-        StringBuffer actionScriptPath = new StringBuffer();
-        actionScriptPath.append( TargetDirectoryService.getGeneratedSourcesDirectoryPath() );
-        actionScriptPath.append( File.separator );
-        actionScriptPath.append( artifactId );
-        actionScriptPath.append( ".as" );
-
-        cmd.add( actionScriptPath.toString() );
 
         Commandline commandLine = buildCommandline( cmd );
-
-        File sdkHome = PropertiesService.getPropertyAsFile( PropertiesService.BLACKBERRY_TABLET_HOME );
-        if ( sdkHome != null ) {
-            CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
-        }
-
+        CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
         execute( commandLine );
     }
 
-    private final boolean shouldExecute() {
+    protected final boolean shouldExecute() {
 
-        String swfFileName = getProject().getArtifactId() + ".swf";
+        String swcFileName = getProject().getArtifactId() + ".swc";
 
         if ( PropertiesService.propertiesHaveChanged() ) {
-            getLog().info( "Properties have changed, rebuilding " + swfFileName + "..." );
+            getLog().info( "Properties have changed, rebuilding " + swcFileName + "..." );
             return true;
         }
 
         StringBuffer outputPath = new StringBuffer();
         outputPath.append( TargetDirectoryService.getTargetDirectoryPath() );
         outputPath.append( File.separator );
-        outputPath.append( swfFileName );
+        outputPath.append( swcFileName );
 
         File outputFile = new File( outputPath.toString() );
         if ( outputFile.exists() ) {
@@ -100,9 +103,6 @@ public class SwfCompileMojo extends JoJoMojoImpl {
     private final long getLatestFileDate() {
 
         long lastModified = 0;
-        for (String filePath : TargetDirectoryService.getSourceFilePaths()) {
-            lastModified = Math.max( lastModified, getLatestFileDate( filePath ) );
-        }
         for (String filePath : TargetDirectoryService.getResourceFilePaths()) {
             lastModified = Math.max( lastModified, getLatestFileDate( filePath ) );
         }

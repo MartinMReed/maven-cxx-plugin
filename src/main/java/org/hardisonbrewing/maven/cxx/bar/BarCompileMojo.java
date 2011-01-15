@@ -24,18 +24,12 @@ import java.util.List;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal bar-compile
  * @phase compile
  */
 public class BarCompileMojo extends JoJoMojoImpl {
-
-    /**
-     * @parameter
-     */
-    public String icon;
 
     @Override
     public void execute() {
@@ -64,8 +58,9 @@ public class BarCompileMojo extends JoJoMojoImpl {
         cmd.add( artifactId + ".xml" );
         cmd.add( artifactId + ".swf" );
 
-        if ( icon != null ) {
-            cmd.add( icon );
+        File tabletXmlFile = TargetDirectoryService.getTabletXmlFile();
+        if ( tabletXmlFile.exists() ) {
+            cmd.add( TargetDirectoryService.BLACKBERRY_TABLET_XML );
         }
 
         cmd.add( "-e" );

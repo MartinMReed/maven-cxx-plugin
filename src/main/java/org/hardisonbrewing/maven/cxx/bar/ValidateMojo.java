@@ -23,10 +23,10 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  * @goal bar-validate
  * @phase validate
  */
-public final class ValidateMojo extends JoJoMojoImpl {
+public class ValidateMojo extends JoJoMojoImpl {
 
     @Override
-    public final void execute() {
+    public void execute() {
 
         validateVersion();
 
@@ -35,7 +35,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
         checkPropertyExists( PropertiesService.BLACKBERRY_TABLET_DEVICE_PASSWORD, false );
     }
 
-    private final void checkPropertyExists( String key, boolean force ) {
+    protected final void checkPropertyExists( String key, boolean force ) {
 
         StringBuffer checkingMessage = new StringBuffer();
         checkingMessage.append( "Checking property `" );

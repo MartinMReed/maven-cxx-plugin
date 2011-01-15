@@ -18,11 +18,7 @@
 package org.hardisonbrewing.maven.cxx.bar;
 
 import java.io.File;
-import java.util.List;
 
-import org.apache.maven.model.Resource;
-import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.generic.GenerateSourcesMojo;
 
 /**
@@ -31,42 +27,16 @@ import org.hardisonbrewing.maven.cxx.generic.GenerateSourcesMojo;
  */
 public class GenerateResourcesMojo extends org.hardisonbrewing.maven.cxx.generic.GenerateResourcesMojo {
 
-    /**
-     * @parameter
-     */
-    public String icon;
+    protected void copyFile( String srcFilePath, String filePathPrefix, String destDirectoryPath ) {
 
-    @Override
-    public final void execute() {
-
-        super.execute();
-
-        if ( icon != null ) {
-            resource_loop: for (Resource resource : (List<Resource>) getProject().getResources()) {
-                String resourceDirectoryPath = resource.getDirectory();
-                File resourceDirectory = new File( resourceDirectoryPath );
-                String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory );
-                file_loop: for (String filePath : filePaths) {
-
-                    // do a quick check to see if just the tail matches
-                    if ( !filePath.endsWith( icon ) ) {
-                        continue file_loop;
-                    }
-
-                    // do a full check to see if this is what we want
-                    StringBuffer iconFilePath = new StringBuffer();
-                    iconFilePath.append( resourceDirectory );
-                    iconFilePath.append( File.separator );
-                    iconFilePath.append( icon );
-                    if ( !filePath.equals( iconFilePath.toString() ) ) {
-                        continue file_loop;
-                    }
-
-                    String targetDirectory = TargetDirectoryService.getTargetDirectoryPath();
-                    GenerateSourcesMojo.copyFile( filePath, resource.getDirectory(), targetDirectory );
-                    break resource_loop;
-                }
-            }
+        StringBuffer tabletXmlPath = new StringBuffer();
+        tabletXmlPath.append( filePathPrefix );
+        tabletXmlPath.append( File.separator );
+        tabletXmlPath.append( TargetDirectoryService.BLACKBERRY_TABLET_XML );
+        if ( srcFilePath.equals( tabletXmlPath.toString() ) ) {
+            destDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
         }
+        GenerateSourcesMojo.copyFile( srcFilePath, filePathPrefix, destDirectoryPath );
+        //        GenerateSourcesMojo.copyFile( srcFilePath, filePathPrefix, TargetDirectoryService.getGeneratedSourcesDirectoryPath() );
     }
 }
