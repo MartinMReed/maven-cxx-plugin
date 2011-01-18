@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.bar.mxml;
+package org.hardisonbrewing.maven.cxx.bar.flex.mxml;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -52,7 +52,7 @@ public class ProcessResourcesMojo extends JoJoMojoImpl {
         cmd.add( "-output" );
         cmd.add( artifactId + ".swc" );
 
-        File sdkHome = PropertiesService.getPropertyAsFile( PropertiesService.ADOBE_FLEX_HOME );
+        String sdkHome = PropertiesService.getProperty( PropertiesService.ADOBE_FLEX_HOME );
 
         StringBuffer configPath = new StringBuffer();
         configPath.append( sdkHome );

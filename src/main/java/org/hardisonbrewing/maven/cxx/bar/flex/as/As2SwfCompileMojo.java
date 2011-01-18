@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.bar.as;
+package org.hardisonbrewing.maven.cxx.bar.flex.as;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -24,8 +24,8 @@ import java.util.List;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.bar.AbstractSwfCompileMojo;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
+import org.hardisonbrewing.maven.cxx.bar.flex.AbstractSwfCompileMojo;
 
 /**
  * @goal as-bar-swf-compile
@@ -65,7 +65,7 @@ public class As2SwfCompileMojo extends AbstractSwfCompileMojo {
 
         Commandline commandLine = buildCommandline( cmd );
 
-        File sdkHome = PropertiesService.getPropertyAsFile( PropertiesService.BLACKBERRY_TABLET_HOME );
+        String sdkHome = PropertiesService.getProperty( PropertiesService.BLACKBERRY_TABLET_HOME );
         if ( sdkHome != null ) {
             CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
         }

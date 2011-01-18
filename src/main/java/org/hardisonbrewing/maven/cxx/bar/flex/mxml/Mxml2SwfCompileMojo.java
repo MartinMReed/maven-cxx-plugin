@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.bar.mxml;
+package org.hardisonbrewing.maven.cxx.bar.flex.mxml;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -23,9 +23,9 @@ import java.util.List;
 
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
-import org.hardisonbrewing.maven.cxx.bar.AbstractSwfCompileMojo;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.bar.flex.AbstractSwfCompileMojo;
 
 /**
  * @goal mxml-bar-swf-compile
@@ -62,7 +62,7 @@ public class Mxml2SwfCompileMojo extends AbstractSwfCompileMojo {
         actionScriptPath.append( ".mxml" );
         cmd.add( actionScriptPath.toString() );
 
-        File sdkHome = PropertiesService.getPropertyAsFile( PropertiesService.ADOBE_FLEX_HOME );
+        String sdkHome = PropertiesService.getProperty( PropertiesService.ADOBE_FLEX_HOME );
 
         StringBuffer configPath = new StringBuffer();
         configPath.append( sdkHome );

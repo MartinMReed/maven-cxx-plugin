@@ -63,7 +63,7 @@ public final class DeviceInstallMojo extends JoJoMojoImpl {
 
         Commandline commandLine = buildCommandline( cmd );
 
-        File sdkHome = PropertiesService.getPropertyAsFile( PropertiesService.BLACKBERRY_TABLET_HOME );
+        String sdkHome = PropertiesService.getProperty( PropertiesService.BLACKBERRY_TABLET_HOME );
         if ( sdkHome != null ) {
             CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
         }

@@ -24,6 +24,7 @@ import java.util.Properties;
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
     public static final String ADOBE_FLEX_HOME;
+    public static final String BLACKBERRY_WEBWORKS_TABLET_HOME;
     public static final String BLACKBERRY_TABLET_HOME;
     public static final String BLACKBERRY_TABLET_DEVICE_IP;
     public static final String BLACKBERRY_TABLET_DEVICE_PASSWORD;
@@ -35,6 +36,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
 
         List<String> keys = new LinkedList<String>();
         keys.add( ADOBE_FLEX_HOME = "adobe.flex.home" );
+        keys.add( BLACKBERRY_WEBWORKS_TABLET_HOME = "blackberry.webworks.tablet.home" );
         keys.add( BLACKBERRY_TABLET_HOME = "blackberry.tablet.home" );
         keys.add( BLACKBERRY_TABLET_DEVICE_IP = "blackberry.tablet.device.ip" );
         keys.add( BLACKBERRY_TABLET_DEVICE_PASSWORD = "blackberry.tablet.device.password" );
