@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.bar.mxml;
+package org.hardisonbrewing.maven.cxx.bar.flex.mxml;
 
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 import org.hardisonbrewing.maven.cxx.bar.ValidateMojo;

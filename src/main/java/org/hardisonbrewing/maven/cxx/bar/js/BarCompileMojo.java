@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.bar;
+package org.hardisonbrewing.maven.cxx.bar.js;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -24,9 +24,11 @@ import java.util.List;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
+import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
+import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
 
 /**
- * @goal bar-compile
+ * @goal bar-js-compile
  * @phase compile
  */
 public class BarCompileMojo extends JoJoMojoImpl {
@@ -44,37 +46,41 @@ public class BarCompileMojo extends JoJoMojoImpl {
         getLog().info( "Building " + artifactId + ".bar..." );
 
         List<String> cmd = new LinkedList<String>();
-        cmd.add( "blackberry-airpackager" );
+        cmd.add( "bbwp" );
+        cmd.add( "bbwp.zip" );
 
-        // this is only here to ensure the entry point in the Manifest shows as AIRDebug
-        if ( PropertiesService.getPropertyAsBoolean( PropertiesService.DEBUG ) ) {
-            cmd.add( "-connect" );
-            cmd.add( LaunchMojo.getIpAddress() );
-        }
-
-        cmd.add( "-package" );
-        cmd.add( artifactId + ".bar" );
-
-        cmd.add( artifactId + ".xml" );
-        cmd.add( artifactId + ".swf" );
-
-        File tabletXmlFile = TargetDirectoryService.getTabletXmlFile();
-        if ( tabletXmlFile.exists() ) {
-            cmd.add( TargetDirectoryService.BLACKBERRY_TABLET_XML );
-        }
-
-        cmd.add( "-e" );
-        cmd.add( TargetDirectoryService.RESOURCES_DIRECTORY );
+        // tell bbwp to leave the output in the current directory
+        cmd.add( "/o" );
         cmd.add( "." );
 
         Commandline commandLine = buildCommandline( cmd );
 
-        File sdkHome = PropertiesService.getPropertyAsFile( PropertiesService.BLACKBERRY_TABLET_HOME );
+        String sdkHome = PropertiesService.getProperty( PropertiesService.BLACKBERRY_WEBWORKS_TABLET_HOME );
         if ( sdkHome != null ) {
-            CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
+            CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome );
         }
 
         execute( commandLine );
+
+        renameBarFile();
+    }
+
+    private final void renameBarFile() {
+
+        StringBuffer srcBarPath = new StringBuffer();
+        srcBarPath.append( TargetDirectoryService.getTargetDirectoryPath() );
+        srcBarPath.append( File.separator );
+        srcBarPath.append( "bbwp.bar" );
+        File srcBarFile = new File( srcBarPath.toString() );
+
+        StringBuffer destBarPath = new StringBuffer();
+        destBarPath.append( TargetDirectoryService.getTargetDirectoryPath() );
+        destBarPath.append( File.separator );
+        destBarPath.append( getProject().getArtifactId() );
+        destBarPath.append( ".bar" );
+        File destBarFile = new File( destBarPath.toString() );
+
+        srcBarFile.renameTo( destBarFile );
     }
 
     private final boolean shouldExecute() {
@@ -104,9 +110,7 @@ public class BarCompileMojo extends JoJoMojoImpl {
     private final long getLatestFileDate() {
 
         String artifactId = getProject().getArtifactId();
-        long artifactXml = getLatestFileDate( artifactId + ".xml" );
-        long artifactSwf = getLatestFileDate( artifactId + ".swf" );
-        return Math.max( artifactXml, artifactSwf );
+        return getLatestFileDate( artifactId + ".zip" );
     }
 
     private final long getLatestFileDate( String filename ) {

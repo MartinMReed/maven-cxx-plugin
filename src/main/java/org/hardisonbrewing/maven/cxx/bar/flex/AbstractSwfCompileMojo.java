@@ -15,13 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.bar;
+package org.hardisonbrewing.maven.cxx.bar.flex;
 
 import java.io.File;
 
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 public abstract class AbstractSwfCompileMojo extends JoJoMojoImpl {
 

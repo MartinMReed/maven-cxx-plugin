@@ -37,6 +37,5 @@ public class GenerateResourcesMojo extends org.hardisonbrewing.maven.cxx.generic
             destDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
         }
         GenerateSourcesMojo.copyFile( srcFilePath, filePathPrefix, destDirectoryPath );
-        //        GenerateSourcesMojo.copyFile( srcFilePath, filePathPrefix, TargetDirectoryService.getGeneratedSourcesDirectoryPath() );
     }
 }

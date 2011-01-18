@@ -116,7 +116,7 @@
 							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources,
 								org.hardisonbrewing:maven-cxx-plugin:bar-generate-resources</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:as-bar-swf-compile,
-								org.hardisonbrewing:maven-cxx-plugin:bar-compile</compile>
+								org.hardisonbrewing:maven-cxx-plugin:bar-flex-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:bar-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:bar-install,
@@ -167,7 +167,7 @@
 								org.hardisonbrewing:maven-cxx-plugin:bar-generate-resources</generate-resources>
 							<process-resources>org.hardisonbrewing:maven-cxx-plugin:mxml-process-resources</process-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:mxml-bar-swf-compile,
-								org.hardisonbrewing:maven-cxx-plugin:bar-compile</compile>
+								org.hardisonbrewing:maven-cxx-plugin:bar-flex-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:bar-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:bar-install,
@@ -193,6 +193,55 @@
 			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
 			<configuration>
 				<sourceDirectory>src/main/flex</sourceDirectory>
+			</configuration>
+		</component>
+		
+		<!--
+			.JS.BAR (BLACKBERRY WEBWORKS PACKAGER, BlackBerry TabletOS - WEBWORKS)
+		-->
+		<component>
+			<role-hint>js.bar</role-hint>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+			<configuration>
+				<lifecycles>
+					<lifecycle>
+						<id>default</id>
+						<phases>
+							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
+								org.hardisonbrewing:maven-cxx-plugin:bar-validate</validate>
+							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy,
+								org.hardisonbrewing:maven-cxx-plugin:generate-sources,
+								org.hardisonbrewing:maven-cxx-plugin:bar-js-generate-zip</generate-sources>
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources,
+								org.hardisonbrewing:maven-cxx-plugin:bar-generate-resources</generate-resources>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:bar-js-generate-zip,
+								org.hardisonbrewing:maven-cxx-plugin:bar-js-compile</compile>
+							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:bar-prepare-package</prepare-package>
+							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
+							<install>org.hardisonbrewing:maven-cxx-plugin:bar-install,
+								org.hardisonbrewing:maven-cxx-plugin:bar-device-install</install>
+						</phases>
+					</lifecycle>
+				</lifecycles>
+			</configuration>
+		</component>
+		<component>
+			<role-hint>js.bar</role-hint>
+			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+			<implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
+			<configuration>
+				<extension>jar</extension>
+				<packaging>js.bar</packaging>
+				<type>js.bar</type>
+			</configuration>
+		</component>
+		<component>
+			<role-hint>js.bar</role-hint>
+			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
+			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
+			<configuration>
+				<sourceDirectory>src/main/javascript</sourceDirectory>
 			</configuration>
 		</component>
 		
