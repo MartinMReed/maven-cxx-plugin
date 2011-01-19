@@ -29,7 +29,7 @@ import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
 
 /**
- * @goal bar-flex-compile
+ * @goal flex-bar-compile
  * @phase compile
  */
 public class BarCompileMojo extends JoJoMojoImpl {
