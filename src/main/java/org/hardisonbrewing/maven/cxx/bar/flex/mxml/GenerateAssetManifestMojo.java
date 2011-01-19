@@ -1,4 +1,3 @@
-package org.hardisonbrewing.maven.cxx.bar.flex.mxml;
 ///**
 // * Copyright (c) 2010-2011 Martin M Reed
 // *

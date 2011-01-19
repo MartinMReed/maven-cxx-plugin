@@ -116,7 +116,7 @@
 							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources,
 								org.hardisonbrewing:maven-cxx-plugin:bar-generate-resources</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:as-bar-swf-compile,
-								org.hardisonbrewing:maven-cxx-plugin:bar-flex-compile</compile>
+								org.hardisonbrewing:maven-cxx-plugin:flex-bar-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:bar-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:bar-install,
@@ -167,7 +167,7 @@
 								org.hardisonbrewing:maven-cxx-plugin:bar-generate-resources</generate-resources>
 							<process-resources>org.hardisonbrewing:maven-cxx-plugin:mxml-process-resources</process-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:mxml-bar-swf-compile,
-								org.hardisonbrewing:maven-cxx-plugin:bar-flex-compile</compile>
+								org.hardisonbrewing:maven-cxx-plugin:flex-bar-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:bar-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:bar-install,
@@ -211,12 +211,12 @@
 							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
 								org.hardisonbrewing:maven-cxx-plugin:bar-validate</validate>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy,
-								org.hardisonbrewing:maven-cxx-plugin:generate-sources,
-								org.hardisonbrewing:maven-cxx-plugin:bar-js-generate-zip</generate-sources>
+								org.hardisonbrewing:maven-cxx-plugin:generate-sources</generate-sources>
 							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources,
 								org.hardisonbrewing:maven-cxx-plugin:bar-generate-resources</generate-resources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:bar-js-generate-zip,
-								org.hardisonbrewing:maven-cxx-plugin:bar-js-compile</compile>
+							<process-resources>org.hardisonbrewing:maven-cxx-plugin:js-bar-generate-config</process-resources>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:js-bar-generate-zip,
+								org.hardisonbrewing:maven-cxx-plugin:js-bar-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:bar-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:bar-install,

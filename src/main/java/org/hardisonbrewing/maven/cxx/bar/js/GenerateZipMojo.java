@@ -28,7 +28,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
- * @goal bar-js-generate-zip
+ * @goal js-bar-generate-zip
  * @phase generate-sources
  */
 public class GenerateZipMojo extends JoJoMojoImpl {

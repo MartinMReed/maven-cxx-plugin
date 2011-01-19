@@ -28,7 +28,7 @@ import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
 
 /**
- * @goal bar-js-compile
+ * @goal js-bar-compile
  * @phase compile
  */
 public class BarCompileMojo extends JoJoMojoImpl {

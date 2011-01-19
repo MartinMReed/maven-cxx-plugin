@@ -54,7 +54,7 @@
 	</dependencies>
 	<distributionManagement>
 		<repository>
-			<id>snapshots</id>
+			<id>hardisonbrewing-snapshots</id>
 			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots</url>
 		</repository>
 	</distributionManagement>
