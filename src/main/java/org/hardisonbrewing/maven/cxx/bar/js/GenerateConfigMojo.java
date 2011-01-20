@@ -19,6 +19,7 @@ package org.hardisonbrewing.maven.cxx.bar.js;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.VelocityContext;
@@ -49,11 +50,13 @@ public class GenerateConfigMojo extends JoJoMojoImpl {
         File configFile = new File( configFilePath.toString() );
 
         MavenProject project = getProject();
+        Hashtable<String, String> projectValues = new Hashtable<String, String>();
+        projectValues.put( "version", getResolvedVersion( project.getVersion() ) );
+        projectValues.put( "name", project.getName() );
+        projectValues.put( "description", project.getDescription() );
 
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put( "version", getResolvedVersion( project.getVersion() ) );
-        velocityContext.put( "name", project.getName() );
-        velocityContext.put( "description", project.getDescription() );
+        velocityContext.put( "project", projectValues );
 
         StringBuffer outputFilePath = new StringBuffer();
         outputFilePath.append( configFilePath );
