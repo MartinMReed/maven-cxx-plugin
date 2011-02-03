@@ -17,6 +17,7 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
@@ -25,18 +26,13 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  */
 public final class ValidateMojo extends JoJoMojoImpl {
 
-    /**
-     * @parameter expression="${configuration.project}"
-     */
-    public String project;
-
     @Override
     public final void execute() {
 
+        String project = XCodeService.getProject();
         if ( project == null ) {
-            throw new IllegalArgumentException( "<project /> must be set." );
+            JoJoMojo.getMojo().getLog().error( "Unable to locate project entry! Expected a file with the extension `" + XCodeService.XCODEPROJ_EXTENSION + "`." );
+            throw new IllegalStateException();
         }
-
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.validate( project + ".xcodeproj" );
     }
 }

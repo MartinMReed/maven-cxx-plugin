@@ -55,12 +55,16 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
     public static final void prepareTargetFile( String fileName ) {
 
-        StringBuffer srcPath = new StringBuffer();
-        srcPath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        srcPath.append( File.separator );
-        srcPath.append( fileName );
-        File src = new File( srcPath.toString() );
-        prepareTargetFile( src, FileUtils.getProjectCanonicalPath( src.getPath() ) );
+        String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
+        if ( !fileName.startsWith( targetDirectoryPath ) ) {
+            StringBuffer srcPath = new StringBuffer();
+            srcPath.append( TargetDirectoryService.getTargetDirectoryPath() );
+            srcPath.append( File.separator );
+            srcPath.append( fileName );
+            fileName = srcPath.toString();
+        }
+        File src = new File( fileName );
+        prepareTargetFile( src, FileUtils.getTargetCanonicalPath( src.getPath() ) );
     }
 
     public static final void prepareTargetFile( File src, String fileName ) {
@@ -77,7 +81,7 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
         JoJoMojo.getMojo().getLog().info( "Copying " + src + " to " + dest );
 
         try {
-            FileUtils.copyFileToDirectory( src, dest.getParentFile() );
+            FileUtils.copyFile( src, dest );
         }
         catch (IOException e) {
             throw new IllegalStateException( e.getMessage(), e );

@@ -53,6 +53,10 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
 
     public static final boolean propertiesHaveChanged() {
 
+        if ( pluginVersionsHaveChanged() ) {
+            return true;
+        }
+
         Properties properties = loadBuildDifferenceProperties();
         if ( properties == null ) {
             return false;

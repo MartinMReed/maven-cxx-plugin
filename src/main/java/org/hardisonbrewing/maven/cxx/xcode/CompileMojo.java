@@ -17,10 +17,16 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.codehaus.plexus.util.cli.CommandLineException;
+import org.codehaus.plexus.util.cli.Commandline;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.core.TargetDirectoryService;
+import org.hardisonbrewing.maven.core.cli.CommandLineService;
 
 /**
  * @goal xcode-compile
@@ -29,9 +35,9 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 public final class CompileMojo extends JoJoMojoImpl {
 
     /**
-     * @parameter expression="${configuration.project}"
+     * @parameter
      */
-    public String project;
+    public String configuration;
 
     /**
      * @parameter
@@ -55,7 +61,31 @@ public final class CompileMojo extends JoJoMojoImpl {
         cmd.add( "xcodebuild" );
 
         cmd.add( "-project" );
-        cmd.add( project + ".xcodeproj" );
+        cmd.add( XCodeService.getProject() + ".xcodeproj" );
+
+        String targetCanonical = FileUtils.getProjectCanonicalPath( TargetDirectoryService.getTargetDirectoryPath() );
+
+        cmd.add( "SYMROOT=$(PROJECT_DIR)" + targetCanonical );
+
+        cmd.add( "BUILD_DIR=$(PROJECT_DIR)" + targetCanonical );
+
+        StringBuffer objroot = new StringBuffer();
+        objroot.append( "OBJROOT=$(PROJECT_DIR)" );
+        objroot.append( targetCanonical );
+        objroot.append( File.separator );
+        objroot.append( "OBJROOT" );
+        cmd.add( objroot.toString() );
+
+        StringBuffer configurationBuildDir = new StringBuffer();
+        configurationBuildDir.append( "CONFIGURATION_BUILD_DIR=$(BUILD_DIR)" );
+        configurationBuildDir.append( File.separator );
+        if ( configuration == null ) {
+            configurationBuildDir.append( XCodeService.DEFAULT_CONFIGURATION );
+        }
+        else {
+            configurationBuildDir.append( configuration );
+        }
+        cmd.add( configurationBuildDir.toString() );
 
         if ( target != null ) {
             cmd.add( "-target" );
@@ -69,5 +99,19 @@ public final class CompileMojo extends JoJoMojoImpl {
         }
 
         execute( cmd );
+    }
+
+    protected Commandline buildCommandline( List<String> cmd ) {
+
+        Commandline commandLine;
+
+        try {
+            commandLine = CommandLineService.build( cmd );
+        }
+        catch (CommandLineException e) {
+            throw new IllegalStateException( e.getMessage() );
+        }
+
+        return commandLine;
     }
 }
