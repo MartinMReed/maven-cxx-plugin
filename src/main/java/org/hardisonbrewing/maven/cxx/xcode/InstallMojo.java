@@ -17,10 +17,6 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
-import java.io.File;
-
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-
 /**
  * @goal xcode-install
  * @phase install
@@ -30,33 +26,7 @@ public final class InstallMojo extends org.hardisonbrewing.maven.cxx.generic.Ins
     @Override
     public final void execute() {
 
-        String[] resourceFilePaths = TargetDirectoryService.getResourceFilePaths();
-
-        File tempPackage = new File( TargetDirectoryService.getTempPackagePath() );
-        for (File tempPackageChild : tempPackage.listFiles()) {
-            if ( tempPackageChild.isDirectory() ) {
-                continue;
-            }
-            String tempPackageChildName = tempPackageChild.getName();
-            if ( isIncluded( resourceFilePaths, tempPackageChildName ) ) {
-                continue;
-            }
-            classifier = tempPackageChildName.substring( tempPackageChildName.lastIndexOf( '.' ) + 1 );
-        }
-
+        classifier = "xcode";
         super.execute();
-    }
-
-    private final boolean isIncluded( String[] resourceFilePaths, String fileName ) {
-
-        if ( resourceFilePaths == null ) {
-            return false;
-        }
-        for (int i = 0; i < resourceFilePaths.length; i++) {
-            if ( resourceFilePaths[i].equals( fileName ) ) {
-                return true;
-            }
-        }
-        return false;
     }
 }

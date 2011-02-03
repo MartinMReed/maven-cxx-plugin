@@ -18,32 +18,27 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
 
-/**
- * @goal xcode-clean
- * @phase clean
- */
-public final class CleanMojo extends JoJoMojoImpl {
+public class XCodeService {
 
-    @Override
-    public void execute() {
+    public static final String DEFAULT_CONFIGURATION = "default-configuration";
+    public static final String XCODEPROJ_EXTENSION = ".xcodeproj";
 
-        StringBuffer buildDirPath = new StringBuffer();
-        buildDirPath.append( ProjectService.getBaseDirPath() );
-        buildDirPath.append( File.separator );
-        buildDirPath.append( "build" );
-        File buildDir = new File( buildDirPath.toString() );
-        try {
-            FileUtils.deleteDirectory( buildDir );
-            //            FileUtils.deleteDirectory( TargetDirectoryService.getTargetDirectory() );
+    private static String project;
+
+    public static final String getProject() {
+
+        if ( project == null ) {
+            File file = ProjectService.getBaseDir();
+            for (String filePath : file.list()) {
+                if ( filePath.endsWith( XCODEPROJ_EXTENSION ) ) {
+                    project = filePath.substring( 0, filePath.lastIndexOf( XCODEPROJ_EXTENSION ) );
+                    break;
+                }
+            }
         }
-        catch (IOException e) {
-            throw new IllegalStateException( e.getMessage(), e );
-        }
+        return project;
     }
 }

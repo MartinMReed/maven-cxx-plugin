@@ -18,15 +18,33 @@
 package org.hardisonbrewing.maven.cxx;
 
 import java.io.File;
+import java.util.List;
 import java.util.Properties;
 
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.apache.maven.model.Plugin;
+import org.hardisonbrewing.maven.core.ProjectService;
 
 public class PropertiesService extends org.hardisonbrewing.maven.core.PropertiesService {
 
     protected PropertiesService() {
 
         // do nothing
+    }
+
+    public static final boolean pluginVersionsHaveChanged() {
+
+        Properties properties = loadBuildDifferenceProperties();
+        if ( properties == null ) {
+            return false;
+        }
+
+        for (Plugin plugin : (List<Plugin>) ProjectService.getProject().getBuildPlugins()) {
+            if ( "true".equalsIgnoreCase( plugin.getKey() ) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static final void storeBuildDifferenceProperties( Properties properties ) {

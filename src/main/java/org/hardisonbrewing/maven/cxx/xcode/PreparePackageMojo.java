@@ -19,45 +19,44 @@ package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.FileUtils;
+import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal xcode-prepare-package
  * @phase prepare-package
  */
-public final class PreparePackageMojo extends org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo {
+public final class PreparePackageMojo extends JoJoMojoImpl {
 
     /**
-     * @parameter expression="${configuration.project}"
+     * @parameter
      */
-    public String project;
+    public String configuration;
 
     @Override
-    protected void prepareArtifact() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
-        StringBuffer buildDirPath = new StringBuffer();
-        buildDirPath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        buildDirPath.append( File.separator );
-        buildDirPath.append( "build" );
-        File buildDir = new File( buildDirPath.toString() );
+        StringBuffer filePath = new StringBuffer();
+        filePath.append( TargetDirectoryService.getTargetDirectoryPath() );
+        filePath.append( File.separator );
+        if ( configuration == null ) {
+            filePath.append( XCodeService.DEFAULT_CONFIGURATION );
+        }
+        else {
+            filePath.append( configuration );
+        }
+        File directory = new File( filePath.toString() );
 
-        String projectBuildDir = project + ".build";
+        getLog().info( "Copying files from: " + directory );
 
-        for (String buildDirChild : buildDir.list()) {
-            if ( projectBuildDir.equals( buildDirChild ) ) {
-                continue;
-            }
-            StringBuffer releaseDirPath = new StringBuffer();
-            releaseDirPath.append( buildDir );
-            releaseDirPath.append( File.separator );
-            releaseDirPath.append( buildDirChild );
-            File releaseDir = new File( releaseDirPath.toString() );
-            if ( !releaseDir.isDirectory() ) {
-                continue;
-            }
-            for (File releaseFile : releaseDir.listFiles()) {
-                prepareTargetFile( releaseFile, releaseFile.getName() );
-            }
+        String directoryRoot = directory.getAbsolutePath();
+
+        for (File file : FileUtils.listFilesRecursive( directory )) {
+            String filename = file.getAbsolutePath().substring( directoryRoot.length() );
+            org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( file, filename );
         }
     }
 }

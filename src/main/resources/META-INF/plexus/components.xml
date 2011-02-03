@@ -301,13 +301,6 @@
 			<configuration>
 				<lifecycles>
 					<lifecycle>
-						<id>clean</id>
-						<phases>
-							<clean>org.apache.maven.plugins:maven-clean-plugin:clean,
-								org.hardisonbrewing:maven-cxx-plugin:xcode-clean</clean>
-						</phases>
-					</lifecycle>
-					<lifecycle>
 						<id>default</id>
 						<phases>
 							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
