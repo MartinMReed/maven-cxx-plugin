@@ -49,13 +49,19 @@
 		<dependency>
 			<groupId>org.hardisonbrewing</groupId>
 			<artifactId>hbc-maven-core</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>
 			<id>hardisonbrewing-snapshots</id>
+			<name>hardisonbrewing-snapshots</name>
 			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots</url>
 		</repository>
+<!--		<repository>-->
+<!--			<id>hardisonbrewing-releases</id>-->
+<!--			<name>hardisonbrewing-releases</name>-->
+<!--			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url>-->
+<!--		</repository>-->
 	</distributionManagement>
 </project>
