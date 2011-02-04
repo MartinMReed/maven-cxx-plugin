@@ -71,6 +71,7 @@ public class GenerateResourcesMojo extends JoJoMojoImpl {
 
         PlistService.setString( plist, "CFBundleVersion", version );
         PlistService.setString( plist, "CFBundleShortVersionString", versionString );
+        PlistService.setString( plist, "CFBundleIdentifier", getProject().getGroupId() );
 
         try {
             JAXB.marshal( plistFile, plist );
