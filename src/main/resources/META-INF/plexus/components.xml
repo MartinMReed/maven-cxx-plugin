@@ -305,9 +305,8 @@
 						<phases>
 							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-validate</validate>
-							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy,
-								org.hardisonbrewing:maven-cxx-plugin:generate-sources</generate-sources>
-							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources</generate-resources>
+							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:xcode-generate-resources</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:xcode-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:xcode-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>

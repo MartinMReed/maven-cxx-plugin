@@ -28,9 +28,52 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory>src/main/resources/jaxb</schemaDirectory>
+							<extension>true</extension>
+							<schemaLanguage>DTD</schemaLanguage>
+							<schemaIncludes>
+								<schemaInclude>*.dtd</schemaInclude>
+							</schemaIncludes>
+							<bindingIncludes>
+								<bindingInclude>*.jaxb</bindingInclude>
+							</bindingIncludes>
+							<args>
+								<arg>-Xinject-listener-code</arg>
+							</args>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.jvnet.jaxb2-commons</groupId>
+						<artifactId>property-listener-injector</artifactId>
+						<version>1.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>org.hardisonbrewing</groupId>
+			<artifactId>hbc-maven-core</artifactId>
+			<version>1.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.plexus</groupId>
+					<artifactId>plexus-container-default</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-utils</artifactId>
@@ -46,10 +89,11 @@
 			<artifactId>plexus-component-api</artifactId>
 			<version>1.0-alpha-33</version>
 		</dependency>
+		<!-- JAXB -->
 		<dependency>
-			<groupId>org.hardisonbrewing</groupId>
-			<artifactId>hbc-maven-core</artifactId>
-			<version>1.0</version>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-xjc</artifactId>
+			<version>2.0</version>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
