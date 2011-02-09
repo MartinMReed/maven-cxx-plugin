@@ -37,6 +37,11 @@ public final class CompileMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
+    public String provisioningProfile;
+
+    /**
+     * @parameter
+     */
     public String configuration;
 
     /**

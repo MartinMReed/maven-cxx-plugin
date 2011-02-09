@@ -26,6 +26,11 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  */
 public final class ValidateMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String provisioningProfile;
+
     @Override
     public final void execute() {
 
@@ -33,6 +38,10 @@ public final class ValidateMojo extends JoJoMojoImpl {
         if ( project == null ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate project entry! Expected a file with the extension `" + XCodeService.XCODEPROJ_EXTENSION + "`." );
             throw new IllegalStateException();
+        }
+
+        if ( provisioningProfile != null ) {
+            InstallProvisioningProfileMojo.assertProvisioningProfile( provisioningProfile );
         }
     }
 }
