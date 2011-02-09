@@ -75,7 +75,5 @@ public final class GenerateSourcesMojo extends JoJoMojoImpl {
                 throw new IllegalStateException( e.getMessage(), e );
             }
         }
-
-        destFile.setLastModified( srcFile.lastModified() );
     }
 }
