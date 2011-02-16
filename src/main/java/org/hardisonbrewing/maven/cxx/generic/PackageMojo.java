@@ -36,6 +36,8 @@ public final class PackageMojo extends JoJoMojoImpl {
         File src = new File( TargetDirectoryService.getTempPackagePath() );
         File dest = new File( TargetDirectoryService.getTempPackagePath() + ".jar" );
 
+        getLog().info( "Archiving " + src + " to " + dest );
+
         try {
             ArchiveService.archive( src, dest );
         }
