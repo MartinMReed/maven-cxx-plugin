@@ -27,6 +27,7 @@ import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.TargetDirectoryService;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
+import org.hardisonbrewing.maven.cxx.PropertiesService;
 
 /**
  * @goal xcode-compile
@@ -73,6 +74,13 @@ public final class CompileMojo extends JoJoMojoImpl {
         cmd.add( "SYMROOT=$(PROJECT_DIR)" + targetCanonical );
 
         cmd.add( "BUILD_DIR=$(PROJECT_DIR)" + targetCanonical );
+
+        String keychain = PropertiesService.getProperty( "xcode.keychain" );
+        if ( keychain != null ) {
+            cmd.add( "OTHER_CODE_SIGN_FLAGS=--keychain " + keychain );
+        }
+
+        //        cmd.add( "CODE_SIGN_IDENTITY=iPhone Developer: Macy Build (L5NLHD57L6)" );
 
         StringBuffer objroot = new StringBuffer();
         objroot.append( "OBJROOT=$(PROJECT_DIR)" );
