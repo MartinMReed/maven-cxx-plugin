@@ -17,6 +17,7 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import generated.Array;
 import generated.Dict;
 import generated.Plist;
 
@@ -53,6 +54,29 @@ public class PlistService {
             }
         }
         return null;
+    }
+
+    public static final void add( Array array, Object value ) {
+
+        List<Object> values = array.getArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
+        values.add( value );
+    }
+
+    public static final void add( Dict dict, String key, Object value ) {
+
+        List<Object> values = dict.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
+
+        generated.Key _key = new generated.Key();
+        _key.setvalue( key );
+        values.add( _key );
+
+        values.add( value );
+    }
+
+    public static final void add( Plist plist, Object value ) {
+
+        List<Object> values = plist.getArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
+        values.add( value );
     }
 
     public static final boolean setString( Plist plist, String key, String value ) {
