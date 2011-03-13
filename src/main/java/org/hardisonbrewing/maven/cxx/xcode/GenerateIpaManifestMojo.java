@@ -17,10 +17,11 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import generated.Plist;
+
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.maven.project.MavenProject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -38,28 +39,45 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
         //http://developer.apple.com/library/ios/#featuredarticles/FA_Wireless_Enterprise_App_Distribution/Introduction/Introduction.html
 
-        MavenProject project = getProject();
-        String artifactId = project.getArtifactId();
+        VelocityContext xmlContext = new VelocityContext();
+        xmlContext.put( "serverBaseUrl", "http://app7.metova.com/" );
+        generate( "plist", xmlContext );
 
-        StringBuffer ipaManifestPath = new StringBuffer();
-        ipaManifestPath.append( TargetDirectoryService.getTempPackagePath() );
-        ipaManifestPath.append( ".ipa.xml" );
-        getLog().info( "Generating " + ipaManifestPath + "..." );
+        VelocityContext vmContext = new VelocityContext();
+        vmContext.put( "serverBaseUrl", "${server.base.url}" );
+        generate( "vm", vmContext );
+    }
+
+    private final void generate( String extension, VelocityContext velocityContext ) {
+
+        StringBuffer destPath = new StringBuffer();
+        destPath.append( TargetDirectoryService.getTempPackagePath() );
+        destPath.append( File.separator );
+        destPath.append( "manifest." );
+        destPath.append( extension );
+        File dest = new File( destPath.toString() );
+
+        if ( !dest.getParentFile().exists() ) {
+            dest.getParentFile().mkdirs();
+        }
+
+        getLog().info( "Generating " + destPath + "..." );
+
+        Plist plist = XCodeService.readInfoPlist();
+        String bundleIconFile = PlistService.getString( plist, "CFBundleIconFile" );
+        String bundleName = PlistService.getString( plist, "CFBundleName" );
+
+        velocityContext.put( "ipaUrl", getProject().getArtifactId() + ".ipa" );
+        velocityContext.put( "downloadIconUrl", bundleIconFile );
+        velocityContext.put( "itunesIconUrl", bundleIconFile );
+        velocityContext.put( "bundleIdentifier", XCodeService.getBundleIdentifier() );
+        velocityContext.put( "bundleVersion", XCodeService.getBundleVersion() );
+        velocityContext.put( "title", bundleName );
 
         Template template = TemplateService.getTemplate( "/xcode/ipaManifest.vm" );
 
-        String version = project.getVersion();
-
-        VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put( "groupId", project.getGroupId() );
-        velocityContext.put( "version", version );
-        velocityContext.put( "artifactId", artifactId );
-        velocityContext.put( "description", project.getDescription() );
-
-        File ipaManifestFile = new File( ipaManifestPath.toString() );
-
         try {
-            TemplateService.writeTemplate( template, velocityContext, ipaManifestFile );
+            TemplateService.writeTemplate( template, velocityContext, dest );
         }
         catch (IOException e) {
             throw new IllegalStateException( e.getMessage(), e );

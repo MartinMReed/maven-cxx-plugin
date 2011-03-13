@@ -19,15 +19,9 @@ package org.hardisonbrewing.maven.cxx.xcode;
 
 import generated.Plist;
 
-import java.io.File;
-
-import javax.xml.bind.JAXBException;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.hardisonbrewing.jaxb.JAXB;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.ProjectService;
 
 /**
  * @goal xcode-generate-resources
@@ -38,47 +32,13 @@ public class GenerateResourcesMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        StringBuffer plistPath = new StringBuffer();
-        plistPath.append( ProjectService.getBaseDirPath() );
-        plistPath.append( File.separator );
-        plistPath.append( XCodeService.getProject() );
-        plistPath.append( "-Info.plist" );
-        File plistFile = new File( plistPath.toString() );
+        Plist plist = XCodeService.readInfoPlist();
 
-        if ( !plistFile.exists() ) {
-            getLog().error( "Unable to locate project PLIST file: " + plistPath );
-            throw new IllegalStateException();
-        }
+        PlistService.setString( plist, "CFBundleName", getProject().getName() );
+        PlistService.setString( plist, "CFBundleVersion", XCodeService.getBundleVersion() );
+        PlistService.setString( plist, "CFBundleShortVersionString", getProject().getVersion() );
+        PlistService.setString( plist, "CFBundleIdentifier", XCodeService.getBundleIdentifier() );
 
-        Plist plist;
-        try {
-            plist = JAXB.unmarshal( plistFile, Plist.class );
-        }
-        catch (JAXBException e) {
-            getLog().error( "Unable to unmarshal PLIST file: " + plistPath );
-            throw new IllegalStateException( e );
-        }
-
-        String versionString = getProject().getVersion();
-
-        String version;
-        if ( !versionString.contains( "SNAPSHOT" ) ) {
-            version = versionString;
-        }
-        else {
-            version = ProjectService.generateSnapshotVersion();
-        }
-
-        PlistService.setString( plist, "CFBundleVersion", version );
-        PlistService.setString( plist, "CFBundleShortVersionString", versionString );
-        PlistService.setString( plist, "CFBundleIdentifier", getProject().getGroupId() );
-
-        try {
-            JAXB.marshal( plistFile, plist );
-        }
-        catch (JAXBException e) {
-            getLog().error( "Unable to marshal PLIST file: " + plistPath );
-            throw new IllegalStateException( e );
-        }
+        XCodeService.writeInfoPlist( plist );
     }
 }

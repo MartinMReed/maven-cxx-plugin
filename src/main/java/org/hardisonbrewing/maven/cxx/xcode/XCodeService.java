@@ -17,8 +17,14 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import generated.Plist;
+
 import java.io.File;
 
+import javax.xml.bind.JAXBException;
+
+import org.hardisonbrewing.jaxb.JAXB;
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
 
 public class XCodeService {
@@ -40,5 +46,65 @@ public class XCodeService {
             }
         }
         return project;
+    }
+
+    public static final String getBundleVersion() {
+
+        String versionString = ProjectService.getProject().getVersion();
+        if ( !versionString.contains( "SNAPSHOT" ) ) {
+            return versionString;
+        }
+        return ProjectService.generateSnapshotVersion();
+    }
+
+    public static final String getBundleIdentifier() {
+
+        return ProjectService.getProject().getGroupId();
+    }
+
+    public static final Plist readInfoPlist() {
+
+        File plistFile = getInfoPlist();
+
+        if ( !plistFile.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate project PLIST file: " + plistFile );
+            throw new IllegalStateException();
+        }
+
+        try {
+            return JAXB.unmarshal( plistFile, Plist.class );
+        }
+        catch (JAXBException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal PLIST file: " + plistFile );
+            throw new IllegalStateException( e );
+        }
+    }
+
+    public static final void writeInfoPlist( Plist plist ) {
+
+        File plistFile = getInfoPlist();
+
+        if ( !plistFile.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate project PLIST file: " + plistFile );
+            throw new IllegalStateException();
+        }
+
+        try {
+            JAXB.marshal( plistFile, plist );
+        }
+        catch (JAXBException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to marshal PLIST file: " + plistFile );
+            throw new IllegalStateException( e );
+        }
+    }
+
+    private static final File getInfoPlist() {
+
+        StringBuffer plistPath = new StringBuffer();
+        plistPath.append( ProjectService.getBaseDirPath() );
+        plistPath.append( File.separator );
+        plistPath.append( getProject() );
+        plistPath.append( "-Info.plist" );
+        return new File( plistPath.toString() );
     }
 }
