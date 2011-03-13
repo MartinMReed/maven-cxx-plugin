@@ -34,13 +34,18 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
  */
 public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String ipaServerBaseUrl;
+
     @Override
     public final void execute() {
 
         //http://developer.apple.com/library/ios/#featuredarticles/FA_Wireless_Enterprise_App_Distribution/Introduction/Introduction.html
 
         VelocityContext xmlContext = new VelocityContext();
-        xmlContext.put( "serverBaseUrl", "http://app7.metova.com/" );
+        xmlContext.put( "serverBaseUrl", ipaServerBaseUrl );
         generate( "plist", xmlContext );
 
         VelocityContext vmContext = new VelocityContext();
