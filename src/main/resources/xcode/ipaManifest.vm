@@ -24,39 +24,44 @@
 						</array> -->
 						<!-- required.  the URL of the file to download. -->
 						<key>url</key>
-						<string>http://www.example.com/apps/foo.ipa</string>
+						<!-- <string>http://www.example.com/apps/foo.ipa</string> -->
+						<string>${serverBaseUrl}${ipaUrl}</string>
 					</dict>
 					<!-- display-image: the icon to display during download. -->
 					<dict>
 						<key>kind</key>
 						<string>display-image</string>
-						<!-- optional.  indicates if icon needs shine effect applied. -->
+						<!-- optional.  indicates if icon needs shine effect applied.
 						<key>needs-shine</key>
-						<true />
+						<true /> -->
 						<key>url</key>
-						<string>http://www.example.com/image.57x57.png</string>
+						<!-- <string>http://www.example.com/image.57x57.png</string> -->
+						<string>${serverBaseUrl}${downloadIconUrl}</string>
 					</dict>
 					<!-- full-size-image: the large 512x512 icon used by iTunes. -->
 					<dict>
 						<key>kind</key>
 						<string>full-size-image</string>
-						<!-- optional.  one md5 hash for the entire file. -->
+						<!-- optional.  one md5 hash for the entire file.
 						<key>md5</key>
 						<string>61fa64bb7a7cae5a46bfb45821ac8bba</string>
 						<key>needs-shine</key>
-						<true />
+						<true /> -->
 						<key>url</key>
-						<string>http://www.example.com/image.512x512.jpg</string>
+						<!-- <string>http://www.example.com/image.512x512.jpg</string> -->
+						<string>${serverBaseUrl}${itunesIconUrl}</string>
 					</dict>
 				</array>
 				<key>metadata</key>
 				<dict>
 					<!-- required -->
 					<key>bundle-identifier</key>
-					<string>com.example.fooapp</string>
+					<!-- <string>com.example.fooapp</string> -->
+					<string>${bundleIdentifier}</string>
 					<!-- optional (software only) -->
 					<key>bundle-version</key>
-					<string>1.0</string>
+					<!-- <string>1.0</string> -->
+					<string>${bundleVersion}</string>
 					<!-- required. the download kind. -->
 					<key>kind</key>
 					<string>software</string>
@@ -65,7 +70,8 @@
 					<string>Apple</string> -->
 					<!-- required.  the title to display during the download. -->
 					<key>title</key>
-					<string>Example Corporate App</string>
+					<!-- <string>Example Corporate App</string> -->
+					<string>${title}</string>
 				</dict>
 			</dict>
 		</array>

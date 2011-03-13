@@ -21,6 +21,7 @@ import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.ArchiveService;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
@@ -55,8 +56,73 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         String directoryRoot = directory.getAbsolutePath();
 
         for (File file : FileUtils.listFilesRecursive( directory )) {
-            String filename = file.getAbsolutePath().substring( directoryRoot.length() );
+            String filename = getFilename( directoryRoot, file );
             org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( file, filename );
         }
+
+        try {
+            copyIpaFile( directoryRoot );
+        }
+        catch (Exception e) {
+            getLog().error( "Unable to create IPA file", e );
+            throw new IllegalStateException( e );
+        }
+    }
+
+    private String getFilename( String directoryRoot, File file ) {
+
+        return file.getAbsolutePath().substring( directoryRoot.length() );
+    }
+
+    private void copyIpaFile( String directoryRoot ) throws Exception {
+
+        StringBuffer appFilePath = new StringBuffer();
+        appFilePath.append( directoryRoot );
+        appFilePath.append( File.separator );
+        appFilePath.append( getProject().getArtifactId() );
+        appFilePath.append( ".app" );
+        File appFile = new File( appFilePath.toString() );
+
+        StringBuffer payloadTempDirPath = new StringBuffer();
+        payloadTempDirPath.append( TargetDirectoryService.getTargetDirectoryPath() );
+        payloadTempDirPath.append( File.separator );
+        payloadTempDirPath.append( "ipa_payload" );
+        File payloadTempDir = new File( payloadTempDirPath.toString() );
+
+        StringBuffer payloadDirPath = new StringBuffer();
+        payloadDirPath.append( payloadTempDirPath );
+        payloadDirPath.append( File.separator );
+        payloadDirPath.append( "Payload" );
+        payloadDirPath.append( File.separator );
+        payloadDirPath.append( appFile.getName() );
+        File payloadDir = new File( payloadDirPath.toString() );
+
+        if ( !payloadDir.exists() ) {
+            payloadDir.mkdirs();
+        }
+
+        FileUtils.copyDirectory( appFile, payloadDir );
+
+        StringBuffer destFilePath = new StringBuffer();
+        destFilePath.append( payloadTempDirPath );
+        destFilePath.append( File.separator );
+        destFilePath.append( getProject().getArtifactId() );
+
+        StringBuffer zipFilePath = new StringBuffer();
+        zipFilePath.append( destFilePath );
+        zipFilePath.append( ".zip" );
+        File zipFile = new File( zipFilePath.toString() );
+
+        ArchiveService.archive( payloadTempDir, zipFile );
+
+        StringBuffer ipaFilePath = new StringBuffer();
+        ipaFilePath.append( destFilePath );
+        ipaFilePath.append( ".ipa" );
+        File ipaFile = new File( ipaFilePath.toString() );
+
+        FileUtils.rename( zipFile, ipaFile );
+
+        String ipaFilename = getFilename( payloadTempDirPath.toString(), ipaFile );
+        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( ipaFile, ipaFilename );
     }
 }
