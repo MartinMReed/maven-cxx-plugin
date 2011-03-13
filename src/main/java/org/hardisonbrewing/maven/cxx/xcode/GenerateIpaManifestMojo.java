@@ -49,7 +49,7 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         generate( "plist", xmlContext );
 
         VelocityContext vmContext = new VelocityContext();
-        vmContext.put( "serverBaseUrl", "${server.base.url}" );
+        vmContext.put( "serverBaseUrl", "${serverBaseUrl}" );
         generate( "vm", vmContext );
     }
 
