@@ -25,19 +25,25 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
 
     public static final String SOURCES_DIRECTORY = "generated-sources";
     public static final String RESOURCES_DIRECTORY = "generated-resources";
+    public static final String PROCESSED_SOURCES_DIRECTORY = "processed-sources";
 
     protected TargetDirectoryService() {
 
         // do nothing
     }
 
-    public static String getGeneratedSourcesDirectoryPath() {
+    private static String getTargetDirectoryPath( String type ) {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
+        stringBuffer.append( getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( SOURCES_DIRECTORY );
+        stringBuffer.append( type );
         return stringBuffer.toString();
+    }
+
+    public static String getGeneratedSourcesDirectoryPath() {
+
+        return getTargetDirectoryPath( SOURCES_DIRECTORY );
     }
 
     public static File getGeneratedSourcesDirectory() {
@@ -47,16 +53,22 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
 
     public static String getGeneratedResourcesDirectoryPath() {
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( RESOURCES_DIRECTORY );
-        return stringBuffer.toString();
+        return getTargetDirectoryPath( RESOURCES_DIRECTORY );
     }
 
     public static File getGeneratedResourcesDirectory() {
 
         return new File( getGeneratedResourcesDirectoryPath() );
+    }
+
+    public static String getProcessedSourcesDirectoryPath() {
+
+        return getTargetDirectoryPath( PROCESSED_SOURCES_DIRECTORY );
+    }
+
+    public static File getProcessedSourcesDirectory() {
+
+        return new File( getProcessedSourcesDirectoryPath() );
     }
 
     public static final String[] getSourceFilePaths() {
@@ -77,5 +89,33 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
     public static final File[] getResourceFiles() {
 
         return FileUtils.listFilesRecursive( getGeneratedResourcesDirectory() );
+    }
+
+    public static final String[] getProcessableSourceFilePaths() {
+
+        String processedSourcesDirectoryPath = getProcessedSourcesDirectoryPath();
+        String generatedSourcesDirectoryPath = getGeneratedSourcesDirectoryPath();
+
+        String[] sourceFilePaths = getSourceFilePaths();
+
+        for (int i = 0; i < sourceFilePaths.length; i++) {
+            StringBuffer sourceFilePath = new StringBuffer();
+            sourceFilePath.append( processedSourcesDirectoryPath );
+            sourceFilePath.append( File.separator );
+            sourceFilePath.append( FileUtils.getCanonicalPath( sourceFilePaths[i], generatedSourcesDirectoryPath ) );
+            sourceFilePaths[i] = sourceFilePath.toString();
+        }
+
+        return sourceFilePaths;
+    }
+
+    public static final String[] getProcessedSourceFilePaths() {
+
+        return FileUtils.listFilePathsRecursive( getProcessedSourcesDirectory() );
+    }
+
+    public static final File[] getProcessedSourceFiles() {
+
+        return FileUtils.listFilesRecursive( getProcessedSourcesDirectory() );
     }
 }

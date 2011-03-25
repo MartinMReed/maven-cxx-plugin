@@ -27,8 +27,8 @@ import org.apache.maven.project.MavenProject;
 import org.hardisonbrewing.maven.core.DependencyService;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.Sources;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal o-link
@@ -60,13 +60,13 @@ public final class LinkMojo extends JoJoMojoImpl {
         cmd.add( "-o" );
         cmd.add( getProject().getArtifactId() + ".o" );
 
-        String[] sources = TargetDirectoryService.getSourceFilePaths();
+        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
         for (int i = 0; i < sources.length; i++) {
             cmd.add( Sources.replaceExtension( sources[i], "o" ) );
         }
 
         try {
-            buildArguments( cmd, getProject(), TargetDirectoryService.getTargetDirectory() );
+            buildArguments( cmd, getProject(), TargetDirectoryService.getProcessedSourcesDirectory() );
         }
         catch (Exception e) {
             throw new IllegalStateException( e.getMessage(), e );

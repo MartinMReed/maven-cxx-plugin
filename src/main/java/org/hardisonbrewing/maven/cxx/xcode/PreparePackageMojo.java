@@ -17,6 +17,8 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import generated.Plist;
+
 import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -40,22 +42,47 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        filePath.append( File.separator );
+        copyConfigBuildFiles();
+        copyIconFile();
+    }
+
+    private void copyIconFile() {
+
+        Plist plist = XCodeService.readInfoPlist();
+        String iconFilename = PlistService.getString( plist, "CFBundleIconFile" );
+
+        if ( iconFilename == null ) {
+            return;
+        }
+
+        String directoryRoot = TargetDirectoryService.getTargetDirectoryPath();
+
+        StringBuffer iconFilePath = new StringBuffer();
+        iconFilePath.append( directoryRoot );
+        iconFilePath.append( File.separator );
+        iconFilePath.append( iconFilename );
+        File iconFile = new File( iconFilePath.toString() );
+        getFilename( directoryRoot, iconFile );
+    }
+
+    private void copyConfigBuildFiles() {
+
+        StringBuffer configBuildDirPath = new StringBuffer();
+        configBuildDirPath.append( TargetDirectoryService.getTargetDirectoryPath() );
+        configBuildDirPath.append( File.separator );
         if ( configuration == null ) {
-            filePath.append( XCodeService.DEFAULT_CONFIGURATION );
+            configBuildDirPath.append( XCodeService.DEFAULT_CONFIGURATION );
         }
         else {
-            filePath.append( configuration );
+            configBuildDirPath.append( configuration );
         }
-        File directory = new File( filePath.toString() );
+        File configBuildDir = new File( configBuildDirPath.toString() );
 
-        getLog().info( "Copying files from: " + directory );
+        getLog().info( "Copying files from: " + configBuildDir );
 
-        String directoryRoot = directory.getAbsolutePath();
+        String directoryRoot = configBuildDir.getAbsolutePath();
 
-        for (File file : FileUtils.listFilesRecursive( directory )) {
+        for (File file : FileUtils.listFilesRecursive( configBuildDir )) {
             String filename = getFilename( directoryRoot, file );
             org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( file, filename );
         }

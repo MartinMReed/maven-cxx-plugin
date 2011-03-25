@@ -65,7 +65,7 @@ public class TargetList {
             throw new FileNotFoundException( "The file `" + f.getName() + "` is not a normal file" );
         if ( !f.canRead() )
             throw new FileNotFoundException( "The file `" + f.getName() + "` cannot be opend for reading" );
-        InputStream is = getClass().getResourceAsStream( "/config/isptargets.config" );
+        InputStream is = getClass().getResourceAsStream( "/arduino/isptargets.config" );
         if ( is == null )
             throw new FileNotFoundException( "The internal config file `isptargets.config`" + " was not found" );
         loadTargets( f, is );
