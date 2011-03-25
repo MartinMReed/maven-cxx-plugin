@@ -44,9 +44,11 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
         //http://developer.apple.com/library/ios/#featuredarticles/FA_Wireless_Enterprise_App_Distribution/Introduction/Introduction.html
 
-        VelocityContext xmlContext = new VelocityContext();
-        xmlContext.put( "serverBaseUrl", ipaServerBaseUrl == null ? "" : ipaServerBaseUrl );
-        generate( "plist", xmlContext );
+        if ( ipaServerBaseUrl != null ) {
+            VelocityContext xmlContext = new VelocityContext();
+            xmlContext.put( "serverBaseUrl", ipaServerBaseUrl );
+            generate( "plist", xmlContext );
+        }
 
         VelocityContext vmContext = new VelocityContext();
         vmContext.put( "serverBaseUrl", "${serverBaseUrl}" );

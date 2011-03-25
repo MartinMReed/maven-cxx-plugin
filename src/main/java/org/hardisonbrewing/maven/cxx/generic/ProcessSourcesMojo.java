@@ -15,41 +15,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.a;
+package org.hardisonbrewing.maven.cxx.generic;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.io.File;
 
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.Sources;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
- * @goal a-archive
- * @phase compile
+ * @goal process-sources
+ * @phase process-sources
  */
-public final class ArchiveMojo extends JoJoMojoImpl {
+public final class ProcessSourcesMojo extends JoJoMojoImpl {
 
     @Override
-    public void execute() {
+    public final void execute() {
 
-        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
-
-        if ( sources == null ) {
-            getLog().info( "No source files. Skipping..." );
-            return;
+        File generatedSourcesDirectory = TargetDirectoryService.getGeneratedSourcesDirectory();
+        File processedSourcesDirectory = TargetDirectoryService.getProcessedSourcesDirectory();
+        try {
+            FileUtils.copyDirectoryStructure( generatedSourcesDirectory, processedSourcesDirectory );
         }
-
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "ar" );
-        cmd.add( "-rs" );
-
-        cmd.add( getProject().getArtifactId() + ".a" );
-
-        for (int i = 0; i < sources.length; i++) {
-            cmd.add( Sources.replaceExtension( sources[i], "o" ) );
+        catch (Exception e) {
+            getLog().error( "Unable to copy files from " + generatedSourcesDirectory + " to " + processedSourcesDirectory );
+            throw new IllegalStateException();
         }
-
-        execute( cmd );
     }
 }

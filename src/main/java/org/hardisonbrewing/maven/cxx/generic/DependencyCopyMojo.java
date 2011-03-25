@@ -31,7 +31,7 @@ public final class DependencyCopyMojo extends JoJoMojoImpl {
     public final void execute() {
 
         try {
-            DependencyService.extractDependencies( TargetDirectoryService.getTargetDirectory() );
+            DependencyService.extractDependencies( TargetDirectoryService.getProcessedSourcesDirectory() );
         }
         catch (Exception e) {
             throw new IllegalStateException( e.getMessage(), e );

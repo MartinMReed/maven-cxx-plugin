@@ -21,8 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.Sources;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal o-assemble
@@ -38,7 +38,7 @@ public class AssembleMojo extends JoJoMojoImpl {
     @Override
     public void execute() {
 
-        String[] sources = TargetDirectoryService.getSourceFilePaths();
+        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
 
         if ( sources == null ) {
             return;
