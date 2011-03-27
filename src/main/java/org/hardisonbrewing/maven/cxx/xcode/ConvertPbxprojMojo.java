@@ -53,7 +53,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         Plist plist = PlistService.readPlist( plistFile );
         indexProperties( plist );
 
-        Properties properties = buildProperties( plist );
+        Properties properties = buildProperties();
 
         for (Object key : properties.keySet()) {
             getLog().info( key + ": " + properties.getProperty( (String) key ) );
@@ -72,7 +72,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         return new File( stringBuffer.toString() );
     }
 
-    private Properties buildProperties( Plist plist ) {
+    private Properties buildProperties() {
 
         Properties properties = new Properties();
 
