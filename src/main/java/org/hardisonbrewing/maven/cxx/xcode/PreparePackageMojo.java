@@ -35,11 +35,6 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
  */
 public final class PreparePackageMojo extends JoJoMojoImpl {
 
-    /**
-     * @parameter
-     */
-    public String configuration;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -50,9 +45,9 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     private void copyIconFile() {
 
         Plist plist = XCodeService.readInfoPlist();
-        String iconFilename = PlistService.getString( plist, "CFBundleIconFile" );
+        String iconFilename = InfoPlistService.getString( plist, "CFBundleIconFile" );
 
-        if ( iconFilename == null ) {
+        if ( iconFilename == null || iconFilename.length() == 0 ) {
             return;
         }
 
@@ -73,12 +68,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         StringBuffer configBuildDirPath = new StringBuffer();
         configBuildDirPath.append( TargetDirectoryService.getTargetDirectoryPath() );
         configBuildDirPath.append( File.separator );
-        if ( configuration == null ) {
-            configBuildDirPath.append( XCodeService.DEFAULT_CONFIGURATION );
-        }
-        else {
-            configBuildDirPath.append( configuration );
-        }
+        configBuildDirPath.append( XCodeService.getConfiguration() );
         File configBuildDir = new File( configBuildDirPath.toString() );
 
         getLog().info( "Copying files from: " + configBuildDir );

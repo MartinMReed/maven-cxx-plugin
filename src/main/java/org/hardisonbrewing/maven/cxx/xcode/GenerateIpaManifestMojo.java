@@ -71,8 +71,8 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         getLog().info( "Generating " + destPath + "..." );
 
         Plist plist = XCodeService.readInfoPlist();
-        String bundleIconFile = PlistService.getString( plist, "CFBundleIconFile" );
-        String bundleName = PlistService.getString( plist, "CFBundleName" );
+        String bundleIconFile = InfoPlistService.getString( plist, "CFBundleIconFile" );
+        String bundleName = InfoPlistService.getString( plist, "CFBundleName" );
 
         velocityContext.put( "ipaUrl", getProject().getArtifactId() + ".ipa" );
         velocityContext.put( "downloadIconUrl", bundleIconFile );

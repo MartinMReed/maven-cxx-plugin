@@ -21,39 +21,114 @@ import generated.Array;
 import generated.Dict;
 import generated.Plist;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.JAXBException;
+
+import org.hardisonbrewing.jaxb.JAXB;
+import org.hardisonbrewing.maven.core.JoJoMojo;
 
 public class PlistService {
 
-    public static final String getString( Plist plist, String key ) {
+    public static final Plist readPlist( File file ) {
 
-        generated.String value = (generated.String) getValue( plist, key );
+        if ( !file.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate PLIST file: " + file );
+            throw new IllegalStateException();
+        }
+
+        try {
+            return JAXB.unmarshal( file, Plist.class );
+        }
+        catch (JAXBException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal PLIST file: " + file );
+            throw new IllegalStateException( e );
+        }
+    }
+
+    public static final void writePlist( Plist plist, File file ) {
+
+        try {
+            JAXB.marshal( file, plist );
+        }
+        catch (JAXBException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to marshal PLIST file: " + file );
+            throw new IllegalStateException( e );
+        }
+    }
+
+    public static final List<String> getStringArray( Dict dict, String key ) {
+
+        List<Object> value = getArray( dict, key );
+        if ( value == null ) {
+            return null;
+        }
+        List<String> array = new ArrayList<String>();
+        for (Object object : value) {
+            generated.String string = (generated.String) object;
+            array.add( string.getvalue() );
+        }
+        return array;
+    }
+
+    public static final List<Object> getArray( Dict dict, String key ) {
+
+        generated.Array value = (generated.Array) getValue( dict, key );
+        if ( value == null ) {
+            return null;
+        }
+        return value.getArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
+    }
+
+    public static final String getString( Dict dict, String key ) {
+
+        generated.String value = (generated.String) getValue( dict, key );
+        if ( value == null ) {
+            return null;
+        }
         return value.getvalue();
     }
 
-    public static final Object getValue( Plist plist, String key ) {
+    public static final Dict getDict( Dict dict, String key ) {
 
-        if ( key == null ) {
-            return null;
+        return (Dict) getValue( dict, key );
+    }
+
+    public static final Object getValue( Dict dict, String key ) {
+
+        List<Object> values = dict.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
+        for (int i = 0; i < values.size() - 1; i += 2) {
+            generated.Key _key = (generated.Key) values.get( i );
+            if ( key.equals( _key.getvalue() ) ) {
+                return values.get( i + 1 );
+            }
         }
+        return null;
+    }
+
+    public static final List<String> getKeys( Dict dict ) {
+
+        List<String> keys = new ArrayList<String>();
+        List<Object> values = dict.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
+        for (int i = 0; i < values.size() - 1; i += 2) {
+            generated.Key _key = (generated.Key) values.get( i );
+            keys.add( _key.getvalue() );
+        }
+        return keys;
+    }
+
+    public static final Object getRoot( Plist plist ) {
+
         List<Object> values = plist.getArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
         if ( values.isEmpty() ) {
             return null;
         }
         if ( values.size() == 1 ) {
-            Dict dict = (Dict) values.get( 0 );
-            values = dict.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
+            return values.get( 0 );
         }
-        for (int i = 0; i < values.size() - 1; i++) {
-            Object value = values.get( i );
-            if ( value instanceof generated.Key ) {
-                String _key = ( (generated.Key) value ).getvalue();
-                if ( key.equals( _key ) ) {
-                    return values.get( i + 1 );
-                }
-            }
-        }
-        return null;
+        return values;
     }
 
     public static final void add( Array array, Object value ) {
@@ -77,38 +152,5 @@ public class PlistService {
 
         List<Object> values = plist.getArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
         values.add( value );
-    }
-
-    public static final boolean setString( Plist plist, String key, String value ) {
-
-        generated.String _value = new generated.String();
-        _value.setvalue( value );
-        return setValue( plist, key, _value );
-    }
-
-    public static final boolean setValue( Plist plist, String key, Object value ) {
-
-        if ( key == null ) {
-            return false;
-        }
-        List<Object> values = plist.getArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
-        if ( values.isEmpty() ) {
-            return false;
-        }
-        if ( values.size() == 1 ) {
-            Dict dict = (Dict) values.get( 0 );
-            values = dict.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
-        }
-        for (int i = 0; i < values.size() - 1; i++) {
-            Object _value = values.get( i );
-            if ( _value instanceof generated.Key ) {
-                String _key = ( (generated.Key) _value ).getvalue();
-                if ( key.equals( _key ) ) {
-                    values.set( i + 1, value );
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

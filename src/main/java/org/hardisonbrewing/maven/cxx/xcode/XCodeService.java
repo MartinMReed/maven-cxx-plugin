@@ -21,18 +21,15 @@ import generated.Plist;
 
 import java.io.File;
 
-import javax.xml.bind.JAXBException;
-
-import org.hardisonbrewing.jaxb.JAXB;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
 
 public class XCodeService {
 
-    public static final String DEFAULT_CONFIGURATION = "default-configuration";
-    public static final String XCODEPROJ_EXTENSION = ".xcodeproj";
+    public static final String XCODEPROJ_EXTENSION = "xcodeproj";
 
     private static String project;
+    public static String target;
+    private static String configuration;
 
     public static final String getProject() {
 
@@ -40,12 +37,25 @@ public class XCodeService {
             File file = ProjectService.getBaseDir();
             for (String filePath : file.list()) {
                 if ( filePath.endsWith( XCODEPROJ_EXTENSION ) ) {
-                    project = filePath.substring( 0, filePath.lastIndexOf( XCODEPROJ_EXTENSION ) );
+                    project = filePath.substring( 0, filePath.lastIndexOf( XCODEPROJ_EXTENSION ) - 1 );
                     break;
                 }
             }
         }
         return project;
+    }
+
+    public static final String getPbxprojPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( ProjectService.getBaseDirPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( getProject() );
+        stringBuffer.append( "." );
+        stringBuffer.append( XCODEPROJ_EXTENSION );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "project.pbxproj" );
+        return stringBuffer.toString();
     }
 
     public static final String getBundleVersion() {
@@ -59,52 +69,44 @@ public class XCodeService {
 
     public static final String getBundleIdentifier() {
 
-        return ProjectService.getProject().getGroupId();
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( ProjectService.getProject().getGroupId() );
+        stringBuffer.append( "." );
+        stringBuffer.append( ProjectService.getProject().getArtifactId() );
+        return stringBuffer.toString();
     }
 
     public static final Plist readInfoPlist() {
 
-        File plistFile = getInfoPlist();
-
-        if ( !plistFile.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate project PLIST file: " + plistFile );
-            throw new IllegalStateException();
-        }
-
-        try {
-            return JAXB.unmarshal( plistFile, Plist.class );
-        }
-        catch (JAXBException e) {
-            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal PLIST file: " + plistFile );
-            throw new IllegalStateException( e );
-        }
+        return PlistService.readPlist( getInfoPlist() );
     }
 
     public static final void writeInfoPlist( Plist plist ) {
 
-        File plistFile = getInfoPlist();
-
-        if ( !plistFile.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate project PLIST file: " + plistFile );
-            throw new IllegalStateException();
-        }
-
-        try {
-            JAXB.marshal( plistFile, plist );
-        }
-        catch (JAXBException e) {
-            JoJoMojo.getMojo().getLog().error( "Unable to marshal PLIST file: " + plistFile );
-            throw new IllegalStateException( e );
-        }
+        PlistService.writePlist( plist, getInfoPlist() );
     }
 
     private static final File getInfoPlist() {
 
+        String infoPlistFile = PropertiesService.getXCodeProperty( getConfiguration(), "infoPlistFile" );
+
         StringBuffer plistPath = new StringBuffer();
         plistPath.append( ProjectService.getBaseDirPath() );
         plistPath.append( File.separator );
-        plistPath.append( getProject() );
-        plistPath.append( "-Info.plist" );
+        plistPath.append( infoPlistFile );
         return new File( plistPath.toString() );
+    }
+
+    public static final String getConfiguration() {
+
+        if ( configuration == null ) {
+            configuration = PropertiesService.getXCodeProperty( target, "defaultConfigurationName" );
+        }
+        return configuration;
+    }
+
+    public static final void setConfiguration( String configuration ) {
+
+        XCodeService.configuration = configuration;
     }
 }

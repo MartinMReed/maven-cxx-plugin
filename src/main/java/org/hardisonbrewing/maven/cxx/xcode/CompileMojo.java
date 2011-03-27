@@ -43,16 +43,6 @@ public final class CompileMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public String configuration;
-
-    /**
-     * @parameter
-     */
-    public String target;
-
-    /**
-     * @parameter
-     */
     public boolean activeTarget;
 
     /**
@@ -80,8 +70,6 @@ public final class CompileMojo extends JoJoMojoImpl {
             cmd.add( "OTHER_CODE_SIGN_FLAGS=--keychain " + keychain );
         }
 
-        //        cmd.add( "CODE_SIGN_IDENTITY=iPhone Developer: Macy Build (L5NLHD57L6)" );
-
         StringBuffer objroot = new StringBuffer();
         objroot.append( "OBJROOT=$(PROJECT_DIR)" );
         objroot.append( targetCanonical );
@@ -92,17 +80,12 @@ public final class CompileMojo extends JoJoMojoImpl {
         StringBuffer configurationBuildDir = new StringBuffer();
         configurationBuildDir.append( "CONFIGURATION_BUILD_DIR=$(BUILD_DIR)" );
         configurationBuildDir.append( File.separator );
-        if ( configuration == null ) {
-            configurationBuildDir.append( XCodeService.DEFAULT_CONFIGURATION );
-        }
-        else {
-            configurationBuildDir.append( configuration );
-        }
+        configurationBuildDir.append( XCodeService.getConfiguration() );
         cmd.add( configurationBuildDir.toString() );
 
-        if ( target != null ) {
+        if ( XCodeService.target != null ) {
             cmd.add( "-target" );
-            cmd.add( target );
+            cmd.add( XCodeService.target );
         }
         else if ( activeTarget ) {
             cmd.add( "-activetarget" );
