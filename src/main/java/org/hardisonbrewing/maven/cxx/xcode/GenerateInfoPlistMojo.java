@@ -24,21 +24,19 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
- * @goal xcode-generate-resources
- * @phase xcode-generate-resources
+ * @goal xcode-generate-info-plist
+ * @phase xcode-generate-info-plist
  */
-public class GenerateResourcesMojo extends JoJoMojoImpl {
+public class GenerateInfoPlistMojo extends JoJoMojoImpl {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         Plist plist = XCodeService.readInfoPlist();
-
-        PlistService.setString( plist, "CFBundleName", getProject().getName() );
-        PlistService.setString( plist, "CFBundleVersion", XCodeService.getBundleVersion() );
-        PlistService.setString( plist, "CFBundleShortVersionString", getProject().getVersion() );
-        PlistService.setString( plist, "CFBundleIdentifier", XCodeService.getBundleIdentifier() );
-
+        InfoPlistService.setString( plist, "CFBundleName", getProject().getName() );
+        InfoPlistService.setString( plist, "CFBundleVersion", XCodeService.getBundleVersion() );
+        InfoPlistService.setString( plist, "CFBundleShortVersionString", getProject().getVersion() );
+        InfoPlistService.setString( plist, "CFBundleIdentifier", XCodeService.getBundleIdentifier() );
         XCodeService.writeInfoPlist( plist );
     }
 }

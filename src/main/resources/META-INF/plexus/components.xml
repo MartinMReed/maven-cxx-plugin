@@ -317,8 +317,10 @@
 						<phases>
 							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-validate</validate>
+							<initialize>org.hardisonbrewing:maven-cxx-plugin:xcode-initialize,
+								org.hardisonbrewing:maven-cxx-plugin:xcode-convert-pbxproj</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:xcode-generate-resources,
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:xcode-generate-info-plist,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-ipa-manifest,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-install-provisioning-profile</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:xcode-compile</compile>
