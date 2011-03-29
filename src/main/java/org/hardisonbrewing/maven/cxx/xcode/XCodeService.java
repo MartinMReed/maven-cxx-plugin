@@ -31,6 +31,18 @@ public class XCodeService {
     public static String target;
     private static String configuration;
 
+    public static boolean isApplicationType() {
+
+        String targets = PropertiesService.getXCodeProperty( "targets" );
+        for (String target : targets.split( "," )) {
+            String productType = PropertiesService.getXCodeProperty( target, "productType" );
+            if ( "com.apple.product-type.application".equals( productType ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static final String getProject() {
 
         if ( project == null ) {
@@ -78,7 +90,11 @@ public class XCodeService {
 
     public static final Plist readInfoPlist() {
 
-        return PlistService.readPlist( getInfoPlist() );
+        File file = getInfoPlist();
+        if ( file.exists() ) {
+            return PlistService.readPlist( file );
+        }
+        return null;
     }
 
     public static final void writeInfoPlist( Plist plist ) {

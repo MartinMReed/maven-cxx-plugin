@@ -39,14 +39,25 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         copyConfigBuildFiles();
-        copyIconFile();
+
+        if ( XCodeService.isApplicationType() ) {
+
+            try {
+                copyIpaFile();
+            }
+            catch (Exception e) {
+                getLog().error( "Unable to create IPA file", e );
+                throw new IllegalStateException( e );
+            }
+
+            copyIconFile();
+        }
     }
 
     private void copyIconFile() {
 
         Plist plist = XCodeService.readInfoPlist();
         String iconFilename = InfoPlistService.getString( plist, "CFBundleIconFile" );
-
         if ( iconFilename == null || iconFilename.length() == 0 ) {
             return;
         }
@@ -63,29 +74,25 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( iconFile, filename );
     }
 
+    private String getConfigBuildDirPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( XCodeService.getConfiguration() );
+        return stringBuffer.toString();
+    }
+
     private void copyConfigBuildFiles() {
 
-        StringBuffer configBuildDirPath = new StringBuffer();
-        configBuildDirPath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        configBuildDirPath.append( File.separator );
-        configBuildDirPath.append( XCodeService.getConfiguration() );
-        File configBuildDir = new File( configBuildDirPath.toString() );
+        String directoryRoot = getConfigBuildDirPath();
+        File configBuildDir = new File( directoryRoot );
 
         getLog().info( "Copying files from: " + configBuildDir );
-
-        String directoryRoot = configBuildDir.getAbsolutePath();
 
         for (File file : FileUtils.listFilesRecursive( configBuildDir )) {
             String filename = getFilename( directoryRoot, file );
             org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( file, filename );
-        }
-
-        try {
-            copyIpaFile( directoryRoot );
-        }
-        catch (Exception e) {
-            getLog().error( "Unable to create IPA file", e );
-            throw new IllegalStateException( e );
         }
     }
 
@@ -94,7 +101,9 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         return file.getAbsolutePath().substring( directoryRoot.length() );
     }
 
-    private void copyIpaFile( String directoryRoot ) throws Exception {
+    private void copyIpaFile() throws Exception {
+
+        String directoryRoot = getConfigBuildDirPath();
 
         StringBuffer appFilePath = new StringBuffer();
         appFilePath.append( directoryRoot );

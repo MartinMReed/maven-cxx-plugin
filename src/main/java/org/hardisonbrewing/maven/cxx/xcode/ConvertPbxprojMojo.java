@@ -97,30 +97,79 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         }
 
         for (Dict dict : isaIndex.get( "PBXProject" )) {
-
-            String buildConfigurationListId = PlistService.getString( dict, "buildConfigurationList" );
-
-            Dict buildConfigurationList = keyIndex.get( buildConfigurationListId );
-            String defaultConfigurationName = PlistService.getString( buildConfigurationList, "defaultConfigurationName" );
-            properties.put( "defaultConfigurationName", defaultConfigurationName );
+            putDefaultCongurationName( dict, properties );
+            putTargets( dict, properties );
         }
 
         for (Dict dict : isaIndex.get( "PBXNativeTarget" )) {
-
-            String buildConfigurationListId = PlistService.getString( dict, "buildConfigurationList" );
-
-            // PBXNativeTarget
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( PlistService.getString( dict, "name" ) );
-            stringBuffer.append( ".defaultConfigurationName" );
-            String defaultConfigurationNameKey = stringBuffer.toString();
-
-            Dict buildConfigurationList = keyIndex.get( buildConfigurationListId );
-            String defaultConfigurationName = PlistService.getString( buildConfigurationList, "defaultConfigurationName" );
-            properties.put( defaultConfigurationNameKey, defaultConfigurationName );
+            putTargetDefaultCongurationName( dict, properties );
+            putTargetProductType( dict, properties );
+            putTargetProductReference( dict, properties );
         }
 
         return properties;
+    }
+
+    private void putTargets( Dict dict, Properties properties ) {
+
+        List<String> targets = PlistService.getStringArray( dict, "targets" );
+        String _targets = "";
+
+        for (String target : targets) {
+            Dict productReference = keyIndex.get( target );
+            if ( !_targets.isEmpty() ) {
+                _targets += ",";
+            }
+            _targets += PlistService.getString( productReference, "name" );
+        }
+
+        properties.put( "targets", _targets );
+    }
+
+    private void putDefaultCongurationName( Dict dict, Properties properties ) {
+
+        String buildConfigurationListId = PlistService.getString( dict, "buildConfigurationList" );
+        Dict buildConfigurationList = keyIndex.get( buildConfigurationListId );
+        String defaultConfigurationName = PlistService.getString( buildConfigurationList, "defaultConfigurationName" );
+        properties.put( "defaultConfigurationName", defaultConfigurationName );
+    }
+
+    private void putTargetProductType( Dict dict, Properties properties ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( PlistService.getString( dict, "name" ) );
+        stringBuffer.append( ".productType" );
+        String propertyKey = stringBuffer.toString();
+
+        String productType = PlistService.getString( dict, "productType" );
+        properties.put( propertyKey, productType );
+    }
+
+    private void putTargetProductReference( Dict dict, Properties properties ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( PlistService.getString( dict, "name" ) );
+        stringBuffer.append( ".productReference" );
+        String propertyKey = stringBuffer.toString();
+
+        String productReferenceId = PlistService.getString( dict, "productReference" );
+        Dict productReference = keyIndex.get( productReferenceId );
+        String productReferencePath = PlistService.getString( productReference, "path" );
+        properties.put( propertyKey, productReferencePath );
+    }
+
+    private void putTargetDefaultCongurationName( Dict dict, Properties properties ) {
+
+        // defaultConfigurationName key
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( PlistService.getString( dict, "name" ) );
+        stringBuffer.append( ".defaultConfigurationName" );
+        String propertyKey = stringBuffer.toString();
+
+        String buildConfigurationListId = PlistService.getString( dict, "buildConfigurationList" );
+        Dict buildConfigurationList = keyIndex.get( buildConfigurationListId );
+        String defaultConfigurationName = PlistService.getString( buildConfigurationList, "defaultConfigurationName" );
+        properties.put( propertyKey, defaultConfigurationName );
     }
 
     private void indexProperties( Plist plist ) {
