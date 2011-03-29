@@ -42,6 +42,11 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
     @Override
     public final void execute() {
 
+        if ( !XCodeService.isApplicationType() ) {
+            getLog().info( "No targets found of type 'com.apple.product-type.application`...skipping" );
+            return;
+        }
+
         //http://developer.apple.com/library/ios/#featuredarticles/FA_Wireless_Enterprise_App_Distribution/Introduction/Introduction.html
 
         if ( ipaServerBaseUrl != null ) {

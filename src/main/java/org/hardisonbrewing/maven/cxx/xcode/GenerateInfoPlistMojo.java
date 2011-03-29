@@ -33,6 +33,11 @@ public class GenerateInfoPlistMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         Plist plist = XCodeService.readInfoPlist();
+        if ( plist == null ) {
+            getLog().info( "No Info.plist found... skipping" );
+            return;
+        }
+
         InfoPlistService.setString( plist, "CFBundleName", getProject().getName() );
         InfoPlistService.setString( plist, "CFBundleVersion", XCodeService.getBundleVersion() );
         InfoPlistService.setString( plist, "CFBundleShortVersionString", getProject().getVersion() );
