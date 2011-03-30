@@ -110,11 +110,8 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
         for (Dict dict : isaIndex.get( "PBXFileReference" )) {
             String name = PlistService.getString( dict, "name" );
-            if ( name == null ) {
-                continue;
-            }
             String path = PlistService.getString( dict, "path" );
-            fileIndex.put( name, path );
+            fileIndex.put( name == null ? path : name, path );
         }
         XCodeService.setFileIndex( fileIndex );
 
