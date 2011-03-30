@@ -36,7 +36,7 @@
 						<true /> -->
 						<key>url</key>
 						<!-- <string>http://www.example.com/image.57x57.png</string> -->
-						<string>${serverBaseUrl}${downloadIconUrl}</string>
+						<string>${downloadIconUrl}</string>
 					</dict>
 					<!-- full-size-image: the large 512x512 icon used by iTunes. -->
 					<dict>
@@ -49,7 +49,7 @@
 						<true /> -->
 						<key>url</key>
 						<!-- <string>http://www.example.com/image.512x512.jpg</string> -->
-						<string>${serverBaseUrl}${itunesIconUrl}</string>
+						<string>${itunesIconUrl}</string>
 					</dict>
 				</array>
 				<key>metadata</key>

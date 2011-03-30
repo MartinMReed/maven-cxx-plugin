@@ -76,15 +76,23 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         getLog().info( "Generating " + destPath + "..." );
 
         Plist plist = XCodeService.readInfoPlist();
-        String bundleIconFile = InfoPlistService.getString( plist, "CFBundleIconFile" );
-        String bundleName = InfoPlistService.getString( plist, "CFBundleName" );
+
+        String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
+        if ( bundleIconFileId == null ) {
+            velocityContext.put( "downloadIconUrl", "" );
+            velocityContext.put( "itunesIconUrl", "" );
+        }
+        else {
+            String serverBaseUrl = (String) velocityContext.get( "serverBaseUrl" );
+            File iconFile = XCodeService.getProjectFile( bundleIconFileId );
+            velocityContext.put( "downloadIconUrl", serverBaseUrl + iconFile.getName() );
+            velocityContext.put( "itunesIconUrl", serverBaseUrl + iconFile.getName() );
+        }
 
         velocityContext.put( "ipaUrl", getProject().getArtifactId() + ".ipa" );
-        velocityContext.put( "downloadIconUrl", bundleIconFile );
-        velocityContext.put( "itunesIconUrl", bundleIconFile );
         velocityContext.put( "bundleIdentifier", XCodeService.getBundleIdentifier() );
         velocityContext.put( "bundleVersion", XCodeService.getBundleVersion() );
-        velocityContext.put( "title", bundleName );
+        velocityContext.put( "title", InfoPlistService.getString( plist, "CFBundleName" ) );
 
         Template template = TemplateService.getTemplate( "/xcode/ipaManifest.vm" );
 

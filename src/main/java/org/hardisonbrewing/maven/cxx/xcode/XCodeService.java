@@ -20,6 +20,7 @@ package org.hardisonbrewing.maven.cxx.xcode;
 import generated.Plist;
 
 import java.io.File;
+import java.util.Hashtable;
 
 import org.hardisonbrewing.maven.core.ProjectService;
 
@@ -30,6 +31,8 @@ public class XCodeService {
     private static String project;
     public static String target;
     private static String configuration;
+
+    private static Hashtable<String, String> fileIndex;
 
     public static boolean isApplicationType() {
 
@@ -124,5 +127,39 @@ public class XCodeService {
     public static final void setConfiguration( String configuration ) {
 
         XCodeService.configuration = configuration;
+    }
+
+    public static final String getCanonicalProjectFilePath( String referenceName ) {
+
+        return fileIndex.get( referenceName );
+    }
+
+    public static final String getProjectFilePath( String referenceName ) {
+
+        String canonicalPath = getCanonicalProjectFilePath( referenceName );
+        if ( canonicalPath == null ) {
+            return null;
+        }
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( ProjectService.getBaseDirPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( canonicalPath );
+        return stringBuffer.toString();
+    }
+
+    public static final File getProjectFile( String referenceName ) {
+
+        String projectPath = getProjectFilePath( referenceName );
+        if ( projectPath == null ) {
+            return null;
+        }
+
+        return new File( projectPath );
+    }
+
+    public static final void setFileIndex( Hashtable<String, String> fileIndex ) {
+
+        XCodeService.fileIndex = fileIndex;
     }
 }
