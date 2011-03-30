@@ -41,6 +41,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
      */
     public String provisioningProfile;
 
+    private final Hashtable<String, String> fileIndex = new Hashtable<String, String>();
     private final Hashtable<String, Dict> keyIndex = new Hashtable<String, Dict>();
     private final Hashtable<String, Vector<Dict>> isaIndex = new Hashtable<String, Vector<Dict>>();
 
@@ -106,6 +107,16 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
             putTargetProductType( dict, properties );
             putTargetProductReference( dict, properties );
         }
+
+        for (Dict dict : isaIndex.get( "PBXFileReference" )) {
+            String name = PlistService.getString( dict, "name" );
+            if ( name == null ) {
+                continue;
+            }
+            String path = PlistService.getString( dict, "path" );
+            fileIndex.put( name, path );
+        }
+        XCodeService.setFileIndex( fileIndex );
 
         return properties;
     }

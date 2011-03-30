@@ -26,7 +26,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.ArchiveService;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
@@ -57,21 +56,14 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     private void copyIconFile() {
 
         Plist plist = XCodeService.readInfoPlist();
-        String iconFilename = InfoPlistService.getString( plist, "CFBundleIconFile" );
-        if ( iconFilename == null || iconFilename.length() == 0 ) {
+        String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
+        if ( bundleIconFileId == null || bundleIconFileId.length() == 0 ) {
             return;
         }
 
-        String directoryRoot = ProjectService.getBaseDirPath();
-
-        StringBuffer iconFilePath = new StringBuffer();
-        iconFilePath.append( directoryRoot );
-        iconFilePath.append( File.separator );
-        iconFilePath.append( iconFilename );
-        File iconFile = new File( iconFilePath.toString() );
-
-        String filename = getFilename( directoryRoot, iconFile );
-        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( iconFile, filename );
+        File bundleIconFile = XCodeService.getProjectFile( bundleIconFileId );
+        String filename = bundleIconFile.getName();
+        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( bundleIconFile, filename );
     }
 
     private String getConfigBuildDirPath() {
