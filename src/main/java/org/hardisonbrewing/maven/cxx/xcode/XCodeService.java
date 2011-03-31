@@ -34,16 +34,26 @@ public class XCodeService {
 
     private static Hashtable<String, String> fileIndex;
 
-    public static boolean isApplicationType() {
+    public static boolean hasApplicationType() {
 
-        String targets = PropertiesService.getXCodeProperty( "targets" );
-        for (String target : targets.split( "," )) {
-            String productType = PropertiesService.getXCodeProperty( target, "productType" );
-            if ( "com.apple.product-type.application".equals( productType ) ) {
+        for (String target : getTargets()) {
+            if ( isApplicationType( target ) ) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static boolean isApplicationType( String target ) {
+
+        String productType = PropertiesService.getXCodeProperty( target, "productType" );
+        return "com.apple.product-type.application".equals( productType );
+    }
+
+    public static String[] getTargets() {
+
+        String targets = PropertiesService.getXCodeProperty( "targets" );
+        return targets.split( "," );
     }
 
     public static final String getProject() {

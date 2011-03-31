@@ -38,24 +38,31 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         copyConfigBuildFiles();
+        copyProvisioningFile();
 
-        if ( XCodeService.isApplicationType() ) {
-
-            try {
-                copyIpaFile();
+        String[] targets = XCodeService.getTargets();
+        for (String target : targets) {
+            if ( XCodeService.hasApplicationType() ) {
+                try {
+                    copyIpaFile( target );
+                }
+                catch (Exception e) {
+                    getLog().error( "Unable to create IPA file: " + target, e );
+                    throw new IllegalStateException( e );
+                }
             }
-            catch (Exception e) {
-                getLog().error( "Unable to create IPA file", e );
-                throw new IllegalStateException( e );
-            }
-
-            copyIconFile();
         }
+
+        copyIconFile();
     }
 
     private void copyIconFile() {
 
         Plist plist = XCodeService.readInfoPlist();
+        if ( plist == null ) {
+            return;
+        }
+
         String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
         if ( bundleIconFileId == null || bundleIconFileId.length() == 0 ) {
             return;
@@ -73,6 +80,29 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         stringBuffer.append( File.separator );
         stringBuffer.append( XCodeService.getConfiguration() );
         return stringBuffer.toString();
+    }
+
+    private void copyProvisioningFile() {
+
+        String directoryRoot = getConfigBuildDirPath();
+
+        String[] targets = XCodeService.getTargets();
+        for (String target : targets) {
+            if ( XCodeService.hasApplicationType() ) {
+
+                StringBuffer srcFilePath = new StringBuffer();
+                srcFilePath.append( directoryRoot );
+                srcFilePath.append( File.separator );
+                srcFilePath.append( PropertiesService.getXCodeProperty( target, "productReference" ) );
+                srcFilePath.append( File.separator );
+                srcFilePath.append( "embedded.mobileprovision" );
+                File srcFile = new File( srcFilePath.toString() );
+
+                String filename = target + ".mobileprovision";
+
+                org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( srcFile, filename );
+            }
+        }
     }
 
     private void copyConfigBuildFiles() {
@@ -93,21 +123,23 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         return file.getAbsolutePath().substring( directoryRoot.length() );
     }
 
-    private void copyIpaFile() throws Exception {
+    private void copyIpaFile( String target ) throws Exception {
+
+        String productReference = PropertiesService.getXCodeProperty( target, "productReference" );
 
         String directoryRoot = getConfigBuildDirPath();
 
         StringBuffer appFilePath = new StringBuffer();
         appFilePath.append( directoryRoot );
         appFilePath.append( File.separator );
-        appFilePath.append( getProject().getArtifactId() );
-        appFilePath.append( ".app" );
+        appFilePath.append( productReference );
         File appFile = new File( appFilePath.toString() );
 
         StringBuffer payloadTempDirPath = new StringBuffer();
         payloadTempDirPath.append( TargetDirectoryService.getTargetDirectoryPath() );
         payloadTempDirPath.append( File.separator );
-        payloadTempDirPath.append( "ipa_payload" );
+        payloadTempDirPath.append( target );
+        payloadTempDirPath.append( ".ipa-temp" );
         File payloadTempDir = new File( payloadTempDirPath.toString() );
 
         StringBuffer payloadDirPath = new StringBuffer();
@@ -115,19 +147,16 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         payloadDirPath.append( File.separator );
         payloadDirPath.append( "Payload" );
         payloadDirPath.append( File.separator );
-        payloadDirPath.append( appFile.getName() );
+        payloadDirPath.append( productReference );
         File payloadDir = new File( payloadDirPath.toString() );
-
-        if ( !payloadDir.exists() ) {
-            payloadDir.mkdirs();
-        }
+        payloadDir.mkdirs();
 
         FileUtils.copyDirectory( appFile, payloadDir );
 
         StringBuffer destFilePath = new StringBuffer();
         destFilePath.append( payloadTempDirPath );
         destFilePath.append( File.separator );
-        destFilePath.append( getProject().getArtifactId() );
+        destFilePath.append( target );
 
         StringBuffer zipFilePath = new StringBuffer();
         zipFilePath.append( destFilePath );
