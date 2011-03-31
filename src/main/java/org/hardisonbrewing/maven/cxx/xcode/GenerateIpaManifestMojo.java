@@ -42,7 +42,7 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
     @Override
     public final void execute() {
 
-        if ( !XCodeService.isApplicationType() ) {
+        if ( !XCodeService.hasApplicationType() ) {
             getLog().info( "No targets found of type 'com.apple.product-type.application`...skipping" );
             return;
         }
@@ -78,7 +78,7 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         Plist plist = XCodeService.readInfoPlist();
 
         String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
-        if ( bundleIconFileId == null ) {
+        if ( bundleIconFileId == null || bundleIconFileId.length() == 0 ) {
             velocityContext.put( "downloadIconUrl", "" );
             velocityContext.put( "itunesIconUrl", "" );
         }
