@@ -17,8 +17,6 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
-import generated.Plist;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -32,16 +30,16 @@ public class GenerateInfoPlistMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        Plist plist = XCodeService.readInfoPlist();
-        if ( plist == null ) {
-            getLog().info( "No Info.plist found... skipping" );
-            return;
-        }
-
-        InfoPlistService.setString( plist, "CFBundleName", getProject().getName() );
-        InfoPlistService.setString( plist, "CFBundleVersion", XCodeService.getBundleVersion() );
-        InfoPlistService.setString( plist, "CFBundleShortVersionString", getProject().getVersion() );
-        InfoPlistService.setString( plist, "CFBundleIdentifier", XCodeService.getBundleIdentifier() );
-        XCodeService.writeInfoPlist( plist );
+        //        Plist plist = XCodeService.readInfoPlist();
+        //        if ( plist == null ) {
+        //            getLog().info( "No Info.plist found... skipping" );
+        //            return;
+        //        }
+        //
+        //        InfoPlistService.setString( plist, "CFBundleName", getProject().getName() );
+        //        InfoPlistService.setString( plist, "CFBundleVersion", XCodeService.getBundleVersion() );
+        //        InfoPlistService.setString( plist, "CFBundleShortVersionString", getProject().getVersion() );
+        //        InfoPlistService.setString( plist, "CFBundleIdentifier", XCodeService.getBundleIdentifier() );
+        //        XCodeService.writeInfoPlist( plist );
     }
 }
