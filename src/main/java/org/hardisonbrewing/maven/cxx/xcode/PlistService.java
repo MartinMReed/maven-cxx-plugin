@@ -30,7 +30,12 @@ import javax.xml.bind.JAXBException;
 import org.hardisonbrewing.jaxb.JAXB;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 
-public class PlistService {
+public final class PlistService {
+
+    private PlistService() {
+
+        // do nothing
+    }
 
     public static final Plist readPlist( File file ) {
 

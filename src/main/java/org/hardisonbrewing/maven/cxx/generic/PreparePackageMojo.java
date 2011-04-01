@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
@@ -69,16 +68,16 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
 
     public static final void prepareTargetFile( File src, String fileName ) {
 
-        if ( !src.exists() ) {
-            throw new IllegalStateException( src.getAbsolutePath() + " does not exist." );
-        }
         StringBuffer destPath = new StringBuffer();
         destPath.append( TargetDirectoryService.getTempPackagePath() );
         destPath.append( File.separator );
         destPath.append( fileName );
         File dest = new File( destPath.toString() );
 
-        JoJoMojo.getMojo().getLog().info( "Copying " + src + " to " + dest );
+        prepareTargetFile( src, dest );
+    }
+
+    public static final void prepareTargetFile( File src, File dest ) {
 
         try {
             FileUtils.copyFile( src, dest );

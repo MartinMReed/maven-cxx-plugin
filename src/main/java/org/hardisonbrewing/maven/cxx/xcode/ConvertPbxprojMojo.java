@@ -28,7 +28,6 @@ import java.util.Properties;
 import java.util.Vector;
 
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal xcode-convert-pbxproj
@@ -69,7 +68,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( XCodeService.getProject() );
-        stringBuffer.append( ".plist" );
+        stringBuffer.append( ".pbxproj.plist" );
         return new File( stringBuffer.toString() );
     }
 
