@@ -21,12 +21,9 @@ import generated.Plist;
 
 import java.io.File;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.ArchiveService;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal xcode-prepare-package
@@ -34,31 +31,47 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
  */
 public final class PreparePackageMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String target;
+
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() {
 
-        copyConfigBuildFiles();
-        copyProvisioningFile();
+        if ( target != null ) {
+            execute( target );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
+        }
+    }
 
-        String[] targets = XCodeService.getTargets();
-        for (String target : targets) {
-            if ( XCodeService.hasApplicationType() ) {
-                try {
-                    copyIpaFile( target );
-                }
-                catch (Exception e) {
-                    getLog().error( "Unable to create IPA file: " + target, e );
-                    throw new IllegalStateException( e );
-                }
+    private void execute( String target ) {
+
+        copyConfigBuildFiles( target );
+
+        if ( XCodeService.isApplicationType( target ) ) {
+
+            copyProvisioningFile( target );
+
+            try {
+                copyIpaFile( target );
+            }
+            catch (Exception e) {
+                getLog().error( "Unable to create IPA file: " + target, e );
+                throw new IllegalStateException( e );
             }
         }
 
-        copyIconFile();
+        copyIconFile( target );
     }
 
-    private void copyIconFile() {
+    private void copyIconFile( String target ) {
 
-        Plist plist = XCodeService.readInfoPlist();
+        Plist plist = XCodeService.readInfoPlist( target );
         if ( plist == null ) {
             return;
         }
@@ -69,52 +82,40 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         }
 
         File bundleIconFile = XCodeService.getProjectFile( bundleIconFileId );
-        String filename = bundleIconFile.getName();
-        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( bundleIconFile, filename );
+        prepareTargetFile( target, bundleIconFile, bundleIconFile.getName() );
     }
 
-    private String getConfigBuildDirPath() {
+    private String getConfigBuildDirPath( String target ) {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
+        stringBuffer.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
         stringBuffer.append( File.separator );
-        stringBuffer.append( XCodeService.getConfiguration() );
+        stringBuffer.append( XCodeService.getConfiguration( target ) );
         return stringBuffer.toString();
     }
 
-    private void copyProvisioningFile() {
+    private void copyProvisioningFile( String target ) {
 
-        String directoryRoot = getConfigBuildDirPath();
+        StringBuffer srcFilePath = new StringBuffer();
+        srcFilePath.append( getConfigBuildDirPath( target ) );
+        srcFilePath.append( File.separator );
+        srcFilePath.append( PropertiesService.getTargetProductName( target ) );
+        srcFilePath.append( File.separator );
+        srcFilePath.append( "embedded.mobileprovision" );
+        File srcFile = new File( srcFilePath.toString() );
 
-        String[] targets = XCodeService.getTargets();
-        for (String target : targets) {
-            if ( XCodeService.hasApplicationType() ) {
-
-                StringBuffer srcFilePath = new StringBuffer();
-                srcFilePath.append( directoryRoot );
-                srcFilePath.append( File.separator );
-                srcFilePath.append( PropertiesService.getXCodeProperty( target, "productReference" ) );
-                srcFilePath.append( File.separator );
-                srcFilePath.append( "embedded.mobileprovision" );
-                File srcFile = new File( srcFilePath.toString() );
-
-                String filename = target + ".mobileprovision";
-
-                org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( srcFile, filename );
-            }
-        }
+        prepareTargetFile( target, srcFile, target + ".mobileprovision" );
     }
 
-    private void copyConfigBuildFiles() {
+    private void copyConfigBuildFiles( String target ) {
 
-        String directoryRoot = getConfigBuildDirPath();
+        String directoryRoot = getConfigBuildDirPath( target );
         File configBuildDir = new File( directoryRoot );
 
         getLog().info( "Copying files from: " + configBuildDir );
 
         for (File file : FileUtils.listFilesRecursive( configBuildDir )) {
-            String filename = getFilename( directoryRoot, file );
-            org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( file, filename );
+            prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
         }
     }
 
@@ -125,9 +126,9 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private void copyIpaFile( String target ) throws Exception {
 
-        String productReference = PropertiesService.getXCodeProperty( target, "productReference" );
+        String productReference = PropertiesService.getTargetProductName( target );
 
-        String directoryRoot = getConfigBuildDirPath();
+        String directoryRoot = getConfigBuildDirPath( target );
 
         StringBuffer appFilePath = new StringBuffer();
         appFilePath.append( directoryRoot );
@@ -136,11 +137,12 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         File appFile = new File( appFilePath.toString() );
 
         StringBuffer payloadTempDirPath = new StringBuffer();
-        payloadTempDirPath.append( TargetDirectoryService.getTargetDirectoryPath() );
+        payloadTempDirPath.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
         payloadTempDirPath.append( File.separator );
         payloadTempDirPath.append( target );
-        payloadTempDirPath.append( ".ipa-temp" );
+        payloadTempDirPath.append( ".ipa" );
         File payloadTempDir = new File( payloadTempDirPath.toString() );
+        payloadTempDir.mkdirs();
 
         StringBuffer payloadDirPath = new StringBuffer();
         payloadDirPath.append( payloadTempDirPath );
@@ -172,7 +174,19 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
         FileUtils.rename( zipFile, ipaFile );
 
-        String ipaFilename = getFilename( payloadTempDirPath.toString(), ipaFile );
-        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( ipaFile, ipaFilename );
+        prepareTargetFile( target, ipaFile, getFilename( payloadTempDirPath.toString(), ipaFile ) );
+    }
+
+    private final void prepareTargetFile( String target, File src, String fileName ) {
+
+        if ( XCodeService.getTargets().length > 1 ) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( PropertiesService.getTargetProductName( target ) );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( fileName );
+            fileName = stringBuffer.toString();
+        }
+
+        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( src, fileName );
     }
 }

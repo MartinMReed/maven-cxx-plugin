@@ -20,11 +20,14 @@ package org.hardisonbrewing.maven.cxx.xcode;
 import java.io.File;
 import java.util.Properties;
 
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
     private static Properties properties;
+
+    protected PropertiesService() {
+
+        // do nothing
+    }
 
     public static final Properties getXCodeProperties() {
 
@@ -39,7 +42,8 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( "xcode.properties" );
+        stringBuffer.append( XCodeService.getProject() );
+        stringBuffer.append( ".pbxproj.properties" );
         return stringBuffer.toString();
     }
 
@@ -68,5 +72,10 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
 
         key = getXCodePropertiesKey( prefix, key );
         return (String) getXCodeProperties().get( key );
+    }
+
+    public static final String getTargetProductName( String target ) {
+
+        return getXCodeProperty( target, "productReference" );
     }
 }

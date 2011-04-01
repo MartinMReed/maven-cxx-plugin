@@ -26,7 +26,6 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.TemplateService;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
  * @goal xcode-ipa-manifest
@@ -37,12 +36,29 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
+    public String target;
+
+    /**
+     * @parameter
+     */
     public String ipaServerBaseUrl;
 
     @Override
     public final void execute() {
 
-        if ( !XCodeService.hasApplicationType() ) {
+        if ( target != null ) {
+            execute( target );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
+        }
+    }
+
+    private final void execute( String target ) {
+
+        if ( !XCodeService.isApplicationType( target ) ) {
             getLog().info( "No targets found of type 'com.apple.product-type.application`...skipping" );
             return;
         }
@@ -52,18 +68,20 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         if ( ipaServerBaseUrl != null ) {
             VelocityContext xmlContext = new VelocityContext();
             xmlContext.put( "serverBaseUrl", ipaServerBaseUrl );
-            generate( "plist", xmlContext );
+            generate( target, "plist", xmlContext );
         }
 
         VelocityContext vmContext = new VelocityContext();
         vmContext.put( "serverBaseUrl", "${serverBaseUrl}" );
-        generate( "vm", vmContext );
+        generate( target, "vm", vmContext );
     }
 
-    private final void generate( String extension, VelocityContext velocityContext ) {
+    private final void generate( String target, String extension, VelocityContext velocityContext ) {
 
         StringBuffer destPath = new StringBuffer();
-        destPath.append( TargetDirectoryService.getTempPackagePath() );
+        destPath.append( TargetDirectoryService.getTempPackagePath( target ) );
+        destPath.append( File.separator );
+        destPath.append( File.separator );
         destPath.append( File.separator );
         destPath.append( "manifest." );
         destPath.append( extension );
@@ -75,7 +93,7 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
         getLog().info( "Generating " + destPath + "..." );
 
-        Plist plist = XCodeService.readInfoPlist();
+        Plist plist = XCodeService.readInfoPlist( target );
 
         String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
         if ( bundleIconFileId == null || bundleIconFileId.length() == 0 ) {

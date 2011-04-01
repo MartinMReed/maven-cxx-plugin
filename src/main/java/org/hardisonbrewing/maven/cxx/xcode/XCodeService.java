@@ -24,24 +24,18 @@ import java.util.Hashtable;
 
 import org.hardisonbrewing.maven.core.ProjectService;
 
-public class XCodeService {
+public final class XCodeService {
 
     public static final String XCODEPROJ_EXTENSION = "xcodeproj";
 
     private static String project;
-    public static String target;
     private static String configuration;
 
     private static Hashtable<String, String> fileIndex;
 
-    public static boolean hasApplicationType() {
+    private XCodeService() {
 
-        for (String target : getTargets()) {
-            if ( isApplicationType( target ) ) {
-                return true;
-            }
-        }
-        return false;
+        // do nothing
     }
 
     public static boolean isApplicationType( String target ) {
@@ -70,14 +64,30 @@ public class XCodeService {
         return project;
     }
 
+    public static final String getXcodeprojFilename() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getProject() );
+        stringBuffer.append( "." );
+        stringBuffer.append( XCODEPROJ_EXTENSION );
+        return stringBuffer.toString();
+    }
+
+    public static final String getXcodeprojPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( ProjectService.getBaseDirPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( getXcodeprojFilename() );
+        return stringBuffer.toString();
+    }
+
     public static final String getPbxprojPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( ProjectService.getBaseDirPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( getProject() );
-        stringBuffer.append( "." );
-        stringBuffer.append( XCODEPROJ_EXTENSION );
+        stringBuffer.append( getXcodeprojFilename() );
         stringBuffer.append( File.separator );
         stringBuffer.append( "project.pbxproj" );
         return stringBuffer.toString();
@@ -101,23 +111,23 @@ public class XCodeService {
         return stringBuffer.toString();
     }
 
-    public static final Plist readInfoPlist() {
+    public static final Plist readInfoPlist( String target ) {
 
-        File file = getInfoPlist();
+        File file = getInfoPlist( target );
         if ( file.exists() ) {
             return PlistService.readPlist( file );
         }
         return null;
     }
 
-    public static final void writeInfoPlist( Plist plist ) {
+    public static final void writeInfoPlist( String target, Plist plist ) {
 
-        PlistService.writePlist( plist, getInfoPlist() );
+        PlistService.writePlist( plist, getInfoPlist( target ) );
     }
 
-    private static final File getInfoPlist() {
+    private static final File getInfoPlist( String target ) {
 
-        String infoPlistFile = PropertiesService.getXCodeProperty( getConfiguration(), "infoPlistFile" );
+        String infoPlistFile = PropertiesService.getXCodeProperty( getConfiguration( target ), "infoPlistFile" );
 
         StringBuffer plistPath = new StringBuffer();
         plistPath.append( ProjectService.getBaseDirPath() );
@@ -126,7 +136,7 @@ public class XCodeService {
         return new File( plistPath.toString() );
     }
 
-    public static final String getConfiguration() {
+    public static final String getConfiguration( String target ) {
 
         if ( configuration == null ) {
             configuration = PropertiesService.getXCodeProperty( target, "defaultConfigurationName" );

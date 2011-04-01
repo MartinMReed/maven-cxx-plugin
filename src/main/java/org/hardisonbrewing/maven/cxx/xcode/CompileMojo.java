@@ -25,9 +25,7 @@ import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.TargetDirectoryService;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
-import org.hardisonbrewing.maven.cxx.PropertiesService;
 
 /**
  * @goal xcode-compile
@@ -38,32 +36,35 @@ public final class CompileMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public String provisioningProfile;
-
-    /**
-     * @parameter
-     */
-    public boolean activeTarget;
-
-    /**
-     * @parameter
-     */
-    public boolean allTargets;
+    public String target;
 
     @Override
     public void execute() {
+
+        if ( target != null ) {
+            execute( target );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
+        }
+    }
+
+    private void execute( String target ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "xcodebuild" );
 
         cmd.add( "-project" );
-        cmd.add( XCodeService.getProject() + ".xcodeproj" );
+        cmd.add( XCodeService.getXcodeprojPath() );
 
-        String targetCanonical = FileUtils.getProjectCanonicalPath( TargetDirectoryService.getTargetDirectoryPath() );
+        String targetBuildDirPath = TargetDirectoryService.getTargetBuildDirPath( target );
+        targetBuildDirPath = FileUtils.getProjectCanonicalPath( targetBuildDirPath );
 
-        cmd.add( "SYMROOT=$(PROJECT_DIR)" + targetCanonical );
+        cmd.add( "SYMROOT=$(PROJECT_DIR)" + targetBuildDirPath );
 
-        cmd.add( "BUILD_DIR=$(PROJECT_DIR)" + targetCanonical );
+        cmd.add( "BUILD_DIR=$(PROJECT_DIR)" + targetBuildDirPath );
 
         String keychain = PropertiesService.getProperty( "xcode.keychain" );
         if ( keychain != null ) {
@@ -72,7 +73,7 @@ public final class CompileMojo extends JoJoMojoImpl {
 
         StringBuffer objroot = new StringBuffer();
         objroot.append( "OBJROOT=$(PROJECT_DIR)" );
-        objroot.append( targetCanonical );
+        objroot.append( targetBuildDirPath );
         objroot.append( File.separator );
         objroot.append( "OBJROOT" );
         cmd.add( objroot.toString() );
@@ -80,19 +81,11 @@ public final class CompileMojo extends JoJoMojoImpl {
         StringBuffer configurationBuildDir = new StringBuffer();
         configurationBuildDir.append( "CONFIGURATION_BUILD_DIR=$(BUILD_DIR)" );
         configurationBuildDir.append( File.separator );
-        configurationBuildDir.append( XCodeService.getConfiguration() );
+        configurationBuildDir.append( XCodeService.getConfiguration( target ) );
         cmd.add( configurationBuildDir.toString() );
 
-        if ( XCodeService.target != null ) {
-            cmd.add( "-target" );
-            cmd.add( XCodeService.target );
-        }
-        else if ( activeTarget ) {
-            cmd.add( "-activetarget" );
-        }
-        else if ( allTargets ) {
-            cmd.add( "-alltargets" );
-        }
+        cmd.add( "-target" );
+        cmd.add( target );
 
         execute( cmd );
     }

@@ -28,17 +28,11 @@ public final class InitializeMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public String target;
-
-    /**
-     * @parameter
-     */
     public String configuration;
 
     @Override
     public final void execute() {
 
-        XCodeService.target = target;
         XCodeService.setConfiguration( configuration );
     }
 }
