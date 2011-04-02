@@ -31,7 +31,7 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( PropertiesService.getTargetProductName( target ) );
+        stringBuffer.append( target );
         return stringBuffer.toString();
     }
 
@@ -44,7 +44,7 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTempPackagePath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( PropertiesService.getTargetProductName( target ) );
+        stringBuffer.append( target );
         return stringBuffer.toString();
     }
 }
