@@ -139,8 +139,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         StringBuffer payloadTempDirPath = new StringBuffer();
         payloadTempDirPath.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
         payloadTempDirPath.append( File.separator );
-        payloadTempDirPath.append( target );
-        payloadTempDirPath.append( ".ipa" );
+        payloadTempDirPath.append( "IPA" );
         File payloadTempDir = new File( payloadTempDirPath.toString() );
         payloadTempDir.mkdirs();
 
@@ -181,7 +180,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
         if ( XCodeService.getTargets().length > 1 ) {
             StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( PropertiesService.getTargetProductName( target ) );
+            stringBuffer.append( target );
             stringBuffer.append( File.separator );
             stringBuffer.append( fileName );
             fileName = stringBuffer.toString();

@@ -66,11 +66,6 @@ public final class CompileMojo extends JoJoMojoImpl {
 
         cmd.add( "BUILD_DIR=$(PROJECT_DIR)" + targetBuildDirPath );
 
-        String keychain = PropertiesService.getProperty( "xcode.keychain" );
-        if ( keychain != null ) {
-            cmd.add( "OTHER_CODE_SIGN_FLAGS=--keychain " + keychain );
-        }
-
         StringBuffer objroot = new StringBuffer();
         objroot.append( "OBJROOT=$(PROJECT_DIR)" );
         objroot.append( targetBuildDirPath );
