@@ -126,14 +126,12 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private void copyIpaFile( String target ) throws Exception {
 
-        String productReference = PropertiesService.getTargetProductName( target );
-
-        String directoryRoot = getConfigBuildDirPath( target );
+        String targetProductName = PropertiesService.getTargetProductName( target );
 
         StringBuffer appFilePath = new StringBuffer();
-        appFilePath.append( directoryRoot );
+        appFilePath.append( getConfigBuildDirPath( target ) );
         appFilePath.append( File.separator );
-        appFilePath.append( productReference );
+        appFilePath.append( targetProductName );
         File appFile = new File( appFilePath.toString() );
 
         StringBuffer payloadTempDirPath = new StringBuffer();
@@ -148,7 +146,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         payloadDirPath.append( File.separator );
         payloadDirPath.append( "Payload" );
         payloadDirPath.append( File.separator );
-        payloadDirPath.append( productReference );
+        payloadDirPath.append( targetProductName );
         File payloadDir = new File( payloadDirPath.toString() );
         payloadDir.mkdirs();
 

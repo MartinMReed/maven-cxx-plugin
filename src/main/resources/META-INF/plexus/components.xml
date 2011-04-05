@@ -321,10 +321,10 @@
 								org.hardisonbrewing:maven-cxx-plugin:xcode-convert-pbxproj</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
 							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:xcode-generate-info-plist,
-								org.hardisonbrewing:maven-cxx-plugin:xcode-ipa-manifest,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-install-provisioning-profile</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:xcode-compile</compile>
-							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:xcode-prepare-package</prepare-package>
+							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:xcode-ipa-manifest,
+								org.hardisonbrewing:maven-cxx-plugin:xcode-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:xcode-install</install>
 						</phases>
