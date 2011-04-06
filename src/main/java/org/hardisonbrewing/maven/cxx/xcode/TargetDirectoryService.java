@@ -26,6 +26,15 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
         // do nothing
     }
 
+    public static final String getConfigBuildDirPath( String target ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getTargetBuildDirPath( target ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( XCodeService.getConfiguration( target ) );
+        return stringBuffer.toString();
+    }
+
     public static final String getTargetBuildDirPath( String target ) {
 
         StringBuffer stringBuffer = new StringBuffer();

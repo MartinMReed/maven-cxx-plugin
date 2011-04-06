@@ -38,11 +38,6 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
      */
     public String target;
 
-    /**
-     * @parameter
-     */
-    public String ipaServerBaseUrl;
-
     @Override
     public final void execute() {
 
@@ -63,28 +58,12 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
             return;
         }
 
-        //http://developer.apple.com/library/ios/#featuredarticles/FA_Wireless_Enterprise_App_Distribution/Introduction/Introduction.html
-
-        if ( ipaServerBaseUrl != null ) {
-            VelocityContext xmlContext = new VelocityContext();
-            xmlContext.put( "serverBaseUrl", ipaServerBaseUrl );
-            generate( target, "plist", xmlContext );
-        }
-
-        VelocityContext vmContext = new VelocityContext();
-        vmContext.put( "serverBaseUrl", "${serverBaseUrl}" );
-        generate( target, "vm", vmContext );
-    }
-
-    private final void generate( String target, String extension, VelocityContext velocityContext ) {
+        // http://developer.apple.com/library/ios/#featuredarticles/FA_Wireless_Enterprise_App_Distribution/Introduction/Introduction.html
 
         StringBuffer destPath = new StringBuffer();
         destPath.append( TargetDirectoryService.getTempPackagePath( target ) );
         destPath.append( File.separator );
-        destPath.append( File.separator );
-        destPath.append( File.separator );
-        destPath.append( "manifest." );
-        destPath.append( extension );
+        destPath.append( "manifest.vm" );
         File dest = new File( destPath.toString() );
 
         if ( !dest.getParentFile().exists() ) {
@@ -93,7 +72,13 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
         getLog().info( "Generating " + destPath + "..." );
 
-        Plist plist = XCodeService.readInfoPlist( target );
+        Plist plist = XCodeService.readInfoPlist( XCodeService.getConvertedInfoPlist( target ) );
+
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put( "ipaUrl", target + ".ipa" );
+        velocityContext.put( "bundleIdentifier", XCodeService.getBundleIdentifier() );
+        velocityContext.put( "bundleVersion", XCodeService.getBundleVersion() );
+        velocityContext.put( "title", InfoPlistService.getString( plist, "CFBundleDisplayName" ) );
 
         String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
         if ( bundleIconFileId == null || bundleIconFileId.length() == 0 ) {
@@ -101,16 +86,10 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
             velocityContext.put( "itunesIconUrl", "" );
         }
         else {
-            String serverBaseUrl = (String) velocityContext.get( "serverBaseUrl" );
             File iconFile = XCodeService.getProjectFile( bundleIconFileId );
-            velocityContext.put( "downloadIconUrl", serverBaseUrl + iconFile.getName() );
-            velocityContext.put( "itunesIconUrl", serverBaseUrl + iconFile.getName() );
+            velocityContext.put( "downloadIconUrl", "${serverBaseUrl}" + iconFile.getName() );
+            velocityContext.put( "itunesIconUrl", "${serverBaseUrl}" + iconFile.getName() );
         }
-
-        velocityContext.put( "ipaUrl", getProject().getArtifactId() + ".ipa" );
-        velocityContext.put( "bundleIdentifier", XCodeService.getBundleIdentifier() );
-        velocityContext.put( "bundleVersion", XCodeService.getBundleVersion() );
-        velocityContext.put( "title", InfoPlistService.getString( plist, "CFBundleName" ) );
 
         Template template = TemplateService.getTemplate( "/xcode/ipaManifest.vm" );
 
