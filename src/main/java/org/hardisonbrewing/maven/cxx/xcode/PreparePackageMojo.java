@@ -71,7 +71,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private void copyIconFile( String target ) {
 
-        Plist plist = XCodeService.readInfoPlist( target );
+        Plist plist = XCodeService.readInfoPlist( XCodeService.getConvertedInfoPlist( target ) );
         if ( plist == null ) {
             return;
         }
@@ -85,19 +85,10 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         prepareTargetFile( target, bundleIconFile, bundleIconFile.getName() );
     }
 
-    private String getConfigBuildDirPath( String target ) {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( XCodeService.getConfiguration( target ) );
-        return stringBuffer.toString();
-    }
-
     private void copyProvisioningFile( String target ) {
 
         StringBuffer srcFilePath = new StringBuffer();
-        srcFilePath.append( getConfigBuildDirPath( target ) );
+        srcFilePath.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
         srcFilePath.append( File.separator );
         srcFilePath.append( PropertiesService.getTargetProductName( target ) );
         srcFilePath.append( File.separator );
@@ -109,7 +100,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private void copyConfigBuildFiles( String target ) {
 
-        String directoryRoot = getConfigBuildDirPath( target );
+        String directoryRoot = TargetDirectoryService.getConfigBuildDirPath( target );
         File configBuildDir = new File( directoryRoot );
 
         getLog().info( "Copying files from: " + configBuildDir );
@@ -129,7 +120,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         String targetProductName = PropertiesService.getTargetProductName( target );
 
         StringBuffer appFilePath = new StringBuffer();
-        appFilePath.append( getConfigBuildDirPath( target ) );
+        appFilePath.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
         appFilePath.append( File.separator );
         appFilePath.append( targetProductName );
         File appFile = new File( appFilePath.toString() );
@@ -150,7 +141,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         File payloadDir = new File( payloadDirPath.toString() );
         payloadDir.mkdirs();
 
-        FileUtils.copyDirectory( appFile, payloadDir );
+        FileUtils.copyDirectoryStructure( appFile, payloadDir );
 
         StringBuffer destFilePath = new StringBuffer();
         destFilePath.append( payloadTempDirPath );

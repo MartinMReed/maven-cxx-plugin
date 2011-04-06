@@ -111,29 +111,42 @@ public final class XCodeService {
         return stringBuffer.toString();
     }
 
-    public static final Plist readInfoPlist( String target ) {
+    public static final Plist readInfoPlist( File file ) {
 
-        File file = getInfoPlist( target );
         if ( file.exists() ) {
             return PlistService.readPlist( file );
         }
         return null;
     }
 
-    public static final void writeInfoPlist( String target, Plist plist ) {
+    public static final File getConvertedInfoPlist( String target ) {
 
-        PlistService.writePlist( plist, getInfoPlist( target ) );
+        return new File( getConvertedInfoPlistPath( target ) );
     }
 
-    private static final File getInfoPlist( String target ) {
-
-        String infoPlistFile = PropertiesService.getXCodeProperty( getConfiguration( target ), "infoPlistFile" );
+    public static final String getConvertedInfoPlistPath( String target ) {
 
         StringBuffer plistPath = new StringBuffer();
-        plistPath.append( ProjectService.getBaseDirPath() );
+        plistPath.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
         plistPath.append( File.separator );
-        plistPath.append( infoPlistFile );
-        return new File( plistPath.toString() );
+        plistPath.append( "Info.plist" );
+        return plistPath.toString();
+    }
+
+    public static final File getEmbeddedInfoPlist( String target ) {
+
+        return new File( getEmbeddedInfoPlistPath( target ) );
+    }
+
+    public static final String getEmbeddedInfoPlistPath( String target ) {
+
+        StringBuffer plistPath = new StringBuffer();
+        plistPath.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
+        plistPath.append( File.separator );
+        plistPath.append( PropertiesService.getTargetProductName( target ) );
+        plistPath.append( File.separator );
+        plistPath.append( "Info.plist" );
+        return plistPath.toString();
     }
 
     public static final String getConfiguration( String target ) {
