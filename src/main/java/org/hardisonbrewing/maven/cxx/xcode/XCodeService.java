@@ -22,6 +22,7 @@ import generated.Plist;
 import java.io.File;
 import java.util.Hashtable;
 
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
 
 public final class XCodeService {
@@ -170,6 +171,7 @@ public final class XCodeService {
     public static final String getProjectFilePath( String referenceName ) {
 
         String canonicalPath = getCanonicalProjectFilePath( referenceName );
+        JoJoMojo.getMojo().getLog().error( referenceName + " canonicalPath: " + canonicalPath );
         if ( canonicalPath == null ) {
             return null;
         }

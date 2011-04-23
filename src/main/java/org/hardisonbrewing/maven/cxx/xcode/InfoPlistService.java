@@ -28,6 +28,9 @@ public class InfoPlistService {
     public static final String getString( Plist plist, String key ) {
 
         generated.String value = (generated.String) getValue( plist, key );
+        if ( value == null ) {
+            return null;
+        }
         return value.getvalue();
     }
 

@@ -40,9 +40,10 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
      */
     public String provisioningProfile;
 
+    private final Hashtable<String, String> groupIndex = new Hashtable<String, String>();
     private final Hashtable<String, String> fileIndex = new Hashtable<String, String>();
     private final Hashtable<String, Dict> keyIndex = new Hashtable<String, Dict>();
-    private final Hashtable<String, Vector<Dict>> isaIndex = new Hashtable<String, Vector<Dict>>();
+    private final Hashtable<String, Vector<String>> isaIndex = new Hashtable<String, Vector<String>>();
 
     @Override
     public final void execute() {
@@ -76,7 +77,9 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
         Properties properties = new Properties();
 
-        for (Dict dict : isaIndex.get( "XCBuildConfiguration" )) {
+        for (String key : isaIndex.get( "XCBuildConfiguration" )) {
+
+            Dict dict = keyIndex.get( key );
 
             Dict buildSettings = PlistService.getDict( dict, "buildSettings" );
             if ( buildSettings == null ) {
@@ -96,25 +99,56 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
             properties.put( infoPlistFileKey, infoPlistFile );
         }
 
-        for (Dict dict : isaIndex.get( "PBXProject" )) {
+        for (String key : isaIndex.get( "PBXGroup" )) {
+            Dict dict = keyIndex.get( key );
+            List<String> children = PlistService.getStringArray( dict, "children" );
+            for (String child : children) {
+                groupIndex.put( child, key );
+            }
+        }
+
+        for (String key : isaIndex.get( "PBXProject" )) {
+            Dict dict = keyIndex.get( key );
             putDefaultCongurationName( dict, properties );
             putTargets( dict, properties );
         }
 
-        for (Dict dict : isaIndex.get( "PBXNativeTarget" )) {
+        for (String key : isaIndex.get( "PBXNativeTarget" )) {
+            Dict dict = keyIndex.get( key );
             putTargetDefaultCongurationName( dict, properties );
             putTargetProductType( dict, properties );
             putTargetProductReference( dict, properties );
         }
 
-        for (Dict dict : isaIndex.get( "PBXFileReference" )) {
+        for (String key : isaIndex.get( "PBXFileReference" )) {
+            Dict dict = keyIndex.get( key );
             String name = PlistService.getString( dict, "name" );
-            String path = PlistService.getString( dict, "path" );
-            fileIndex.put( name == null ? path : name, path );
+            if ( name == null ) {
+                name = PlistService.getString( dict, "path" );
+            }
+            String path = resolvePath( key );
+            fileIndex.put( name, path );
         }
         XCodeService.setFileIndex( fileIndex );
 
         return properties;
+    }
+
+    private String resolvePath( String key ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        while (key != null) {
+            Dict dict = keyIndex.get( key );
+            String path = PlistService.getString( dict, "path" );
+            if ( path != null ) {
+                if ( stringBuffer.length() != 0 ) {
+                    stringBuffer.insert( 0, File.separator );
+                }
+                stringBuffer.insert( 0, path );
+            }
+            key = groupIndex.get( key );
+        }
+        return stringBuffer.toString();
     }
 
     private void putTargets( Dict dict, Properties properties ) {
@@ -193,12 +227,12 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
             String isa = PlistService.getString( dict, "isa" );
             if ( isa != null ) {
-                Vector<Dict> dicts = isaIndex.get( isa );
-                if ( dicts == null ) {
-                    dicts = new Vector<Dict>();
+                Vector<String> keys = isaIndex.get( isa );
+                if ( keys == null ) {
+                    keys = new Vector<String>();
                 }
-                dicts.add( dict );
-                isaIndex.put( isa, dicts );
+                keys.add( key.getvalue() );
+                isaIndex.put( isa, keys );
             }
         }
     }
