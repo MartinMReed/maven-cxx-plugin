@@ -40,6 +40,11 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
      */
     public String provisioningProfile;
 
+    /**
+     * @parameter
+     */
+    public String target;
+
     private final Hashtable<String, String> groupIndex = new Hashtable<String, String>();
     private final Hashtable<String, String> fileIndex = new Hashtable<String, String>();
     private final Hashtable<String, Dict> keyIndex = new Hashtable<String, Dict>();
@@ -156,12 +161,17 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         List<String> targets = PlistService.getStringArray( dict, "targets" );
         String _targets = "";
 
-        for (String target : targets) {
-            Dict productReference = keyIndex.get( target );
-            if ( !_targets.isEmpty() ) {
-                _targets += ",";
+        if ( target != null ) {
+            _targets = target;
+        }
+        else {
+            for (String target : targets) {
+                Dict productReference = keyIndex.get( target );
+                if ( !_targets.isEmpty() ) {
+                    _targets += ",";
+                }
+                _targets += PlistService.getString( productReference, "name" );
             }
-            _targets += PlistService.getString( productReference, "name" );
         }
 
         properties.put( "targets", _targets );
