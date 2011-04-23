@@ -97,15 +97,15 @@
 		</dependency>
 	</dependencies>
 	<distributionManagement>
-		<repository>
-			<id>hardisonbrewing-snapshots</id>
-			<name>hardisonbrewing-snapshots</name>
-			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots</url>
-		</repository>
 <!--		<repository>-->
-<!--			<id>hardisonbrewing-releases</id>-->
-<!--			<name>hardisonbrewing-releases</name>-->
-<!--			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url>-->
+<!--			<id>hardisonbrewing-snapshots</id>-->
+<!--			<name>hardisonbrewing-snapshots</name>-->
+<!--			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots</url>-->
 <!--		</repository>-->
+		<repository>
+			<id>hardisonbrewing-releases</id>
+			<name>hardisonbrewing-releases</name>
+			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url>
+		</repository>
 	</distributionManagement>
 </project>
