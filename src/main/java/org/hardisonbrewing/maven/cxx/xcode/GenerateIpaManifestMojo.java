@@ -80,13 +80,20 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         velocityContext.put( "bundleVersion", XCodeService.getBundleVersion() );
         velocityContext.put( "title", InfoPlistService.getString( plist, "CFBundleDisplayName" ) );
 
+        File iconFile = null;
+
         String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
         if ( bundleIconFileId == null || bundleIconFileId.length() == 0 ) {
+            getLog().warn( "There was no CFBundleIconFile specified in the Info.plist." );
             velocityContext.put( "downloadIconUrl", "" );
             velocityContext.put( "itunesIconUrl", "" );
         }
         else {
-            File iconFile = XCodeService.getProjectFile( bundleIconFileId );
+            iconFile = XCodeService.getProjectFile( bundleIconFileId );
+            if ( iconFile == null ) {
+                getLog().error( "CFBundleIconFile was specified in the Info.plist but could not be located: " + bundleIconFileId );
+                throw new IllegalStateException();
+            }
             velocityContext.put( "downloadIconUrl", "${serverBaseUrl}" + iconFile.getName() );
             velocityContext.put( "itunesIconUrl", "${serverBaseUrl}" + iconFile.getName() );
         }

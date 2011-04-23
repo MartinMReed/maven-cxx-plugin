@@ -78,10 +78,16 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
         String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
         if ( bundleIconFileId == null || bundleIconFileId.length() == 0 ) {
+            getLog().warn( "There was no CFBundleIconFile specified in the Info.plist." );
             return;
         }
 
         File bundleIconFile = XCodeService.getProjectFile( bundleIconFileId );
+        if ( bundleIconFile == null ) {
+            getLog().error( "CFBundleIconFile was specified in the Info.plist but could not be located: " + bundleIconFileId );
+            throw new IllegalStateException();
+        }
+
         prepareTargetFile( target, bundleIconFile, bundleIconFile.getName() );
     }
 
