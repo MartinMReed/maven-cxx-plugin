@@ -30,9 +30,27 @@ public final class InitializeMojo extends JoJoMojoImpl {
      */
     public String configuration;
 
+    /**
+     * @parameter
+     */
+    public String[] targetIncludes;
+
+    /**
+     * @parameter
+     */
+    public String[] targetExcludes;
+
     @Override
     public final void execute() {
 
         XCodeService.setConfiguration( configuration );
+
+        if ( targetIncludes != null && targetIncludes.length > 0 ) {
+            XCodeService.setTargetIncludes( targetIncludes );
+        }
+
+        if ( targetExcludes != null && targetExcludes.length > 0 ) {
+            XCodeService.setTargetExcludes( targetExcludes );
+        }
     }
 }

@@ -33,21 +33,11 @@ import org.hardisonbrewing.maven.core.TemplateService;
  */
 public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
-    /**
-     * @parameter
-     */
-    public String target;
-
     @Override
     public final void execute() {
 
-        if ( target != null ) {
+        for (String target : XCodeService.getTargets()) {
             execute( target );
-        }
-        else {
-            for (String target : XCodeService.getTargets()) {
-                execute( target );
-            }
         }
     }
 
