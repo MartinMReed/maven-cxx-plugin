@@ -21,7 +21,6 @@ import generated.Plist;
 
 import java.io.File;
 
-import org.hardisonbrewing.maven.core.ArchiveService;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
@@ -54,16 +53,8 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         copyConfigBuildFiles( target );
 
         if ( XCodeService.isApplicationType( target ) ) {
-
             copyProvisioningFile( target );
-
-            try {
-                copyIpaFile( target );
-            }
-            catch (Exception e) {
-                getLog().error( "Unable to create IPA file: " + target, e );
-                throw new IllegalStateException( e );
-            }
+            copyIpaFile( target );
         }
 
         copyIconFile( target );
@@ -121,54 +112,18 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         return file.getAbsolutePath().substring( directoryRoot.length() );
     }
 
-    private void copyIpaFile( String target ) throws Exception {
+    private void copyIpaFile( String target ) {
 
-        String targetProductName = PropertiesService.getTargetProductName( target );
-
-        StringBuffer appFilePath = new StringBuffer();
-        appFilePath.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
-        appFilePath.append( File.separator );
-        appFilePath.append( targetProductName );
-        File appFile = new File( appFilePath.toString() );
-
-        StringBuffer payloadTempDirPath = new StringBuffer();
-        payloadTempDirPath.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
-        payloadTempDirPath.append( File.separator );
-        payloadTempDirPath.append( "IPA" );
-        File payloadTempDir = new File( payloadTempDirPath.toString() );
-        payloadTempDir.mkdirs();
-
-        StringBuffer payloadDirPath = new StringBuffer();
-        payloadDirPath.append( payloadTempDirPath );
-        payloadDirPath.append( File.separator );
-        payloadDirPath.append( "Payload" );
-        payloadDirPath.append( File.separator );
-        payloadDirPath.append( targetProductName );
-        File payloadDir = new File( payloadDirPath.toString() );
-        payloadDir.mkdirs();
-
-        FileUtils.copyDirectoryStructure( appFile, payloadDir );
-
-        StringBuffer destFilePath = new StringBuffer();
-        destFilePath.append( payloadTempDirPath );
-        destFilePath.append( File.separator );
-        destFilePath.append( target );
-
-        StringBuffer zipFilePath = new StringBuffer();
-        zipFilePath.append( destFilePath );
-        zipFilePath.append( ".zip" );
-        File zipFile = new File( zipFilePath.toString() );
-
-        ArchiveService.archive( payloadTempDir, zipFile );
+        String rootDirectory = TargetDirectoryService.getTargetBuildDirPath( target );
 
         StringBuffer ipaFilePath = new StringBuffer();
-        ipaFilePath.append( destFilePath );
+        ipaFilePath.append( rootDirectory );
+        ipaFilePath.append( File.separator );
+        ipaFilePath.append( target );
         ipaFilePath.append( ".ipa" );
         File ipaFile = new File( ipaFilePath.toString() );
 
-        FileUtils.rename( zipFile, ipaFile );
-
-        prepareTargetFile( target, ipaFile, getFilename( payloadTempDirPath.toString(), ipaFile ) );
+        prepareTargetFile( target, ipaFile, getFilename( rootDirectory, ipaFile ) );
     }
 
     private final void prepareTargetFile( String target, File src, String fileName ) {
