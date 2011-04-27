@@ -20,9 +20,10 @@ package org.hardisonbrewing.maven.cxx.xcode;
 import generated.Plist;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
 
 public final class XCodeService {
@@ -33,6 +34,9 @@ public final class XCodeService {
     private static String configuration;
 
     private static Hashtable<String, String> fileIndex;
+
+    private static String[] targetIncludes;
+    private static String[] targetExcludes;
 
     private XCodeService() {
 
@@ -47,8 +51,46 @@ public final class XCodeService {
 
     public static String[] getTargets() {
 
-        String targets = PropertiesService.getXCodeProperty( "targets" );
-        return targets.split( "," );
+        String targetsProperty = PropertiesService.getXCodeProperty( "targets" );
+        if ( targetsProperty == null ) {
+            return null;
+        }
+
+        String[] targets = targetsProperty.split( "," );
+        if ( targetIncludes == null && targetExcludes == null ) {
+            return targets;
+        }
+
+        List<String> _targets = new ArrayList<String>();
+
+        if ( targetIncludes != null ) {
+            for (String target : targets) {
+                include_loop: for (String include : targetIncludes) {
+                    if ( target.equalsIgnoreCase( include ) ) {
+                        _targets.add( target );
+                        break include_loop;
+                    }
+                }
+            }
+        }
+        else {
+            for (String target : targets) {
+                boolean match = false;
+                exclude_loop: for (String exclude : targetExcludes) {
+                    if ( target.equalsIgnoreCase( exclude ) ) {
+                        match = true;
+                        break exclude_loop;
+                    }
+                }
+                if ( !match ) {
+                    _targets.add( target );
+                }
+            }
+        }
+
+        targets = new String[_targets.size()];
+        _targets.toArray( targets );
+        return targets;
     }
 
     public static final String getProject() {
@@ -171,7 +213,6 @@ public final class XCodeService {
     public static final String getProjectFilePath( String referenceName ) {
 
         String canonicalPath = getCanonicalProjectFilePath( referenceName );
-        JoJoMojo.getMojo().getLog().error( referenceName + " canonicalPath: " + canonicalPath );
         if ( canonicalPath == null ) {
             return null;
         }
@@ -196,5 +237,15 @@ public final class XCodeService {
     public static final void setFileIndex( Hashtable<String, String> fileIndex ) {
 
         XCodeService.fileIndex = fileIndex;
+    }
+
+    public static final void setTargetIncludes( String[] targetIncludes ) {
+
+        XCodeService.targetIncludes = targetIncludes;
+    }
+
+    public static final void setTargetExcludes( String[] targetExcludes ) {
+
+        XCodeService.targetExcludes = targetExcludes;
     }
 }

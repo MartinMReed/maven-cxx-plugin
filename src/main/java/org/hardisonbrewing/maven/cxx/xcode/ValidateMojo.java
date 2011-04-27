@@ -31,6 +31,16 @@ public final class ValidateMojo extends JoJoMojoImpl {
      */
     public String provisioningProfile;
 
+    /**
+     * @parameter
+     */
+    public String[] targetIncludes;
+
+    /**
+     * @parameter
+     */
+    public String[] targetExcludes;
+
     @Override
     public final void execute() {
 
@@ -42,6 +52,13 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
         if ( provisioningProfile != null ) {
             InstallProvisioningProfileMojo.assertProvisioningProfile( provisioningProfile );
+        }
+
+        if ( targetIncludes != null && targetExcludes != null ) {
+            if ( targetIncludes.length > 0 && targetExcludes.length > 0 ) {
+                JoJoMojo.getMojo().getLog().error( "Invalid target configuration! The pom.xml must not specify both `targetIncludes` and `targetExcludes`." );
+                throw new IllegalStateException();
+            }
         }
     }
 }
