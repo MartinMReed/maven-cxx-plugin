@@ -21,6 +21,7 @@ import generated.Dict;
 import generated.Plist;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,16 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
      * @parameter
      */
     public String provisioningProfile;
+
+    /**
+     * @parameter
+     */
+    public String[] targetIncludes;
+
+    /**
+     * @parameter
+     */
+    public String[] targetExcludes;
 
     private final Hashtable<String, String> groupIndex = new Hashtable<String, String>();
     private final Hashtable<String, String> fileIndex = new Hashtable<String, String>();
@@ -153,18 +164,61 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
     private void putTargets( Dict dict, Properties properties ) {
 
-        List<String> targets = PlistService.getStringArray( dict, "targets" );
-        String _targets = "";
+        List<String> targets = getTargets( dict );
 
+        XCodeService.setTargets( targets );
+
+        String _targets = "";
         for (String target : targets) {
-            Dict productReference = keyIndex.get( target );
             if ( !_targets.isEmpty() ) {
                 _targets += ",";
             }
-            _targets += PlistService.getString( productReference, "name" );
+            _targets += target;
+        }
+        properties.put( "targets", _targets );
+    }
+
+    private List<String> getTargets( Dict dict ) {
+
+        List<String> targets = PlistService.getStringArray( dict, "targets" );
+
+        for (int i = 0; i < targets.size(); i++) {
+            Dict productReference = keyIndex.get( targets.get( i ) );
+            targets.set( i, PlistService.getString( productReference, "name" ) );
         }
 
-        properties.put( "targets", _targets );
+        if ( targetIncludes == null && targetExcludes == null ) {
+            return targets;
+        }
+
+        List<String> _targets = new ArrayList<String>();
+
+        if ( targetIncludes != null ) {
+            for (String target : targets) {
+                include_loop: for (String include : targetIncludes) {
+                    if ( target.equalsIgnoreCase( include ) ) {
+                        _targets.add( target );
+                        break include_loop;
+                    }
+                }
+            }
+        }
+        else {
+            for (String target : targets) {
+                boolean match = false;
+                exclude_loop: for (String exclude : targetExcludes) {
+                    if ( target.equalsIgnoreCase( exclude ) ) {
+                        match = true;
+                        break exclude_loop;
+                    }
+                }
+                if ( !match ) {
+                    _targets.add( target );
+                }
+            }
+        }
+
+        return _targets;
     }
 
     private void putDefaultCongurationName( Dict dict, Properties properties ) {
