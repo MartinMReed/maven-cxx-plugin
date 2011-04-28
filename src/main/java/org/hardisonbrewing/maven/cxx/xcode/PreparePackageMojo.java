@@ -118,7 +118,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private final void prepareTargetFile( String target, File src, String fileName ) {
 
-        if ( XCodeService.getTargets().length > 1 ) {
+        if ( XCodeService.getTargets().size() > 1 ) {
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append( target );
             stringBuffer.append( File.separator );

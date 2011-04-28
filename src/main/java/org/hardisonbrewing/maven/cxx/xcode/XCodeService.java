@@ -20,7 +20,6 @@ package org.hardisonbrewing.maven.cxx.xcode;
 import generated.Plist;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -35,8 +34,7 @@ public final class XCodeService {
 
     private static Hashtable<String, String> fileIndex;
 
-    private static String[] targetIncludes;
-    private static String[] targetExcludes;
+    private static List<String> targets;
 
     private XCodeService() {
 
@@ -47,50 +45,6 @@ public final class XCodeService {
 
         String productType = PropertiesService.getXCodeProperty( target, "productType" );
         return "com.apple.product-type.application".equals( productType );
-    }
-
-    public static String[] getTargets() {
-
-        String targetsProperty = PropertiesService.getXCodeProperty( "targets" );
-        if ( targetsProperty == null ) {
-            return null;
-        }
-
-        String[] targets = targetsProperty.split( "," );
-        if ( targetIncludes == null && targetExcludes == null ) {
-            return targets;
-        }
-
-        List<String> _targets = new ArrayList<String>();
-
-        if ( targetIncludes != null ) {
-            for (String target : targets) {
-                include_loop: for (String include : targetIncludes) {
-                    if ( target.equalsIgnoreCase( include ) ) {
-                        _targets.add( target );
-                        break include_loop;
-                    }
-                }
-            }
-        }
-        else {
-            for (String target : targets) {
-                boolean match = false;
-                exclude_loop: for (String exclude : targetExcludes) {
-                    if ( target.equalsIgnoreCase( exclude ) ) {
-                        match = true;
-                        break exclude_loop;
-                    }
-                }
-                if ( !match ) {
-                    _targets.add( target );
-                }
-            }
-        }
-
-        targets = new String[_targets.size()];
-        _targets.toArray( targets );
-        return targets;
     }
 
     public static final String getProject() {
@@ -239,13 +193,13 @@ public final class XCodeService {
         XCodeService.fileIndex = fileIndex;
     }
 
-    public static final void setTargetIncludes( String[] targetIncludes ) {
+    public static List<String> getTargets() {
 
-        XCodeService.targetIncludes = targetIncludes;
+        return targets;
     }
 
-    public static final void setTargetExcludes( String[] targetExcludes ) {
+    public static final void setTargets( List<String> targets ) {
 
-        XCodeService.targetExcludes = targetExcludes;
+        XCodeService.targets = targets;
     }
 }

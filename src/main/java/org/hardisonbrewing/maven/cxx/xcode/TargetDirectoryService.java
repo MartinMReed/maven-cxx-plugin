@@ -46,7 +46,7 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
 
     public static final String getTempPackagePath( String target ) {
 
-        if ( XCodeService.getTargets().length <= 1 ) {
+        if ( XCodeService.getTargets().size() <= 1 ) {
             return getTempPackagePath();
         }
 
