@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import generated.Plist;
@@ -27,7 +26,17 @@ import org.hardisonbrewing.maven.core.ProjectService;
 
 public final class XCodeService {
 
+    public static final String MOBILEPROVISION_EXTENSION = "mobileprovision";
     public static final String XCODEPROJ_EXTENSION = "xcodeproj";
+    public static final String IPA_EXTENSION = "ipa";
+
+    public static final String PRODUCT_TYPE_APPLICATION = "com.apple.product-type.application";
+
+    public static final String PROP_PRODUCT_TYPE = "productType";
+    public static final String PROP_DEFAULT_CONFIG_NAME = "defaultConfigurationName";
+    public static final String PROP_BUILD_CONFIG_LIST = "buildConfigurationList";
+    public static final String PROP_PRODUCT_REFERENCE = "productReference";
+    public static final String PROP_TARGETS = "targets";
 
     private static String project;
     private static String configuration;
@@ -43,8 +52,8 @@ public final class XCodeService {
 
     public static boolean isApplicationType( String target ) {
 
-        String productType = PropertiesService.getXCodeProperty( target, "productType" );
-        return "com.apple.product-type.application".equals( productType );
+        String productType = PropertiesService.getXCodeProperty( target, PROP_PRODUCT_TYPE );
+        return PRODUCT_TYPE_APPLICATION.equals( productType );
     }
 
     public static final String getProject() {
@@ -126,7 +135,7 @@ public final class XCodeService {
         StringBuffer plistPath = new StringBuffer();
         plistPath.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
         plistPath.append( File.separator );
-        plistPath.append( "Info.plist" );
+        plistPath.append( InfoPlistService.INFO_PLIST );
         return plistPath.toString();
     }
 
@@ -142,14 +151,14 @@ public final class XCodeService {
         plistPath.append( File.separator );
         plistPath.append( PropertiesService.getTargetProductName( target ) );
         plistPath.append( File.separator );
-        plistPath.append( "Info.plist" );
+        plistPath.append( InfoPlistService.INFO_PLIST );
         return plistPath.toString();
     }
 
     public static final String getConfiguration( String target ) {
 
         if ( configuration == null ) {
-            configuration = PropertiesService.getXCodeProperty( target, "defaultConfigurationName" );
+            configuration = PropertiesService.getXCodeProperty( target, XCodeService.PROP_DEFAULT_CONFIG_NAME );
         }
         return configuration;
     }

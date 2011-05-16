@@ -65,7 +65,8 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         ipaFilePath.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
         ipaFilePath.append( File.separator );
         ipaFilePath.append( target );
-        ipaFilePath.append( ".ipa" );
+        ipaFilePath.append( "." );
+        ipaFilePath.append( XCodeService.IPA_EXTENSION );
 
         cmd.add( "-o" );
         cmd.add( ipaFilePath.toString() );

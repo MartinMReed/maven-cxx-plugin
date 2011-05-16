@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
@@ -49,8 +48,10 @@ public final class CompileMojo extends JoJoMojoImpl {
         cmd.add( "-project" );
         cmd.add( XCodeService.getXcodeprojPath() );
 
-        String targetBuildDirPath = TargetDirectoryService.getTargetBuildDirPath( target );
-        targetBuildDirPath = FileUtils.getProjectCanonicalPath( targetBuildDirPath );
+        cmd.add( "-target" );
+        cmd.add( target );
+
+        String targetBuildDirPath = getTargetBuildPath( target );
 
         cmd.add( "SYMROOT=$(PROJECT_DIR)" + targetBuildDirPath );
 
@@ -69,23 +70,23 @@ public final class CompileMojo extends JoJoMojoImpl {
         configurationBuildDir.append( XCodeService.getConfiguration( target ) );
         cmd.add( configurationBuildDir.toString() );
 
-        cmd.add( "-target" );
-        cmd.add( target );
-
         execute( cmd );
+    }
+
+    private String getTargetBuildPath( String target ) {
+
+        String targetBuildDirPath = TargetDirectoryService.getTargetBuildDirPath( target );
+        targetBuildDirPath = FileUtils.getProjectCanonicalPath( targetBuildDirPath );
+        return targetBuildDirPath;
     }
 
     protected Commandline buildCommandline( List<String> cmd ) {
 
-        Commandline commandLine;
-
         try {
-            commandLine = CommandLineService.build( cmd );
+            return CommandLineService.build( cmd );
         }
         catch (CommandLineException e) {
             throw new IllegalStateException( e.getMessage() );
         }
-
-        return commandLine;
     }
 }

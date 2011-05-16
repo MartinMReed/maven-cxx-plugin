@@ -76,6 +76,6 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
 
     public static final String getTargetProductName( String target ) {
 
-        return getXCodeProperty( target, "productReference" );
+        return getXCodeProperty( target, XCodeService.PROP_PRODUCT_REFERENCE );
     }
 }
