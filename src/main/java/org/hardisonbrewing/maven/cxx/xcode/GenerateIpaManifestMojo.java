@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import generated.Plist;
@@ -33,6 +32,9 @@ import org.hardisonbrewing.maven.core.TemplateService;
  */
 public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
+    private static final String DOWNLOAD_ICON_URL = "downloadIconUrl";
+    private static final String ITUNES_ICON_URL = "itunesIconUrl";
+
     @Override
     public final void execute() {
 
@@ -44,7 +46,11 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
     private final void execute( String target ) {
 
         if ( !XCodeService.isApplicationType( target ) ) {
-            getLog().info( "No targets found of type 'com.apple.product-type.application`...skipping" );
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( "No targets found of type `" );
+            stringBuffer.append( XCodeService.PRODUCT_TYPE_APPLICATION );
+            stringBuffer.append( "`...skipping" );
+            getLog().info( stringBuffer.toString() );
             return;
         }
 
@@ -64,28 +70,49 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
         Plist plist = XCodeService.readInfoPlist( XCodeService.getConvertedInfoPlist( target ) );
 
+        StringBuffer ipaFilePath = new StringBuffer();
+        ipaFilePath.append( target );
+        ipaFilePath.append( "." );
+        ipaFilePath.append( XCodeService.IPA_EXTENSION );
+
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put( "ipaUrl", target + ".ipa" );
+        velocityContext.put( "ipaUrl", ipaFilePath.toString() );
         velocityContext.put( "bundleIdentifier", XCodeService.getBundleIdentifier() );
         velocityContext.put( "bundleVersion", XCodeService.getBundleVersion() );
         velocityContext.put( "title", InfoPlistService.getString( plist, "CFBundleDisplayName" ) );
 
         File iconFile = null;
 
-        String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
+        String bundleIconFileId = InfoPlistService.getString( plist, InfoPlistService.PROP_BUNDLE_ICON );
         if ( bundleIconFileId == null || bundleIconFileId.length() == 0 ) {
-            getLog().warn( "There was no CFBundleIconFile specified in the Info.plist." );
-            velocityContext.put( "downloadIconUrl", "" );
-            velocityContext.put( "itunesIconUrl", "" );
+
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( "There was no `" );
+            stringBuffer.append( InfoPlistService.PROP_BUNDLE_ICON );
+            stringBuffer.append( "` specified in the " );
+            stringBuffer.append( InfoPlistService.INFO_PLIST );
+            stringBuffer.append( "." );
+            getLog().warn( stringBuffer.toString() );
+
+            velocityContext.put( DOWNLOAD_ICON_URL, "" );
+            velocityContext.put( ITUNES_ICON_URL, "" );
         }
         else {
             iconFile = XCodeService.getProjectFile( bundleIconFileId );
             if ( iconFile == null ) {
-                getLog().error( "CFBundleIconFile was specified in the Info.plist but could not be located: " + bundleIconFileId );
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append( "`" );
+                stringBuffer.append( InfoPlistService.PROP_BUNDLE_ICON );
+                stringBuffer.append( "` was specified in the " );
+                stringBuffer.append( InfoPlistService.INFO_PLIST );
+                stringBuffer.append( " but could not be located: " );
+                stringBuffer.append( bundleIconFileId );
+                getLog().error( stringBuffer.toString() );
                 throw new IllegalStateException();
             }
-            velocityContext.put( "downloadIconUrl", "${serverBaseUrl}" + iconFile.getName() );
-            velocityContext.put( "itunesIconUrl", "${serverBaseUrl}" + iconFile.getName() );
+            String iconUrlValue = "${serverBaseUrl}" + iconFile.getName();
+            velocityContext.put( DOWNLOAD_ICON_URL, iconUrlValue );
+            velocityContext.put( ITUNES_ICON_URL, iconUrlValue );
         }
 
         Template template = TemplateService.getTemplate( "/xcode/ipaManifest.vm" );

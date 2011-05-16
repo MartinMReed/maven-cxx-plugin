@@ -25,6 +25,9 @@ import java.util.List;
 
 public class InfoPlistService {
 
+    public static final String INFO_PLIST = "Info.plist";
+    public static final String PROP_BUNDLE_ICON = "CFBundleIconFile";
+
     public static final String getString( Plist plist, String key ) {
 
         generated.String value = (generated.String) getValue( plist, key );

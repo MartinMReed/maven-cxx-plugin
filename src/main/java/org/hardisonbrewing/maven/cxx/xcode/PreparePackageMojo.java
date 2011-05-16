@@ -57,15 +57,28 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
             return;
         }
 
-        String bundleIconFileId = InfoPlistService.getString( plist, "CFBundleIconFile" );
+        String bundleIconFileId = InfoPlistService.getString( plist, InfoPlistService.PROP_BUNDLE_ICON );
         if ( bundleIconFileId == null || bundleIconFileId.length() == 0 ) {
-            getLog().warn( "There was no CFBundleIconFile specified in the Info.plist." );
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( "There was no `" );
+            stringBuffer.append( InfoPlistService.PROP_BUNDLE_ICON );
+            stringBuffer.append( "` specified in the " );
+            stringBuffer.append( InfoPlistService.INFO_PLIST );
+            stringBuffer.append( "." );
+            getLog().warn( stringBuffer.toString() );
             return;
         }
 
         File bundleIconFile = XCodeService.getProjectFile( bundleIconFileId );
         if ( bundleIconFile == null ) {
-            getLog().error( "CFBundleIconFile was specified in the Info.plist but could not be located: " + bundleIconFileId );
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( "`" );
+            stringBuffer.append( InfoPlistService.PROP_BUNDLE_ICON );
+            stringBuffer.append( "` was specified in the " );
+            stringBuffer.append( InfoPlistService.INFO_PLIST );
+            stringBuffer.append( " but could not be located: " );
+            stringBuffer.append( bundleIconFileId );
+            getLog().error( stringBuffer.toString() );
             throw new IllegalStateException();
         }
 
@@ -79,10 +92,16 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         srcFilePath.append( File.separator );
         srcFilePath.append( PropertiesService.getTargetProductName( target ) );
         srcFilePath.append( File.separator );
-        srcFilePath.append( "embedded.mobileprovision" );
+        srcFilePath.append( "embedded." );
+        srcFilePath.append( XCodeService.MOBILEPROVISION_EXTENSION );
         File srcFile = new File( srcFilePath.toString() );
 
-        prepareTargetFile( target, srcFile, target + ".mobileprovision" );
+        StringBuffer destFilePath = new StringBuffer();
+        destFilePath.append( target );
+        destFilePath.append( "." );
+        destFilePath.append( XCodeService.MOBILEPROVISION_EXTENSION );
+
+        prepareTargetFile( target, srcFile, destFilePath.toString() );
     }
 
     private void copyConfigBuildFiles( String target ) {
@@ -110,7 +129,8 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         ipaFilePath.append( rootDirectory );
         ipaFilePath.append( File.separator );
         ipaFilePath.append( target );
-        ipaFilePath.append( ".ipa" );
+        ipaFilePath.append( "." );
+        ipaFilePath.append( XCodeService.IPA_EXTENSION );
         File ipaFile = new File( ipaFilePath.toString() );
 
         prepareTargetFile( target, ipaFile, getFilename( rootDirectory, ipaFile ) );

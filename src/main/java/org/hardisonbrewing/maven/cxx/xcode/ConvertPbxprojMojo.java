@@ -36,6 +36,9 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  */
 public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
+    private static final String PROP_VAL_NAME = "name";
+    private static final String PROP_VAL_PATH = "path";
+
     /**
      * @parameter
      */
@@ -103,7 +106,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
             }
 
             StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( PlistService.getString( dict, "name" ) );
+            stringBuffer.append( PlistService.getString( dict, PROP_VAL_NAME ) );
             stringBuffer.append( ".infoPlistFile" );
             String infoPlistFileKey = stringBuffer.toString();
 
@@ -133,9 +136,9 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
         for (String key : isaIndex.get( "PBXFileReference" )) {
             Dict dict = keyIndex.get( key );
-            String name = PlistService.getString( dict, "name" );
+            String name = PlistService.getString( dict, PROP_VAL_NAME );
             if ( name == null ) {
-                name = PlistService.getString( dict, "path" );
+                name = PlistService.getString( dict, PROP_VAL_PATH );
             }
             String path = resolvePath( key );
             fileIndex.put( name, path );
@@ -150,7 +153,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         StringBuffer stringBuffer = new StringBuffer();
         while (key != null) {
             Dict dict = keyIndex.get( key );
-            String path = PlistService.getString( dict, "path" );
+            String path = PlistService.getString( dict, PROP_VAL_PATH );
             if ( path != null ) {
                 if ( stringBuffer.length() != 0 ) {
                     stringBuffer.insert( 0, File.separator );
@@ -175,16 +178,16 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
             }
             _targets += target;
         }
-        properties.put( "targets", _targets );
+        properties.put( XCodeService.PROP_TARGETS, _targets );
     }
 
     private List<String> getTargets( Dict dict ) {
 
-        List<String> targets = PlistService.getStringArray( dict, "targets" );
+        List<String> targets = PlistService.getStringArray( dict, XCodeService.PROP_TARGETS );
 
         for (int i = 0; i < targets.size(); i++) {
             Dict productReference = keyIndex.get( targets.get( i ) );
-            targets.set( i, PlistService.getString( productReference, "name" ) );
+            targets.set( i, PlistService.getString( productReference, PROP_VAL_NAME ) );
         }
 
         if ( targetIncludes == null && targetExcludes == null ) {
@@ -223,33 +226,35 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
     private void putDefaultCongurationName( Dict dict, Properties properties ) {
 
-        String buildConfigurationListId = PlistService.getString( dict, "buildConfigurationList" );
+        String buildConfigurationListId = PlistService.getString( dict, XCodeService.PROP_BUILD_CONFIG_LIST );
         Dict buildConfigurationList = keyIndex.get( buildConfigurationListId );
-        String defaultConfigurationName = PlistService.getString( buildConfigurationList, "defaultConfigurationName" );
-        properties.put( "defaultConfigurationName", defaultConfigurationName );
+        String defaultConfigurationName = PlistService.getString( buildConfigurationList, XCodeService.PROP_DEFAULT_CONFIG_NAME );
+        properties.put( XCodeService.PROP_DEFAULT_CONFIG_NAME, defaultConfigurationName );
     }
 
     private void putTargetProductType( Dict dict, Properties properties ) {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( PlistService.getString( dict, "name" ) );
-        stringBuffer.append( ".productType" );
+        stringBuffer.append( PlistService.getString( dict, PROP_VAL_NAME ) );
+        stringBuffer.append( "." );
+        stringBuffer.append( XCodeService.PROP_PRODUCT_TYPE );
         String propertyKey = stringBuffer.toString();
 
-        String productType = PlistService.getString( dict, "productType" );
+        String productType = PlistService.getString( dict, XCodeService.PROP_PRODUCT_TYPE );
         properties.put( propertyKey, productType );
     }
 
     private void putTargetProductReference( Dict dict, Properties properties ) {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( PlistService.getString( dict, "name" ) );
-        stringBuffer.append( ".productReference" );
+        stringBuffer.append( PlistService.getString( dict, PROP_VAL_NAME ) );
+        stringBuffer.append( "." );
+        stringBuffer.append( XCodeService.PROP_PRODUCT_REFERENCE );
         String propertyKey = stringBuffer.toString();
 
-        String productReferenceId = PlistService.getString( dict, "productReference" );
+        String productReferenceId = PlistService.getString( dict, XCodeService.PROP_PRODUCT_REFERENCE );
         Dict productReference = keyIndex.get( productReferenceId );
-        String productReferencePath = PlistService.getString( productReference, "path" );
+        String productReferencePath = PlistService.getString( productReference, PROP_VAL_PATH );
         properties.put( propertyKey, productReferencePath );
     }
 
@@ -257,13 +262,14 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
         // defaultConfigurationName key
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( PlistService.getString( dict, "name" ) );
-        stringBuffer.append( ".defaultConfigurationName" );
+        stringBuffer.append( PlistService.getString( dict, PROP_VAL_NAME ) );
+        stringBuffer.append( "." );
+        stringBuffer.append( XCodeService.PROP_DEFAULT_CONFIG_NAME );
         String propertyKey = stringBuffer.toString();
 
-        String buildConfigurationListId = PlistService.getString( dict, "buildConfigurationList" );
+        String buildConfigurationListId = PlistService.getString( dict, XCodeService.PROP_BUILD_CONFIG_LIST );
         Dict buildConfigurationList = keyIndex.get( buildConfigurationListId );
-        String defaultConfigurationName = PlistService.getString( buildConfigurationList, "defaultConfigurationName" );
+        String defaultConfigurationName = PlistService.getString( buildConfigurationList, XCodeService.PROP_DEFAULT_CONFIG_NAME );
         properties.put( propertyKey, defaultConfigurationName );
     }
 
@@ -293,15 +299,13 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
     private void generatePlistFile( File file ) {
 
-        String pbxprojFilePath = XCodeService.getPbxprojPath();
-
         List<String> cmd = new LinkedList<String>();
         cmd.add( "plutil" );
         cmd.add( "-convert" );
         cmd.add( "xml1" );
         cmd.add( "-o" );
         cmd.add( file.getAbsolutePath() );
-        cmd.add( pbxprojFilePath );
+        cmd.add( XCodeService.getPbxprojPath() );
         execute( cmd );
     }
 }
