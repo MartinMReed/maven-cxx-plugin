@@ -108,15 +108,6 @@ public final class XCodeService {
         return ProjectService.generateSnapshotVersion();
     }
 
-    public static final String getBundleIdentifier() {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( ProjectService.getProject().getGroupId() );
-        stringBuffer.append( "." );
-        stringBuffer.append( ProjectService.getProject().getArtifactId() );
-        return stringBuffer.toString();
-    }
-
     public static final Plist readInfoPlist( File file ) {
 
         if ( file.exists() ) {
