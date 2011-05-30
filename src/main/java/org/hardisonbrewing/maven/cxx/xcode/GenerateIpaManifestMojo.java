@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.core.StringEscapeUtils;
 import org.hardisonbrewing.maven.core.TemplateService;
 
 /**
@@ -76,8 +77,8 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         ipaFilePath.append( XCodeService.IPA_EXTENSION );
 
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put( "ipaUrl", ipaFilePath.toString() );
-        velocityContext.put( "bundleIdentifier", XCodeService.getBundleIdentifier() );
+        velocityContext.put( "ipaUrl", StringEscapeUtils.escapeURI( ipaFilePath.toString() ) );
+        velocityContext.put( "bundleIdentifier", InfoPlistService.getString( plist, "CFBundleIdentifier" ) );
         velocityContext.put( "bundleVersion", XCodeService.getBundleVersion() );
         velocityContext.put( "title", InfoPlistService.getString( plist, "CFBundleDisplayName" ) );
 
@@ -110,7 +111,7 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
                 getLog().error( stringBuffer.toString() );
                 throw new IllegalStateException();
             }
-            String iconUrlValue = "${serverBaseUrl}" + iconFile.getName();
+            String iconUrlValue = "${serverBaseUrl}" + StringEscapeUtils.escapeURI( iconFile.getName() );
             velocityContext.put( DOWNLOAD_ICON_URL, iconUrlValue );
             velocityContext.put( ITUNES_ICON_URL, iconUrlValue );
         }
