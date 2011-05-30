@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.hardisonbrewing</groupId>
 	<artifactId>maven-cxx-plugin</artifactId>
-	<version>1.1.9</version>
+	<version>1.1.10-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>${project.artifactId}</name>
 	<build>
@@ -97,13 +97,13 @@
 		</dependency>
 	</dependencies>
 	<distributionManagement>
-<!--		<repository>-->
-<!--			<id>hardisonbrewing-snapshots</id>-->
-<!--			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots</url>-->
-<!--		</repository>-->
 		<repository>
-			<id>hardisonbrewing-releases</id>
-			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url>
+			<id>hardisonbrewing-snapshots</id>
+			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots</url>
 		</repository>
+<!--		<repository>-->
+<!--			<id>hardisonbrewing-releases</id>-->
+<!--			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url>-->
+<!--		</repository>-->
 	</distributionManagement>
 </project>
