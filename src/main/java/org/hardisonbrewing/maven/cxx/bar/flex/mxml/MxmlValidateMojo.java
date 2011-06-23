@@ -31,6 +31,6 @@ public final class MxmlValidateMojo extends ValidateMojo {
 
         super.execute();
 
-        checkPropertyExists( PropertiesService.ADOBE_FLEX_HOME, true );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.ADOBE_FLEX_HOME, true );
     }
 }

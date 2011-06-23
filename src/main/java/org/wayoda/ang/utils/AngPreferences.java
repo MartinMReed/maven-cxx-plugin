@@ -28,7 +28,7 @@ package org.wayoda.ang.utils;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.wayoda.ang.project.ArduinoBuildEnvironment;
 
 /**

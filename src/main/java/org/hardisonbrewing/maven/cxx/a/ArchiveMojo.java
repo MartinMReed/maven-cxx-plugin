@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.Sources;
+import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
@@ -47,7 +47,7 @@ public final class ArchiveMojo extends JoJoMojoImpl {
         cmd.add( getProject().getArtifactId() + ".a" );
 
         for (int i = 0; i < sources.length; i++) {
-            cmd.add( Sources.replaceExtension( sources[i], "o" ) );
+            cmd.add( SourceFiles.replaceExtension( sources[i], "o" ) );
         }
 
         execute( cmd );

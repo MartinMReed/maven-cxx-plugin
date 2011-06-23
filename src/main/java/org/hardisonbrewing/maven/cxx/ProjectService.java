@@ -15,27 +15,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.arduino;
+package org.hardisonbrewing.maven.cxx;
 
-import java.io.File;
+import org.hardisonbrewing.maven.cxx.generic.Sources;
 
-import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.ProjectService;
+public final class ProjectService extends org.hardisonbrewing.maven.core.ProjectService {
 
-/**
- * @goal arduino-validate
- * @phase validate
- */
-public final class ValidateMojo extends JoJoMojoImpl {
+    private static Sources sources;
 
-    @Override
-    public final void execute() {
+    private ProjectService() {
 
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( "arduino.home", true );
+        // do nothing
+    }
 
-        File arduinoHome = new File( ProjectService.getProperty( "arduino.home" ) );
-        if ( !arduinoHome.exists() || !arduinoHome.isDirectory() ) {
-            throw new IllegalArgumentException( "Property `arduino.home` must be a valid directory." );
-        }
+    public static final String[] getSourceFilePaths() {
+
+        String[] sourceFilePaths = org.hardisonbrewing.maven.core.ProjectService.getSourceFilePaths();
+
+        return sourceFilePaths;
+    }
+
+    public static Sources getSources() {
+
+        return sources;
+    }
+
+    public static void setSources( Sources sources ) {
+
+        ProjectService.sources = sources;
     }
 }

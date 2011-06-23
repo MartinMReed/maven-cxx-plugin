@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.wayoda.ang.libraries.CodeManager;
 import org.wayoda.ang.libraries.Core;
 import org.wayoda.ang.libraries.Library;

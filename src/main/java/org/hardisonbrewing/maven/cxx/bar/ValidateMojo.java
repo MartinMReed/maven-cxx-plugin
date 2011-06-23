@@ -30,34 +30,9 @@ public class ValidateMojo extends JoJoMojoImpl {
 
         validateVersion();
 
-        checkPropertyExists( PropertiesService.BLACKBERRY_TABLET_HOME, false );
-        checkPropertyExists( PropertiesService.BLACKBERRY_TABLET_DEVICE_IP, false );
-        checkPropertyExists( PropertiesService.BLACKBERRY_TABLET_DEVICE_PASSWORD, false );
-    }
-
-    protected final void checkPropertyExists( String key, boolean force ) {
-
-        StringBuffer checkingMessage = new StringBuffer();
-        checkingMessage.append( "Checking property `" );
-        checkingMessage.append( key );
-        checkingMessage.append( "`" );
-        if ( !force ) {
-            checkingMessage.append( " (optional)" );
-        }
-        checkingMessage.append( "..." );
-        getLog().info( checkingMessage );
-
-        String sdkHome = PropertiesService.getProperty( key );
-        if ( sdkHome != null ) {
-            return;
-        }
-        if ( force ) {
-            getLog().error( "Property `" + key + "` must be set!" );
-            throw new IllegalStateException();
-        }
-        else {
-            getLog().warn( "Property `" + key + "` is not set." );
-        }
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.BLACKBERRY_TABLET_HOME, false );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.BLACKBERRY_TABLET_DEVICE_IP, false );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.BLACKBERRY_TABLET_DEVICE_PASSWORD, false );
     }
 
     private final int isSnapshotVersion( String version ) {
