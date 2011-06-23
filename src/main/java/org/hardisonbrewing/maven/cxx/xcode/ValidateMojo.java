@@ -29,11 +29,6 @@ public final class ValidateMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public String provisioningProfile;
-
-    /**
-     * @parameter
-     */
     public String[] targetIncludes;
 
     /**
@@ -44,14 +39,9 @@ public final class ValidateMojo extends JoJoMojoImpl {
     @Override
     public final void execute() {
 
-        String project = XCodeService.getProject();
-        if ( project == null ) {
+        if ( XCodeService.getProject() == null ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate project entry! Expected a file with the extension `" + XCodeService.XCODEPROJ_EXTENSION + "`." );
             throw new IllegalStateException();
-        }
-
-        if ( provisioningProfile != null ) {
-            InstallProvisioningProfileMojo.assertProvisioningProfile( provisioningProfile );
         }
 
         if ( targetIncludes != null && targetExcludes != null ) {

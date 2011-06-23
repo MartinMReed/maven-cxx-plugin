@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.Sources;
+import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
@@ -50,10 +50,10 @@ public class AssembleMojo extends JoJoMojoImpl {
             cmd.add( "c++".equals( language ) ? "g++" : "gcc" );
 
             cmd.add( "-o" );
-            cmd.add( Sources.replaceExtension( sources[i], "o" ) );
+            cmd.add( SourceFiles.replaceExtension( sources[i], "o" ) );
 
             cmd.add( "-c" );
-            cmd.add( Sources.replaceExtension( sources[i], "s" ) );
+            cmd.add( SourceFiles.replaceExtension( sources[i], "s" ) );
 
             execute( cmd );
         }

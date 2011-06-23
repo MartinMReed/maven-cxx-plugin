@@ -19,7 +19,7 @@ package org.hardisonbrewing.maven.cxx;
 
 import org.hardisonbrewing.maven.core.FileUtils;
 
-public class Sources {
+public class SourceFiles {
 
     public static final String replaceExtension( String filePath, String extension ) {
 

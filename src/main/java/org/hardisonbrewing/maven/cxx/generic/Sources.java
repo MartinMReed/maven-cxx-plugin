@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2011 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,33 +15,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.xcode;
+package org.hardisonbrewing.maven.cxx.generic;
 
-import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+public final class Sources {
 
-/**
- * @goal xcode-initialize
- * @phase initialize
- */
-public final class InitializeMojo extends JoJoMojoImpl {
+    public String[] includes;
+    public String[] excludes;
 
-    /**
-     * @parameter
-     */
-    public String provisioningProfile;
+    public String[] getIncludes() {
 
-    /**
-     * @parameter
-     */
-    public String configuration;
+        return includes;
+    }
 
-    @Override
-    public final void execute() {
+    public void setIncludes( String[] includes ) {
 
-        XCodeService.setConfiguration( configuration );
+        this.includes = includes;
+    }
 
-        if ( provisioningProfile != null ) {
-            InstallProvisioningProfileMojo.assertProvisioningProfile( provisioningProfile );
-        }
+    public String[] getExcludes() {
+
+        return excludes;
+    }
+
+    public void setExcludes( String[] excludes ) {
+
+        this.excludes = excludes;
     }
 }

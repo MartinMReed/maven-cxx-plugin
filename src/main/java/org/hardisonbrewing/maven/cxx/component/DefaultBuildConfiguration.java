@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.apache.maven.project.MavenProject;
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 
 public class DefaultBuildConfiguration implements BuildConfiguration {
 

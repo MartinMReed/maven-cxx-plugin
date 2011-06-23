@@ -22,7 +22,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.wayoda.ang.project.ArduinoBuildEnvironment;
 import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;

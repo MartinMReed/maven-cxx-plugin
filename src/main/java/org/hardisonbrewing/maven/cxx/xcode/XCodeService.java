@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 
 public final class XCodeService {
 
