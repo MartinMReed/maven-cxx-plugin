@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.hardisonbrewing</groupId>
 	<artifactId>maven-cxx-plugin</artifactId>
-	<version>1.1.10</version>
+	<version>1.1.11-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>${project.artifactId}</name>
 	<build>
@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>org.hardisonbrewing</groupId>
 			<artifactId>hbc-maven-core</artifactId>
-			<version>1.0.3</version>
+			<version>1.0.4-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.codehaus.plexus</groupId>
@@ -102,13 +102,13 @@
 		</dependency>
 	</dependencies>
 	<distributionManagement>
-<!-- 		<repository> -->
-<!-- 			<id>hardisonbrewing-snapshots</id> -->
-<!-- 			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots</url> -->
-<!-- 		</repository> -->
 		<repository>
-			<id>hardisonbrewing-releases</id>
-			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url>
+			<id>hardisonbrewing-snapshots</id>
+			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots</url>
 		</repository>
+<!--		<repository>-->
+<!--			<id>hardisonbrewing-releases</id>-->
+<!--			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url>-->
+<!--		</repository>-->
 	</distributionManagement>
 </project>
