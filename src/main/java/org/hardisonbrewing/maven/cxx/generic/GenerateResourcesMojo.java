@@ -37,7 +37,9 @@ public class GenerateResourcesMojo extends JoJoMojoImpl {
         String generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
         for (Resource resource : (List<Resource>) getProject().getResources()) {
             File resourceDirectory = new File( resource.getDirectory() );
-            String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory );
+            List<String> includes = resource.getIncludes();
+            List<String> excludes = resource.getExcludes();
+            String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory, includes, excludes );
             for (String filePath : filePaths) {
                 copyFile( filePath, resource.getDirectory(), generatedResourcesDirectory );
             }
