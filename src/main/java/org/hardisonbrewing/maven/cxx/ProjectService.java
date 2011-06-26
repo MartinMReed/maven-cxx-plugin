@@ -30,9 +30,13 @@ public final class ProjectService extends org.hardisonbrewing.maven.core.Project
 
     public static final String[] getSourceFilePaths() {
 
-        String[] sourceFilePaths = org.hardisonbrewing.maven.core.ProjectService.getSourceFilePaths();
+        if ( sources != null ) {
+            String[] includes = sources.includes;
+            String[] excludes = sources.excludes;
+            return org.hardisonbrewing.maven.core.ProjectService.getSourceFilePaths( includes, excludes );
+        }
 
-        return sourceFilePaths;
+        return org.hardisonbrewing.maven.core.ProjectService.getSourceFilePaths();
     }
 
     public static Sources getSources() {

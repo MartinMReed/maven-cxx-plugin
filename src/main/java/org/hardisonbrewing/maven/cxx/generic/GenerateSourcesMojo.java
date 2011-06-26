@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
@@ -54,14 +53,8 @@ public final class GenerateSourcesMojo extends JoJoMojoImpl {
 
     public static final void copyFile( String srcFilePath, String filePathPrefix, String destDirectoryPath ) {
 
-        if ( ".svn".equalsIgnoreCase( srcFilePath ) ) {
-            return;
-        }
-
         File srcFile = new File( srcFilePath );
         File destFile = new File( srcFilePath.replace( filePathPrefix, destDirectoryPath ) );
-
-        JoJoMojo.getMojo().getLog().info( "Copying " + srcFile + " to " + destFile );
 
         if ( srcFile.isDirectory() ) {
             destFile.mkdir();

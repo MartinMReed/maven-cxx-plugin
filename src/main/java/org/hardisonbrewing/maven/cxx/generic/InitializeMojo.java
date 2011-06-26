@@ -51,18 +51,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         if ( sources != null ) {
             ProjectService.setSources( sources );
-            String[] includes = sources.getIncludes();
-            if ( includes != null ) {
-                for (String include : includes) {
-                    getLog().info( "Include: " + include );
-                }
-            }
-            String[] excludes = sources.getExcludes();
-            if ( excludes != null ) {
-                for (String exclude : excludes) {
-                    getLog().info( "Exclude: " + exclude );
-                }
-            }
         }
     }
 
