@@ -260,7 +260,6 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
     private void putTargetDefaultCongurationName( Dict dict, Properties properties ) {
 
-        // defaultConfigurationName key
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( PlistService.getString( dict, PROP_VAL_NAME ) );
         stringBuffer.append( "." );
@@ -270,6 +269,10 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         String buildConfigurationListId = PlistService.getString( dict, XCodeService.PROP_BUILD_CONFIG_LIST );
         Dict buildConfigurationList = keyIndex.get( buildConfigurationListId );
         String defaultConfigurationName = PlistService.getString( buildConfigurationList, XCodeService.PROP_DEFAULT_CONFIG_NAME );
+        if ( defaultConfigurationName == null ) {
+            return;
+        }
+
         properties.put( propertyKey, defaultConfigurationName );
     }
 

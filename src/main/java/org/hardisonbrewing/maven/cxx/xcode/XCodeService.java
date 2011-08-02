@@ -151,6 +151,9 @@ public final class XCodeService {
         if ( configuration == null ) {
             configuration = PropertiesService.getXCodeProperty( target, XCodeService.PROP_DEFAULT_CONFIG_NAME );
         }
+        if ( configuration == null ) {
+            configuration = PropertiesService.getXCodeProperty( XCodeService.PROP_DEFAULT_CONFIG_NAME );
+        }
         return configuration;
     }
 
