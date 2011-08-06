@@ -24,8 +24,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.core.PropertiesService;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 
 /**
  * @goal xcode-install-provisioning-profile
@@ -100,7 +100,7 @@ public class InstallProvisioningProfileMojo extends JoJoMojoImpl {
 
         File file = InstallProvisioningProfileMojo.getProvisioningProfile( provisioningProfile );
         if ( !file.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to located provisioning profile: " + file );
+            JoJoMojo.getMojo().getLog().error( "Unable to locate provisioning profile: " + file );
             throw new IllegalStateException();
         }
     }

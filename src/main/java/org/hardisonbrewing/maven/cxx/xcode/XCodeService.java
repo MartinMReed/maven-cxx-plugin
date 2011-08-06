@@ -32,6 +32,8 @@ public final class XCodeService {
 
     public static final String PRODUCT_TYPE_APPLICATION = "com.apple.product-type.application";
 
+    public static final String CODE_SIGN_IDENTITY = "codesignIdentity";
+
     public static final String PROP_PRODUCT_TYPE = "productType";
     public static final String PROP_DEFAULT_CONFIG_NAME = "defaultConfigurationName";
     public static final String PROP_BUILD_CONFIG_LIST = "buildConfigurationList";

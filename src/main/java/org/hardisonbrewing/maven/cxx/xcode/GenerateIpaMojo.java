@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
@@ -28,6 +29,11 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  * @phase xcode-generate-ipa
  */
 public final class GenerateIpaMojo extends JoJoMojoImpl {
+
+    /**
+     * @parameter
+     */
+    public String provisioningProfile;
 
     @Override
     public void execute() {
@@ -57,8 +63,6 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         appFilePath.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
         appFilePath.append( File.separator );
         appFilePath.append( PropertiesService.getTargetProductName( target ) );
-
-        cmd.add( "-v" );
         cmd.add( appFilePath.toString() );
 
         StringBuffer ipaFilePath = new StringBuffer();
@@ -71,6 +75,21 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         cmd.add( "-o" );
         cmd.add( ipaFilePath.toString() );
 
-        execute( cmd );
+        String codesignIdentity = PropertiesService.getXCodeProperty( XCodeService.CODE_SIGN_IDENTITY );
+        if ( codesignIdentity != null ) {
+            cmd.add( "--sign" );
+            cmd.add( codesignIdentity );
+        }
+
+        if ( provisioningProfile != null ) {
+            File provisioningFile = InstallProvisioningProfileMojo.getProvisioningProfile( provisioningProfile );
+            cmd.add( "--embed" );
+            cmd.add( provisioningFile.getAbsolutePath() );
+        }
+
+        Commandline commandLine = buildCommandline( cmd );
+        commandLine.addEnvironment( "CODESIGN_ALLOCATE", "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate" );
+
+        execute( commandLine );
     }
 }

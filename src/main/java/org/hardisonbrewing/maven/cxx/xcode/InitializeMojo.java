@@ -35,6 +35,11 @@ public final class InitializeMojo extends JoJoMojoImpl {
      */
     public String configuration;
 
+    /**
+     * @parameter
+     */
+    public String codesignCertificate;
+
     @Override
     public final void execute() {
 
@@ -42,6 +47,10 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         if ( provisioningProfile != null ) {
             InstallProvisioningProfileMojo.assertProvisioningProfile( provisioningProfile );
+        }
+
+        if ( codesignCertificate != null ) {
+            InstallCodesignCertificateMojo.assertCodesignCertificate( codesignCertificate );
         }
     }
 }
