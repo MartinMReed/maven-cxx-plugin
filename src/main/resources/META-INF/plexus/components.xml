@@ -327,7 +327,8 @@
 								org.hardisonbrewing:maven-cxx-plugin:xcode-initialize,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-convert-pbxproj</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:xcode-install-provisioning-profile</generate-resources>
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:xcode-install-provisioning-profile,
+								org.hardisonbrewing:maven-cxx-plugin:xcode-install-codesign-certificate</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:xcode-compile,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-convert-plist,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-ipa-manifest</compile>

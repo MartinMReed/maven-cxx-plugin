@@ -42,11 +42,6 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public String provisioningProfile;
-
-    /**
-     * @parameter
-     */
     public String[] targetIncludes;
 
     /**
@@ -68,7 +63,9 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         Plist plist = PlistService.readPlist( plistFile );
         indexProperties( plist );
 
-        Properties properties = buildProperties();
+        Properties properties = PropertiesService.getXCodeProperties();
+
+        buildProperties( properties );
 
         for (Object key : properties.keySet()) {
             getLog().info( key + ": " + properties.getProperty( (String) key ) );
@@ -87,9 +84,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         return new File( stringBuffer.toString() );
     }
 
-    private Properties buildProperties() {
-
-        Properties properties = new Properties();
+    private void buildProperties( Properties properties ) {
 
         for (String key : isaIndex.get( "XCBuildConfiguration" )) {
 
@@ -144,8 +139,6 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
             fileIndex.put( name, path );
         }
         XCodeService.setFileIndex( fileIndex );
-
-        return properties;
     }
 
     private String resolvePath( String key ) {

@@ -57,6 +57,11 @@ public final class CompileMojo extends JoJoMojoImpl {
 
         cmd.add( "BUILD_DIR=$(PROJECT_DIR)" + targetBuildDirPath );
 
+        String codeSignIdentity = PropertiesService.getXCodeProperty( XCodeService.CODE_SIGN_IDENTITY );
+        if ( codeSignIdentity != null ) {
+            cmd.add( "CODE_SIGN_IDENTITY=" + codeSignIdentity );
+        }
+
         StringBuffer objroot = new StringBuffer();
         objroot.append( "OBJROOT=$(PROJECT_DIR)" );
         objroot.append( targetBuildDirPath );
