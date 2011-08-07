@@ -55,24 +55,10 @@ public class InstallProvisioningProfileMojo extends JoJoMojoImpl {
         directoryPath.append( File.separator );
         directoryPath.append( PROVISIONING_PROFILES );
 
-        // checking out of SVN does not preserve lastModified dates, so bugger all
-        //        StringBuffer destFilePath = new StringBuffer();
-        //        destFilePath.append( directoryPath );
-        //        destFilePath.append( File.separator );
-        //        destFilePath.append( file.getName() );
-        //        File destFile = new File( destFilePath.toString() );
-        //
-        //        if ( destFile.exists() && destFile.lastModified() == file.lastModified() ) {
-        //            getLog().info( "Provisioning profile already up-to-date, skipping." );
-        //            return;
-        //        }
-
         File directory = new File( directoryPath.toString() );
         if ( !directory.exists() ) {
             directory.mkdirs();
         }
-
-        JoJoMojo.getMojo().getLog().info( "Copying " + file + " to " + directory );
 
         try {
             FileUtils.copyFileToDirectory( file, directory );
