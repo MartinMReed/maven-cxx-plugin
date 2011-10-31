@@ -85,6 +85,7 @@ public final class CompileMojo extends JoJoMojoImpl {
         return targetBuildDirPath;
     }
 
+    @Override
     protected Commandline buildCommandline( List<String> cmd ) {
 
         try {

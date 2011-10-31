@@ -35,6 +35,11 @@ public class CompileMojo extends JoJoMojoImpl {
      */
     public String language;
 
+    /**
+     * @parameter
+     */
+    public String[] includes;
+
     @Override
     public void execute() {
 
@@ -59,6 +64,12 @@ public class CompileMojo extends JoJoMojoImpl {
 
             cmd.add( "-S" );
             cmd.add( SourceFiles.escapeFileName( sources[i] ) );
+
+            if ( includes != null ) {
+                for (int j = 0; j < includes.length; j++) {
+                    cmd.add( "-I" + includes[j] );
+                }
+            }
 
             execute( cmd );
         }
