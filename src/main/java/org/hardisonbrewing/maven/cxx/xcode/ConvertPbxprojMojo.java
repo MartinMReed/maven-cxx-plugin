@@ -17,8 +17,8 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
-import generated.Dict;
-import generated.Plist;
+import generated.plist.Dict;
+import generated.plist.Plist;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -277,7 +277,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         List<Object> objectsValues = objects.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
         for (int i = 0; i < objectsValues.size() - 1; i += 2) {
 
-            generated.Key key = (generated.Key) objectsValues.get( i );
+            generated.plist.Key key = (generated.plist.Key) objectsValues.get( i );
             Dict dict = (Dict) objectsValues.get( i + 1 );
             keyIndex.put( key.getvalue(), dict );
 

@@ -17,9 +17,9 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
-import generated.Array;
-import generated.Dict;
-import generated.Plist;
+import generated.plist.Array;
+import generated.plist.Dict;
+import generated.plist.Plist;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public final class PlistService {
         }
         List<String> array = new ArrayList<String>();
         for (Object object : value) {
-            generated.String string = (generated.String) object;
+            generated.plist.String string = (generated.plist.String) object;
             array.add( string.getvalue() );
         }
         return array;
@@ -80,7 +80,7 @@ public final class PlistService {
 
     public static final List<Object> getArray( Dict dict, String key ) {
 
-        generated.Array value = (generated.Array) getValue( dict, key );
+        generated.plist.Array value = (generated.plist.Array) getValue( dict, key );
         if ( value == null ) {
             return null;
         }
@@ -89,7 +89,7 @@ public final class PlistService {
 
     public static final String getString( Dict dict, String key ) {
 
-        generated.String value = (generated.String) getValue( dict, key );
+        generated.plist.String value = (generated.plist.String) getValue( dict, key );
         if ( value == null ) {
             return null;
         }
@@ -105,7 +105,7 @@ public final class PlistService {
 
         List<Object> values = dict.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
         for (int i = 0; i < values.size() - 1; i += 2) {
-            generated.Key _key = (generated.Key) values.get( i );
+            generated.plist.Key _key = (generated.plist.Key) values.get( i );
             if ( key.equals( _key.getvalue() ) ) {
                 return values.get( i + 1 );
             }
@@ -118,7 +118,7 @@ public final class PlistService {
         List<String> keys = new ArrayList<String>();
         List<Object> values = dict.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
         for (int i = 0; i < values.size() - 1; i += 2) {
-            generated.Key _key = (generated.Key) values.get( i );
+            generated.plist.Key _key = (generated.plist.Key) values.get( i );
             keys.add( _key.getvalue() );
         }
         return keys;
@@ -146,7 +146,7 @@ public final class PlistService {
 
         List<Object> values = dict.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
 
-        generated.Key _key = new generated.Key();
+        generated.plist.Key _key = new generated.plist.Key();
         _key.setvalue( key );
         values.add( _key );
 

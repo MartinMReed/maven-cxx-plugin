@@ -17,9 +17,9 @@
 
 package org.hardisonbrewing.maven.cxx.xcode;
 
-import generated.Array;
-import generated.Dict;
-import generated.Plist;
+import generated.plist.Array;
+import generated.plist.Dict;
+import generated.plist.Plist;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class InfoPlistService {
 
     public static final String getString( Plist plist, String key ) {
 
-        generated.String value = (generated.String) getValue( plist, key );
+        generated.plist.String value = (generated.plist.String) getValue( plist, key );
         if ( value == null ) {
             return null;
         }
@@ -52,8 +52,8 @@ public class InfoPlistService {
         }
         for (int i = 0; i < values.size() - 1; i++) {
             Object value = values.get( i );
-            if ( value instanceof generated.Key ) {
-                String _key = ( (generated.Key) value ).getvalue();
+            if ( value instanceof generated.plist.Key ) {
+                String _key = ( (generated.plist.Key) value ).getvalue();
                 if ( key.equals( _key ) ) {
                     return values.get( i + 1 );
                 }
@@ -72,7 +72,7 @@ public class InfoPlistService {
 
         List<Object> values = dict.getKeyOrArrayOrDataOrDateOrDictOrRealOrIntegerOrStringOrTrueOrFalse();
 
-        generated.Key _key = new generated.Key();
+        generated.plist.Key _key = new generated.plist.Key();
         _key.setvalue( key );
         values.add( _key );
 
@@ -87,7 +87,7 @@ public class InfoPlistService {
 
     public static final boolean setString( Plist plist, String key, String value ) {
 
-        generated.String _value = new generated.String();
+        generated.plist.String _value = new generated.plist.String();
         _value.setvalue( value );
         return setValue( plist, key, _value );
     }
@@ -107,8 +107,8 @@ public class InfoPlistService {
         }
         for (int i = 0; i < values.size() - 1; i++) {
             Object _value = values.get( i );
-            if ( _value instanceof generated.Key ) {
-                String _key = ( (generated.Key) _value ).getvalue();
+            if ( _value instanceof generated.plist.Key ) {
+                String _key = ( (generated.plist.Key) _value ).getvalue();
                 if ( key.equals( _key ) ) {
                     values.set( i + 1, value );
                     return true;

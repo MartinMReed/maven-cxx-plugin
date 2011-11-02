@@ -33,32 +33,35 @@
 				<artifactId>maven-jaxb2-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>generate-plist-dtd</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<schemaDirectory>src/main/resources/jaxb</schemaDirectory>
-							<extension>true</extension>
+							<schemaDirectory>src/main/resources/xcode</schemaDirectory>
+							<generateDirectory>target/generated-sources/xjc/xcode</generateDirectory>
+							<generatePackage>generated.plist</generatePackage>
 							<schemaLanguage>DTD</schemaLanguage>
 							<schemaIncludes>
-								<schemaInclude>*.dtd</schemaInclude>
+								<schemaInclude>PropertyList-1.0.dtd</schemaInclude>
 							</schemaIncludes>
-							<bindingIncludes>
-								<bindingInclude>*.jaxb</bindingInclude>
-							</bindingIncludes>
-							<args>
-								<arg>-Xinject-listener-code</arg>
-							</args>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-cproject-xsd</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory>src/main/resources/eclipse</schemaDirectory>
+							<generateDirectory>target/generated-sources/xjc/eclipse</generateDirectory>
+							<generatePackage>generated.org.eclipse.cdt</generatePackage>
+							<schemaIncludes>
+								<schemaInclude>cproject.xsd</schemaInclude>
+							</schemaIncludes>
 						</configuration>
 					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.jvnet.jaxb2-commons</groupId>
-						<artifactId>property-listener-injector</artifactId>
-						<version>1.0</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
