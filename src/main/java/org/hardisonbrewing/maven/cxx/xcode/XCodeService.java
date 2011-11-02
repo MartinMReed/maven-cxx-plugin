@@ -16,7 +16,7 @@
  */
 package org.hardisonbrewing.maven.cxx.xcode;
 
-import generated.Plist;
+import generated.plist.Plist;
 
 import java.io.File;
 import java.util.Hashtable;
