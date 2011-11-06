@@ -33,6 +33,10 @@ public final class ProcessResourcesMojo extends JoJoMojoImpl {
     public final void execute() {
 
         File generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectory();
+        if ( !generatedResourcesDirectory.exists() ) {
+            getLog().info( generatedResourcesDirectory + " does not exist, skipping resource copy" );
+            return;
+        }
         File processedSourcesDirectory = TargetDirectoryService.getProcessedSourcesDirectory();
         try {
             FileUtils.copyDirectoryStructure( generatedResourcesDirectory, processedSourcesDirectory );
