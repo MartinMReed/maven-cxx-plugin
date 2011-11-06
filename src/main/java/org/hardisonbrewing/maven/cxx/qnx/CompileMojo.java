@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2011 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,10 +17,32 @@
 
 package org.hardisonbrewing.maven.cxx.qnx;
 
+import generated.org.eclipse.cdt.Cproject;
+import generated.org.eclipse.cdt.StorageModule.Configuration;
+
+import java.io.File;
+
+import javax.xml.namespace.QName;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.cxx.ProjectService;
+
 /**
  * @goal o-qnx-compile
  * @phase compile
  */
-public class CompileMojo extends org.hardisonbrewing.maven.cxx.o.CompileMojo {
+public class CompileMojo extends JoJoMojoImpl {
 
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+        File file = new File( ProjectService.getBaseDirPath(), ".cproject" );
+        Cproject cproject = CProjectService.readCProject( file );
+
+        String configurationName = "Device-Release";
+        Configuration configuration = CProjectService.getBuildConfiguration( cproject, CProjectService.MODULE_SETTINGS, configurationName );
+        getLog().info( configuration.getOtherAttributes().get( QName.valueOf( CProjectService.CONFIG_BUILD_PROPERTIES ) ) );
+    }
 }
