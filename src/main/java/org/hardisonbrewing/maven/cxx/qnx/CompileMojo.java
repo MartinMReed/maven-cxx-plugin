@@ -17,17 +17,11 @@
 
 package org.hardisonbrewing.maven.cxx.qnx;
 
-import generated.org.eclipse.cdt.Cproject;
-import generated.org.eclipse.cdt.StorageModule.Configuration;
-
-import java.io.File;
-
-import javax.xml.namespace.QName;
+import generated.org.eclipse.cdt.ToolChain;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.ProjectService;
 
 /**
  * @goal o-qnx-compile
@@ -35,14 +29,36 @@ import org.hardisonbrewing.maven.cxx.ProjectService;
  */
 public class CompileMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String target;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        File file = new File( ProjectService.getBaseDirPath(), ".cproject" );
-        Cproject cproject = CProjectService.readCProject( file );
+        ToolChain toolChain = QnxService.getToolChain( target );
 
-        String configurationName = "Device-Release";
-        Configuration configuration = CProjectService.getBuildConfiguration( cproject, CProjectService.MODULE_SETTINGS, configurationName );
-        getLog().info( configuration.getOtherAttributes().get( QName.valueOf( CProjectService.CONFIG_BUILD_PROPERTIES ) ) );
+        getLog().info( "CPU: " + QnxService.getCpu( toolChain ) );
+
+        getLog().info( "Compiler Defines:" );
+        for (String value : QnxService.getCompilerDefines( toolChain )) {
+            getLog().info( "    " + value );
+        }
+
+        getLog().info( "Compiler Include Paths:" );
+        for (String value : QnxService.getCompilerIncludePaths( toolChain )) {
+            getLog().info( "    " + value );
+        }
+
+        getLog().info( "Linker Libraries:" );
+        for (String value : QnxService.getLinkerLibraries( toolChain )) {
+            getLog().info( "    " + value );
+        }
+
+        getLog().info( "Linker Library Paths:" );
+        for (String value : QnxService.getLinkerLibraryPaths( toolChain )) {
+            getLog().info( "    " + value );
+        }
     }
 }
