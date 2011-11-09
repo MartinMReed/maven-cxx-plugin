@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2010-2011 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,27 +17,13 @@
 
 package org.hardisonbrewing.maven.cxx.qnx;
 
-import generated.org.eclipse.cdt.ToolChain;
 
-import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
-/**
- * @goal qnx-initialize
- * @phase initialize
- */
-public final class InitializeMojo extends JoJoMojoImpl {
+    public static final String BLACKBERRY_NDK_HOME = "blackberry.ndk.home";
 
-    /**
-     * @parameter
-     */
-    public String target;
+    protected PropertiesService() {
 
-    @Override
-    public final void execute() {
-
-        ToolChain toolChain = QnxService.getToolChain( target );
-
-        PropertiesService.putProperty( "QNX_TARGET", QnxService.getQnxDirPath() );
-        PropertiesService.putProperty( "CPUVARDIR", QnxService.getCpu( toolChain ) );
+        // do nothing
     }
 }

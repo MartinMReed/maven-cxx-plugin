@@ -24,6 +24,7 @@ import generated.org.eclipse.cdt.ToolChain.Tool;
 import java.io.File;
 
 import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 
 public final class QnxService {
 
@@ -78,17 +79,17 @@ public final class QnxService {
         return value.substring( QCC_OPTION_GEN_CPU.length() + 1 );
     }
 
-    public static boolean isDebug( ToolChain toolChain ) {
+    public static boolean isDebug( Tool tool ) {
 
-        String superClass = toolChain.getSuperClass();
-        String value = CProjectService.getToolChainOptionValue( toolChain, superClass + ".debug" );
+        String superClass = tool.getSuperClass();
+        String value = CProjectService.getToolOptionValue( tool, superClass + ".debug" );
         return Boolean.parseBoolean( value );
     }
 
-    public static boolean useSecurity( ToolChain toolChain ) {
+    public static boolean useSecurity( Tool tool ) {
 
-        String superClass = toolChain.getSuperClass();
-        String value = CProjectService.getToolChainOptionValue( toolChain, superClass + ".security" );
+        String superClass = tool.getSuperClass();
+        String value = CProjectService.getToolOptionValue( tool, superClass + ".security" );
         return Boolean.parseBoolean( value );
     }
 
@@ -114,6 +115,46 @@ public final class QnxService {
 
         Tool tool = CProjectService.getTool( toolChain, QCC_TOOL_LINKER );
         return CProjectService.getToolOptionValues( tool, QCC_OPTION_LINKER_LIBRARY_PATHS );
+    }
+
+    public static String getQnxTargetDirPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "target" );
+        return stringBuffer.toString();
+    }
+
+    public static String getQnxDirPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getQnxTargetDirPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( getQnxDirName() );
+        return stringBuffer.toString();
+    }
+
+    public static String getQnxDirName() {
+
+        File file = new File( getQnxTargetDirPath() );
+
+        for (String filename : file.list()) {
+            if ( filename.startsWith( "qnx" ) ) {
+                return filename;
+            }
+        }
+
+        return null;
+    }
+
+    public static String getQnxHostDirPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "host" );
+        return stringBuffer.toString();
     }
 
     public static Cproject getCProject() {

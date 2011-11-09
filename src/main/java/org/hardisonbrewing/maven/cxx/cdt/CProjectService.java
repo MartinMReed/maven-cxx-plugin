@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hardisonbrewing.maven.cxx.qnx;
+package org.hardisonbrewing.maven.cxx.cdt;
 
 import generated.org.eclipse.cdt.Cproject;
 import generated.org.eclipse.cdt.Entry;
