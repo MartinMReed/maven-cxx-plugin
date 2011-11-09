@@ -17,6 +17,8 @@
 
 package org.hardisonbrewing.maven.cxx.qnx;
 
+import generated.org.eclipse.cdt.StorageModule.Configuration;
+
 import java.io.File;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
@@ -28,12 +30,33 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  */
 public final class ValidateMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String target;
+
     @Override
     public final void execute() {
 
-        File file = QnxService.getCProjectFile();
-        if ( !file.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate .cproject file:" + file );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.BLACKBERRY_NDK_HOME, true );
+
+        File cproject = QnxService.getCProjectFile();
+        if ( !cproject.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate .cproject file: " + cproject );
+            throw new IllegalStateException();
+        }
+
+        QnxService.loadCProject();
+
+        Configuration configuration = QnxService.getBuildConfiguration( target );
+        if ( configuration == null ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate target: " + target );
+            throw new IllegalStateException();
+        }
+
+        String qnxDirName = QnxService.getQnxDirName();
+        if ( qnxDirName == null ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate the `qnx*` direectory under: " + QnxService.getQnxTargetDirPath() );
             throw new IllegalStateException();
         }
     }

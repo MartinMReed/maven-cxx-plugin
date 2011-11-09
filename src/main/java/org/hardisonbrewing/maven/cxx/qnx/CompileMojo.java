@@ -19,6 +19,8 @@ package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.ToolChain;
 
+import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -37,6 +39,8 @@ public class CompileMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
+        getLog().info( "QNX dir: " + QnxService.getQnxDirPath() );
+
         ToolChain toolChain = QnxService.getToolChain( target );
 
         getLog().info( "CPU: " + QnxService.getCpu( toolChain ) );
@@ -48,7 +52,9 @@ public class CompileMojo extends JoJoMojoImpl {
 
         getLog().info( "Compiler Include Paths:" );
         for (String value : QnxService.getCompilerIncludePaths( toolChain )) {
-            getLog().info( "    " + value );
+            value = PropertiesService.populateTemplateVariables( value, "${", "}" );
+            File file = new File( value );
+            getLog().info( "    " + value + "... " + ( file.exists() ? "valid" : "invalid" ) );
         }
 
         getLog().info( "Linker Libraries:" );
@@ -58,7 +64,9 @@ public class CompileMojo extends JoJoMojoImpl {
 
         getLog().info( "Linker Library Paths:" );
         for (String value : QnxService.getLinkerLibraryPaths( toolChain )) {
-            getLog().info( "    " + value );
+            value = PropertiesService.populateTemplateVariables( value, "${", "}" );
+            File file = new File( value );
+            getLog().info( "    " + value + "... " + ( file.exists() ? "valid" : "invalid" ) );
         }
     }
 }
