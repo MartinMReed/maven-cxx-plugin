@@ -138,7 +138,7 @@ public final class QnxService {
         return stringBuffer.toString();
     }
 
-    public static String getQnxTargetPath() {
+    public static String getQnxTargetDirPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getQnxTargetBaseDirPath() );
