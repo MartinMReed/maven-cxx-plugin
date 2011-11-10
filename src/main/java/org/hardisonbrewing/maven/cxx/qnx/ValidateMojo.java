@@ -54,9 +54,15 @@ public final class ValidateMojo extends JoJoMojoImpl {
             throw new IllegalStateException();
         }
 
-        String qnxDirName = QnxService.getQnxDirName();
+        String qnxDirName = QnxService.getQnxTargetDirName();
         if ( qnxDirName == null ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate the `qnx*` direectory under: " + QnxService.getQnxTargetDirPath() );
+            JoJoMojo.getMojo().getLog().error( "Unable to locate the `qnx*` direectory under: " + QnxService.getQnxTargetBaseDirPath() );
+            throw new IllegalStateException();
+        }
+
+        String qnxUsrPath = QnxService.getQnxUsrPath();
+        if ( qnxUsrPath == null ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate `" + QnxService.QNX_USR_SEARCH + "` under: " + QnxService.getQnxHostBaseDirPath() );
             throw new IllegalStateException();
         }
     }

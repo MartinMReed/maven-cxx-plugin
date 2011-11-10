@@ -46,10 +46,11 @@ public class CompileMojo extends JoJoMojoImpl {
         String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
 
         if ( sources == null ) {
+            getLog().info( "No sources found... skipping compiler" );
             return;
         }
 
-        for (int i = 0; i < sources.length; i++) {
+        for (String source : sources) {
 
             List<String> cmd = new LinkedList<String>();
             cmd.add( "c++".equals( language ) ? "g++" : "gcc" );
@@ -60,14 +61,14 @@ public class CompileMojo extends JoJoMojoImpl {
             }
 
             cmd.add( "-o" );
-            cmd.add( SourceFiles.replaceExtension( sources[i], "s" ) );
+            cmd.add( SourceFiles.replaceExtension( source, "s" ) );
 
             cmd.add( "-S" );
-            cmd.add( SourceFiles.escapeFileName( sources[i] ) );
+            cmd.add( SourceFiles.escapeFileName( source ) );
 
             if ( includes != null ) {
-                for (int j = 0; j < includes.length; j++) {
-                    cmd.add( "-I" + includes[j] );
+                for (String include : includes) {
+                    cmd.add( "-I" + include );
                 }
             }
 
