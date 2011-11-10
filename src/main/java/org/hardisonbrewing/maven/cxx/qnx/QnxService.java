@@ -23,6 +23,8 @@ import generated.org.eclipse.cdt.ToolChain.Tool;
 
 import java.io.File;
 
+import org.hardisonbrewing.maven.core.FileUtils;
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 
@@ -46,7 +48,17 @@ public final class QnxService {
     private static final String QCC_TOOL_LINKER = QCC_TOOL + ".linker";
     private static final String QCC_TOOL_ARCHIVER = QCC_TOOL + ".archiver";
 
+    public static final String QNX_USR_SEARCH;
+
     private static Cproject cproject;
+
+    static {
+        StringBuffer qnxUsrSearch = new StringBuffer();
+        qnxUsrSearch.append( "**" );
+        qnxUsrSearch.append( File.separator );
+        qnxUsrSearch.append( "usr" );
+        QNX_USR_SEARCH = qnxUsrSearch.toString();
+    }
 
     public static File getCProjectFile() {
 
@@ -117,7 +129,7 @@ public final class QnxService {
         return CProjectService.getToolOptionValues( tool, QCC_OPTION_LINKER_LIBRARY_PATHS );
     }
 
-    public static String getQnxTargetDirPath() {
+    public static String getQnxTargetBaseDirPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME ) );
@@ -126,18 +138,18 @@ public final class QnxService {
         return stringBuffer.toString();
     }
 
-    public static String getQnxDirPath() {
+    public static String getQnxTargetPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getQnxTargetDirPath() );
+        stringBuffer.append( getQnxTargetBaseDirPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( getQnxDirName() );
+        stringBuffer.append( getQnxTargetDirName() );
         return stringBuffer.toString();
     }
 
-    public static String getQnxDirName() {
+    public static String getQnxTargetDirName() {
 
-        File file = new File( getQnxTargetDirPath() );
+        File file = new File( getQnxTargetBaseDirPath() );
 
         for (String filename : file.list()) {
             if ( filename.startsWith( "qnx" ) ) {
@@ -148,13 +160,51 @@ public final class QnxService {
         return null;
     }
 
-    public static String getQnxHostDirPath() {
+    public static String getQnxHostBaseDirPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME ) );
         stringBuffer.append( File.separator );
         stringBuffer.append( "host" );
         return stringBuffer.toString();
+    }
+
+    public static File getQnxHostBaseDir() {
+
+        return new File( getQnxHostBaseDirPath() );
+    }
+
+    public static String getQnxHostDirPath() {
+
+        File file = new File( getQnxUsrPath() );
+        return file.getParent();
+    }
+
+    public static String getQnxHostBinPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getQnxUsrPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "bin" );
+        return stringBuffer.toString();
+    }
+
+    public static String getQnxUsrPath() {
+
+        String[] includes = new String[] { QNX_USR_SEARCH };
+        String[] files = FileUtils.listDirectoryPathsRecursive( getQnxHostBaseDir(), includes, null );
+
+        if ( files.length > 0 ) {
+            if ( files.length > 1 ) {
+                JoJoMojo.getMojo().getLog().warn( "Multiple paths for `" + QNX_USR_SEARCH + "` have been located... using the first" );
+                for (int i = 0; i < files.length; i++) {
+                    JoJoMojo.getMojo().getLog().warn( "\t" + files[i] + ( i == 0 ? " <--- using" : "" ) );
+                }
+            }
+            return files[0];
+        }
+
+        return null;
     }
 
     public static Cproject getCProject() {

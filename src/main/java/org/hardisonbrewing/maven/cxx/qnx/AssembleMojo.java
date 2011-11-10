@@ -22,8 +22,6 @@ import generated.org.eclipse.cdt.ToolChain;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
@@ -31,10 +29,10 @@ import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
- * @goal o-qnx-compile
+ * @goal o-qnx-assemble
  * @phase compile
  */
-public class CompileMojo extends JoJoMojoImpl {
+public class AssembleMojo extends JoJoMojoImpl {
 
     /**
      * @parameter
@@ -42,19 +40,16 @@ public class CompileMojo extends JoJoMojoImpl {
     public String target;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() {
 
         String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
 
         if ( sources == null ) {
-            getLog().info( "No sources found... skipping compiler" );
+            getLog().info( "No sources found... skipping assembler" );
             return;
         }
 
         ToolChain toolChain = QnxService.getToolChain( target );
-
-        String[] includes = QnxService.getCompilerIncludePaths( toolChain );
-        String[] defines = QnxService.getCompilerDefines( toolChain );
 
         for (String source : sources) {
 
@@ -62,17 +57,10 @@ public class CompileMojo extends JoJoMojoImpl {
             cmd.add( "qcc" );
 
             cmd.add( "-o" );
+            cmd.add( SourceFiles.replaceExtension( source, "o" ) );
+
+            cmd.add( "-c" );
             cmd.add( SourceFiles.replaceExtension( source, "s" ) );
-
-            cmd.add( "-S" );
-            cmd.add( SourceFiles.escapeFileName( source ) );
-
-            if ( includes != null ) {
-                for (String include : includes) {
-                    include = PropertiesService.populateTemplateVariables( include, "${", "}" );
-                    cmd.add( "-I" + include );
-                }
-            }
 
             //FIXME: grrrr
             cmd.add( "-V4.4.2,gcc_ntoarmv7le" );
@@ -80,12 +68,6 @@ public class CompileMojo extends JoJoMojoImpl {
             cmd.add( "-O2" );
             cmd.add( "-fstack-protector-all" );
             cmd.add( "-fPIE" );
-
-            if ( defines != null ) {
-                for (String define : defines) {
-                    cmd.add( "-D" + define );
-                }
-            }
 
             Commandline commandLine = buildCommandline( cmd );
             CommandLineService.appendEnvVar( commandLine, "PATH", QnxService.getQnxHostBinPath() );

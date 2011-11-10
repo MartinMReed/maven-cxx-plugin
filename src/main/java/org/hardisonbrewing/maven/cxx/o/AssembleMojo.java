@@ -41,19 +41,20 @@ public class AssembleMojo extends JoJoMojoImpl {
         String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
 
         if ( sources == null ) {
+            getLog().info( "No sources found... skipping assembler" );
             return;
         }
 
-        for (int i = 0; i < sources.length; i++) {
+        for (String source : sources) {
 
             List<String> cmd = new LinkedList<String>();
             cmd.add( "c++".equals( language ) ? "g++" : "gcc" );
 
             cmd.add( "-o" );
-            cmd.add( SourceFiles.replaceExtension( sources[i], "o" ) );
+            cmd.add( SourceFiles.replaceExtension( source, "o" ) );
 
             cmd.add( "-c" );
-            cmd.add( SourceFiles.replaceExtension( sources[i], "s" ) );
+            cmd.add( SourceFiles.replaceExtension( source, "s" ) );
 
             execute( cmd );
         }

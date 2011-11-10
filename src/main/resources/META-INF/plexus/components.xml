@@ -331,8 +331,8 @@
 							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources</generate-resources>
 							<process-resources>org.hardisonbrewing:maven-cxx-plugin:process-resources</process-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:o-qnx-compile,
-								org.hardisonbrewing:maven-cxx-plugin:o-assemble,
-								org.hardisonbrewing:maven-cxx-plugin:o-link</compile>
+								org.hardisonbrewing:maven-cxx-plugin:o-qnx-assemble,
+								org.hardisonbrewing:maven-cxx-plugin:o-qnx-link</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:o-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:o-install</install>

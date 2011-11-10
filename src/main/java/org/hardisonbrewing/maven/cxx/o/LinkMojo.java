@@ -54,15 +54,21 @@ public final class LinkMojo extends JoJoMojoImpl {
     @Override
     public void execute() {
 
+        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
+
+        if ( sources == null ) {
+            getLog().info( "No sources found... skipping linker" );
+            return;
+        }
+
         List<String> cmd = new LinkedList<String>();
         cmd.add( "c++".equals( language ) ? "g++" : "gcc" );
 
         cmd.add( "-o" );
         cmd.add( getProject().getArtifactId() + ".o" );
 
-        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
-        for (int i = 0; i < sources.length; i++) {
-            cmd.add( SourceFiles.replaceExtension( sources[i], "o" ) );
+        for (String source : sources) {
+            cmd.add( SourceFiles.replaceExtension( source, "o" ) );
         }
 
         try {
@@ -73,15 +79,15 @@ public final class LinkMojo extends JoJoMojoImpl {
         }
 
         if ( libs != null ) {
-            for (int i = 0; i < libs.length; i++) {
-                cmd.add( "-l" + libs[i] );
+            for (String lib : libs) {
+                cmd.add( "-l" + lib );
             }
         }
 
         if ( frameworks != null ) {
-            for (int i = 0; i < frameworks.length; i++) {
+            for (String framework : frameworks) {
                 cmd.add( "-framework" );
-                cmd.add( frameworks[i] );
+                cmd.add( framework );
             }
         }
 
