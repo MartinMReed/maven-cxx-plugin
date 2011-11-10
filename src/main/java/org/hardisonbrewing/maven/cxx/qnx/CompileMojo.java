@@ -90,7 +90,7 @@ public class CompileMojo extends JoJoMojoImpl {
             Commandline commandLine = buildCommandline( cmd );
             CommandLineService.appendEnvVar( commandLine, "PATH", QnxService.getQnxHostBinPath() );
             commandLine.addEnvironment( "QNX_HOST", QnxService.getQnxHostDirPath() );
-            commandLine.addEnvironment( "QNX_TARGET", QnxService.getQnxTargetPath() );
+            commandLine.addEnvironment( "QNX_TARGET", QnxService.getQnxTargetDirPath() );
             execute( commandLine );
         }
     }
