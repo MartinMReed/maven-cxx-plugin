@@ -106,7 +106,11 @@ public final class QnxService {
             }
         }
 
-        stringBuffer.append( getEndian( platform ) );
+        String endian = getEndian( platform );
+        if ( endian != null ) {
+            stringBuffer.append( endian );
+        }
+
         return stringBuffer.toString();
     }
 
@@ -124,7 +128,7 @@ public final class QnxService {
         }
 
         String endian = getEndian( platform );
-        if ( endian.length() > 0 ) {
+        if ( endian != null ) {
             platform = platform.substring( 0, platform.length() - endian.length() );
         }
 
@@ -143,7 +147,7 @@ public final class QnxService {
         if ( platform.endsWith( "le" ) ) {
             return "le";
         }
-        return "";
+        return null;
     }
 
     public static String[] getCpuVariant( String platform ) {
