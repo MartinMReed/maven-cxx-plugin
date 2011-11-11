@@ -128,12 +128,18 @@ public class CProjectService {
     public static String getToolOptionValue( Tool tool, String superClass ) {
 
         Option option = getToolOption( tool, superClass );
+        if ( option == null ) {
+            return null;
+        }
         return option.getValue();
     }
 
     public static String[] getToolOptionValues( Tool tool, String superClass ) {
 
         Option option = getToolOption( tool, superClass );
+        if ( option == null ) {
+            return null;
+        }
         return getOptionValues( option );
     }
 
@@ -150,6 +156,9 @@ public class CProjectService {
     public static String getToolChainOptionValue( ToolChain toolChain, String superClass ) {
 
         Option option = getToolChainOption( toolChain, superClass );
+        if ( option == null ) {
+            return null;
+        }
         return option.getValue();
     }
 

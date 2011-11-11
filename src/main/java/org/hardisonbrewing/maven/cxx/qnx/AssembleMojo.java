@@ -18,6 +18,7 @@
 package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.ToolChain;
+import generated.org.eclipse.cdt.ToolChain.Tool;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 
 /**
  * @goal o-qnx-assemble
@@ -50,6 +52,15 @@ public class AssembleMojo extends JoJoMojoImpl {
         }
 
         ToolChain toolChain = QnxService.getToolChain( target );
+        Tool tool = CProjectService.getTool( toolChain, QnxService.QCC_TOOL_ASSEMBLER );
+
+        String compilerPlatform = QnxService.getCompilerPlatform( toolChain );
+        boolean useDebug = QnxService.isDebug( tool );
+        boolean useSecurity = QnxService.useSecurity( tool );
+        boolean usePie = QnxService.usePie( tool );
+        int optLevel = QnxService.getOptLevel( tool );
+        boolean useProfile = QnxService.useProfile( tool );
+        boolean useCodeCoverage = QnxService.useCodeCoverage( tool );
 
         for (String source : sources) {
 
@@ -62,12 +73,32 @@ public class AssembleMojo extends JoJoMojoImpl {
             cmd.add( "-c" );
             cmd.add( SourceFiles.replaceExtension( source, "s" ) );
 
-            //FIXME: grrrr
-            cmd.add( "-V4.4.2,gcc_ntoarmv7le" );
-            cmd.add( "-w1" );
-            cmd.add( "-O2" );
-            cmd.add( "-fstack-protector-all" );
-            cmd.add( "-fPIE" );
+            cmd.add( "-V" + compilerPlatform );
+
+            if ( optLevel != -1 ) {
+                cmd.add( "-O" + optLevel );
+            }
+
+            if ( useDebug ) {
+                cmd.add( "-g" );
+            }
+
+            if ( useSecurity ) {
+                cmd.add( "-fstack-protector-all" );
+            }
+
+            if ( useCodeCoverage ) {
+                cmd.add( "-Wc,-ftest-coverage" );
+                cmd.add( "-Wc,-fprofile-arcs" );
+            }
+
+            if ( useProfile ) {
+                cmd.add( "-finstrument-functions" );
+            }
+
+            if ( usePie ) {
+                cmd.add( "-fPIE" );
+            }
 
             Commandline commandLine = buildCommandline( cmd );
             CommandLineService.appendEnvVar( commandLine, "PATH", QnxService.getQnxHostBinPath() );

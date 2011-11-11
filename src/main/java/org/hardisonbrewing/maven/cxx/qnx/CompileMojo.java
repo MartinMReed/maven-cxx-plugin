@@ -18,6 +18,7 @@
 package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.ToolChain;
+import generated.org.eclipse.cdt.ToolChain.Tool;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 
 /**
  * @goal o-qnx-compile
@@ -52,7 +54,15 @@ public class CompileMojo extends JoJoMojoImpl {
         }
 
         ToolChain toolChain = QnxService.getToolChain( target );
+        Tool tool = CProjectService.getTool( toolChain, QnxService.QCC_TOOL_COMPILER );
 
+        String compilerPlatform = QnxService.getCompilerPlatform( toolChain );
+        boolean usePie = QnxService.usePie( tool );
+        boolean useSecurity = QnxService.useSecurity( tool );
+        boolean useDebug = QnxService.isDebug( tool );
+        int optLevel = QnxService.getOptLevel( tool );
+        boolean useProfile = QnxService.useProfile( tool );
+        boolean useCodeCoverage = QnxService.useCodeCoverage( tool );
         String[] includes = QnxService.getCompilerIncludePaths( toolChain );
         String[] defines = QnxService.getCompilerDefines( toolChain );
 
@@ -74,12 +84,31 @@ public class CompileMojo extends JoJoMojoImpl {
                 }
             }
 
-            //FIXME: grrrr
-            cmd.add( "-V4.4.2,gcc_ntoarmv7le" );
-            cmd.add( "-w1" );
-            cmd.add( "-O2" );
-            cmd.add( "-fstack-protector-all" );
-            cmd.add( "-fPIE" );
+            cmd.add( "-V" + compilerPlatform );
+
+            if ( optLevel != -1 ) {
+                cmd.add( "-O" + optLevel );
+            }
+
+            if ( useDebug ) {
+                cmd.add( "-g" );
+            }
+
+            if ( useSecurity ) {
+                cmd.add( "-fstack-protector-all" );
+            }
+
+            if ( useCodeCoverage ) {
+                cmd.add( "-Wc,-ftest-coverage" );
+                cmd.add( "-Wc,-fprofile-arcs" );
+            }
+
+            if ( useProfile ) {
+                cmd.add( "-finstrument-functions" );
+            }
+
+            if ( usePie )
+                cmd.add( "-fPIE" );
 
             if ( defines != null ) {
                 for (String define : defines) {
