@@ -18,6 +18,7 @@
 package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.ToolChain;
+import generated.org.eclipse.cdt.ToolChain.Tool;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 
 /**
  * @goal o-qnx-link
@@ -50,6 +52,7 @@ public final class LinkMojo extends JoJoMojoImpl {
         }
 
         ToolChain toolChain = QnxService.getToolChain( target );
+        Tool tool = CProjectService.getTool( toolChain, QnxService.QCC_TOOL_LINKER );
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "qcc" );
@@ -76,12 +79,28 @@ public final class LinkMojo extends JoJoMojoImpl {
             }
         }
 
-        //FIXME: grrrr
-        cmd.add( "-V4.4.2,gcc_ntoarmv7le" );
-        cmd.add( "-w1" );
+        cmd.add( "-V" + QnxService.getCompilerPlatform( toolChain ) );
+
+        if ( QnxService.isDebug( tool ) ) {
+            cmd.add( "-g" );
+        }
+
         cmd.add( "-Wl,-z,relro" );
         cmd.add( "-Wl,-z,now" );
-        cmd.add( "-pie" );
+
+        if ( QnxService.useCodeCoverage( tool ) ) {
+            cmd.add( "-ftest-coverage" );
+            cmd.add( "-fprofile-arcs" );
+            cmd.add( "-p" );
+        }
+
+        if ( QnxService.useProfile( tool ) ) {
+            cmd.add( "-lprofilingS" );
+        }
+
+        if ( QnxService.usePie( tool ) ) {
+            cmd.add( "-pie" );
+        }
 
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.appendEnvVar( commandLine, "PATH", QnxService.getQnxHostBinPath() );

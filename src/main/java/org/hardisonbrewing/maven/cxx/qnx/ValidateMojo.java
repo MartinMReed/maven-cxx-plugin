@@ -54,8 +54,8 @@ public final class ValidateMojo extends JoJoMojoImpl {
             throw new IllegalStateException();
         }
 
-        String qnxDirName = QnxService.getQnxTargetDirName();
-        if ( qnxDirName == null ) {
+        String qnxTargetDirName = QnxService.getQnxTargetDirName();
+        if ( qnxTargetDirName == null ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate the `qnx*` direectory under: " + QnxService.getQnxTargetBaseDirPath() );
             throw new IllegalStateException();
         }
@@ -63,6 +63,12 @@ public final class ValidateMojo extends JoJoMojoImpl {
         String qnxUsrPath = QnxService.getQnxUsrPath();
         if ( qnxUsrPath == null ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate `" + QnxService.QNX_USR_SEARCH + "` under: " + QnxService.getQnxHostBaseDirPath() );
+            throw new IllegalStateException();
+        }
+
+        File qccFile = new File( QnxService.getQnxHostBinPath(), "qcc" );
+        if ( !qccFile.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate `qcc`: " + qccFile );
             throw new IllegalStateException();
         }
     }
