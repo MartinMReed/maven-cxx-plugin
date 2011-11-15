@@ -34,7 +34,9 @@ public final class GenerateSourcesMojo extends JoJoMojoImpl {
     @Override
     public final void execute() {
 
-        copyFiles( null, ProjectService.getSourceFilePaths(), ProjectService.getSourceDirectoryPath() );
+        for (String sourceDirectoryPath : ProjectService.getSourceDirectoryPaths()) {
+            copyFiles( null, ProjectService.getSourceFilePaths(), sourceDirectoryPath );
+        }
     }
 
     private static final void copyFiles( String parentFileName, String[] fileNames, String filePathPrefix ) {
