@@ -54,21 +54,26 @@ public final class InitializeMojo extends JoJoMojoImpl {
         }
     }
 
-    private final void updateBuildConfiguration() {
-
-        BuildConfiguration buildConfiguration = null;
+    private final BuildConfiguration getBuildConfiguration() {
 
         try {
-            buildConfiguration = lookup( BuildConfiguration.class, getProject().getPackaging() );
+            return lookup( BuildConfiguration.class, getProject().getPackaging() );
         }
         catch (Exception e) {
             getLog().debug( "No custom build configuration found... skipping" );
+            return null;
+        }
+    }
+
+    private final void updateBuildConfiguration() {
+
+        BuildConfiguration buildConfiguration = getBuildConfiguration();
+
+        if ( buildConfiguration == null ) {
             return;
         }
 
-        if ( buildConfiguration != null ) {
-            getProject().getBuild().setSourceDirectory( buildConfiguration.getSourceDirectory() );
-        }
+        getProject().getBuild().setSourceDirectory( buildConfiguration.getSourceDirectory() );
     }
 
     private final void storePropertyDifferences() {

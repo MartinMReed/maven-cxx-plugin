@@ -66,6 +66,8 @@
 				</xs:element>
 				<xs:element name="project" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
+						<xs:attribute name="id" type="xs:string" use="optional" />
+						<xs:attribute name="name" type="xs:string" use="optional" />
 						<xs:anyAttribute processContents="lax" />
 					</xs:complexType>
 				</xs:element>

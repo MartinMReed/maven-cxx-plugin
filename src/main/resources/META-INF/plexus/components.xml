@@ -356,7 +356,7 @@
 			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
 			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
 			<configuration>
-				<sourceDirectory>src</sourceDirectory>
+<!-- 				<sourceDirectory>src</sourceDirectory> -->
 			</configuration>
 		</component>
 		

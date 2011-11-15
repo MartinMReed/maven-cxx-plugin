@@ -26,15 +26,19 @@ import generated.org.eclipse.cdt.StorageModule.Cconfiguration;
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.StorageModule.Configuration.FolderInfo;
 import generated.org.eclipse.cdt.StorageModule.Configuration.SourceEntries;
+import generated.org.eclipse.cdt.StorageModule.Project;
 import generated.org.eclipse.cdt.ToolChain;
 import generated.org.eclipse.cdt.ToolChain.Tool;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import javax.xml.bind.JAXB;
+
+import org.hardisonbrewing.maven.core.ProjectService;
 
 public class CProjectService {
 
@@ -53,6 +57,9 @@ public class CProjectService {
 
     private static final String SOURCE_KIND_PATH = "sourcePath";
 
+    private static final String VALUE_WORKSPACE_PATH = "VALUE_WORKSPACE_PATH";
+    private static final String RESOLVED = "RESOLVED";
+
     public static Cproject readCProject( File file ) {
 
         return JAXB.unmarshal( file, Cproject.class );
@@ -69,10 +76,44 @@ public class CProjectService {
         return null;
     }
 
+    public static String getProjectName( Cproject cproject ) {
+
+        Project project = getProject( cproject );
+        if ( project == null ) {
+            return null;
+        }
+        return project.getName();
+    }
+
+    public static Project getProject( Cproject cproject ) {
+
+        StorageModule storageModule = getStorageModule( cproject, CDT_BUILD_SYSTEM );
+        if ( storageModule == null ) {
+            return null;
+        }
+        return storageModule.getProject();
+    }
+
+    public static StorageModule getStorageModule( Cproject cproject, String id ) {
+
+        for (StorageModule storageModule : cproject.getStorageModule()) {
+            if ( id.equals( storageModule.getModuleId() ) ) {
+                return storageModule;
+            }
+        }
+
+        return null;
+    }
+
     public static Configuration getBuildConfiguration( Cconfiguration cconfiguration ) {
 
+        return getConfiguration( cconfiguration, CDT_BUILD_SYSTEM );
+    }
+
+    public static Configuration getConfiguration( Cconfiguration cconfiguration, String id ) {
+
         for (StorageModule storageModule : cconfiguration.getStorageModule()) {
-            if ( CDT_BUILD_SYSTEM.equals( storageModule.getModuleId() ) ) {
+            if ( id.equals( storageModule.getModuleId() ) ) {
                 return storageModule.getConfiguration();
             }
         }
@@ -80,21 +121,58 @@ public class CProjectService {
         return null;
     }
 
+    public static String getSourcePath( Entry entry ) {
+
+        if ( !SOURCE_KIND_PATH.equals( entry.getKind() ) ) {
+            return null;
+        }
+
+        String[] flags = getFlags( entry );
+        Arrays.sort( flags, 0, flags.length );
+
+        StringBuffer stringBuffer = new StringBuffer();
+
+        if ( Arrays.binarySearch( flags, VALUE_WORKSPACE_PATH ) >= 0 ) {
+            stringBuffer.append( ProjectService.getBaseDirPath() );
+            stringBuffer.append( File.separator );
+        }
+
+        stringBuffer.append( entry.getName() );
+        return stringBuffer.toString();
+    }
+
     public static String[] getSourcePaths( Configuration configuration ) {
 
         SourceEntries sourceEntries = configuration.getSourceEntries();
+        if ( sourceEntries == null ) {
+            return null;
+        }
+
+        List<Entry> entries = sourceEntries.getEntry();
+        if ( entries == null || entries.isEmpty() ) {
+            return null;
+        }
 
         List<String> sourcePaths = new ArrayList<String>();
 
-        for (Entry entry : sourceEntries.getEntry()) {
+        for (Entry entry : entries) {
             if ( SOURCE_KIND_PATH.equals( entry.getKind() ) ) {
-                sourcePaths.add( entry.getName() );
+                sourcePaths.add( getSourcePath( entry ) );
             }
         }
 
         String[] _sourcePaths = new String[sourcePaths.size()];
         sourcePaths.toArray( _sourcePaths );
         return _sourcePaths;
+    }
+
+    public static String[] getFlags( Entry entry ) {
+
+        String flags = entry.getFlags();
+        if ( flags == null || flags.length() == 0 ) {
+            return null;
+        }
+        return flags.split( "\\|" );
     }
 
     public static ToolChain getToolChain( Configuration configuration ) {

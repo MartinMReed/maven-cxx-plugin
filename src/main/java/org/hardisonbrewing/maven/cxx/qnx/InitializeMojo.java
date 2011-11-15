@@ -17,9 +17,13 @@
 
 package org.hardisonbrewing.maven.cxx.qnx;
 
+import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.ToolChain;
 
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
+import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
 
 /**
  * @goal qnx-initialize
@@ -39,5 +43,30 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         PropertiesService.putProperty( "QNX_TARGET", QnxService.getQnxTargetDirPath() );
         PropertiesService.putProperty( "CPUVARDIR", QnxService.getPlatform( toolChain ) );
+
+        String sourceDirectory = ProjectService.getProject().getBuild().getSourceDirectory();
+        getLog().info( "Default source path: " + sourceDirectory );
+
+#error
+        
+        Configuration configuration = QnxService.getBuildConfiguration( target );
+        String[] sourcePaths = CProjectService.getSourcePaths( configuration );
+        if ( sourcePaths != null ) {
+            for (String sourcePath : sourcePaths) {
+                getLog().info( "Adding source path: " + sourcePath );
+                ProjectService.addSourceDirectory( sourcePath );
+            }
+        }
+    }
+
+    private final BuildConfiguration getBuildConfiguration() {
+
+        try {
+            return lookup( BuildConfiguration.class, getProject().getPackaging() );
+        }
+        catch (Exception e) {
+            getLog().debug( "No custom build configuration found... skipping" );
+            return null;
+        }
     }
 }
