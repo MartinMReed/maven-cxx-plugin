@@ -17,6 +17,8 @@
 
 package org.hardisonbrewing.maven.cxx.qnx;
 
+import java.io.File;
+import java.util.Properties;
 
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
@@ -25,5 +27,25 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     protected PropertiesService() {
 
         // do nothing
+    }
+
+    public static Properties getDefaultCompilerProperties() {
+
+        StringBuffer filePath = new StringBuffer();
+        filePath.append( QnxService.getQnxCompilerConfPath() );
+        filePath.append( File.separator );
+        filePath.append( "default" );
+        return PropertiesService.loadProperties( filePath.toString() );
+    }
+
+    public static Properties getDefaultCompilerVersionProperties( String compiler ) {
+
+        StringBuffer filePath = new StringBuffer();
+        filePath.append( QnxService.getQnxCompilerConfPath() );
+        filePath.append( File.separator );
+        filePath.append( compiler );
+        filePath.append( File.separator );
+        filePath.append( "default" );
+        return PropertiesService.loadProperties( filePath.toString() );
     }
 }
