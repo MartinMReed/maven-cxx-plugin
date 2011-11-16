@@ -32,7 +32,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     public static Properties getDefaultCompilerProperties() {
 
         StringBuffer filePath = new StringBuffer();
-        filePath.append( QnxService.getQnxCompilerConfPath() );
+        filePath.append( QnxService.getQnxCompilerDirPath() );
         filePath.append( File.separator );
         filePath.append( "default" );
         return PropertiesService.loadProperties( filePath.toString() );
@@ -41,7 +41,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     public static Properties getDefaultCompilerVersionProperties( String compiler ) {
 
         StringBuffer filePath = new StringBuffer();
-        filePath.append( QnxService.getQnxCompilerConfPath() );
+        filePath.append( QnxService.getQnxCompilerDirPath() );
         filePath.append( File.separator );
         filePath.append( compiler );
         filePath.append( File.separator );

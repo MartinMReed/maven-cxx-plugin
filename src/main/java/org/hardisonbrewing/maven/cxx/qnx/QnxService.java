@@ -340,7 +340,7 @@ public final class QnxService {
         return file.getParent();
     }
 
-    public static String getQnxCompilerConfPath() {
+    public static String getQnxCompilerDirPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getQnxHostDirPath() );
