@@ -44,16 +44,18 @@ public final class InitializeMojo extends JoJoMojoImpl {
         PropertiesService.putProperty( "QNX_TARGET", QnxService.getQnxTargetDirPath() );
         PropertiesService.putProperty( "CPUVARDIR", QnxService.getPlatform( toolChain ) );
 
-        String sourceDirectory = ProjectService.getProject().getBuild().getSourceDirectory();
-        getLog().info( "Default source path: " + sourceDirectory );
-
-#error
-        
         Configuration configuration = QnxService.getBuildConfiguration( target );
         String[] sourcePaths = CProjectService.getSourcePaths( configuration );
+
         if ( sourcePaths != null ) {
+
+            BuildConfiguration buildConfiguration = getBuildConfiguration();
+            String sourceDirectory = getProject().getBuild().getSourceDirectory();
+            if ( !sourceDirectory.equals( buildConfiguration.getSourceDirectory() ) ) {
+                ProjectService.setSourceDirectory( sourcePaths[0] );
+            }
+
             for (String sourcePath : sourcePaths) {
-                getLog().info( "Adding source path: " + sourcePath );
                 ProjectService.addSourceDirectory( sourcePath );
             }
         }
