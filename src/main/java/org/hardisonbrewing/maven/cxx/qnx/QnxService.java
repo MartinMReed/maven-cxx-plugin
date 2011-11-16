@@ -24,9 +24,9 @@ import generated.org.eclipse.cdt.ToolChain.Tool;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 
@@ -93,10 +93,15 @@ public final class QnxService {
 
     public static String getCompilerPlatform( ToolChain toolChain ) {
 
+        String compiler = QnxService.getDefaultCompiler();
+        String version = QnxService.getDefaultCompilerVersion( compiler );
         String platform = getPlatform( toolChain );
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( "gcc_nto" );
+        stringBuffer.append( version );
+        stringBuffer.append( "," );
+        stringBuffer.append( compiler );
+        stringBuffer.append( "_nto" );
         stringBuffer.append( getCpu( platform ) );
 
         String[] cpuVariant = getCpuVariant( platform );
@@ -184,10 +189,19 @@ public final class QnxService {
         String superClass = getQccOptionClass( tool );
         String optLevel = superClass + ".optlevel";
         String value = CProjectService.getToolOptionValue( tool, optLevel );
+
         if ( value == null ) {
             return -1;
         }
-        return Integer.parseInt( value.substring( ( optLevel + "." ).length() ) );
+
+        value = value.substring( ( optLevel + "." ).length() );
+
+        try {
+            return Integer.parseInt( value );
+        }
+        catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
     private static String getQccOptionClass( Tool tool ) {
@@ -326,6 +340,29 @@ public final class QnxService {
         return file.getParent();
     }
 
+    public static String getQnxCompilerConfPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getQnxHostDirPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "etc" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "qcc" );
+        return stringBuffer.toString();
+    }
+
+    public static String getDefaultCompiler() {
+
+        Properties properties = PropertiesService.getDefaultCompilerProperties();
+        return properties.getProperty( "DIR" );
+    }
+
+    public static String getDefaultCompilerVersion( String compiler ) {
+
+        Properties properties = PropertiesService.getDefaultCompilerVersionProperties( compiler );
+        return properties.getProperty( "DIR" );
+    }
+
     public static String getQnxHostBinPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
@@ -341,12 +378,6 @@ public final class QnxService {
         String[] files = FileUtils.listDirectoryPathsRecursive( getQnxHostBaseDir(), includes, null );
 
         if ( files.length > 0 ) {
-            if ( files.length > 1 ) {
-                JoJoMojo.getMojo().getLog().warn( "Multiple paths for `" + QNX_USR_SEARCH + "` have been located... using the first" );
-                for (int i = 0; i < files.length; i++) {
-                    JoJoMojo.getMojo().getLog().warn( "\t" + files[i] + ( i == 0 ? " <--- using" : "" ) );
-                }
-            }
             return files[0];
         }
 
