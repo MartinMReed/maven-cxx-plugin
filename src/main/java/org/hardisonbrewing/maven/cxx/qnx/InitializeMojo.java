@@ -20,9 +20,12 @@ package org.hardisonbrewing.maven.cxx.qnx;
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.ToolChain;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
+import org.hardisonbrewing.maven.cxx.cdt.CdtService;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
 
 /**
@@ -37,27 +40,35 @@ public final class InitializeMojo extends JoJoMojoImpl {
     public String target;
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
+        CdtService.setEclipseDirPath( QnxService.getEclipseDirPath() );
+        CdtService.loadCdtCoreFileExtensions();
+
+        Configuration configuration = QnxService.getBuildConfiguration( target );
         ToolChain toolChain = QnxService.getToolChain( target );
 
         PropertiesService.putProperty( "QNX_TARGET", QnxService.getQnxTargetDirPath() );
         PropertiesService.putProperty( "CPUVARDIR", QnxService.getPlatform( toolChain ) );
 
-        Configuration configuration = QnxService.getBuildConfiguration( target );
+        loadSourcePaths( configuration );
+    }
+
+    private final void loadSourcePaths( Configuration configuration ) {
+
         String[] sourcePaths = CProjectService.getSourcePaths( configuration );
+        if ( sourcePaths == null ) {
+            return;
+        }
 
-        if ( sourcePaths != null ) {
+        BuildConfiguration buildConfiguration = getBuildConfiguration();
+        String sourceDirectory = getProject().getBuild().getSourceDirectory();
+        if ( !sourceDirectory.equals( buildConfiguration.getSourceDirectory() ) ) {
+            ProjectService.setSourceDirectory( sourcePaths[0] );
+        }
 
-            BuildConfiguration buildConfiguration = getBuildConfiguration();
-            String sourceDirectory = getProject().getBuild().getSourceDirectory();
-            if ( !sourceDirectory.equals( buildConfiguration.getSourceDirectory() ) ) {
-                ProjectService.setSourceDirectory( sourcePaths[0] );
-            }
-
-            for (String sourcePath : sourcePaths) {
-                ProjectService.addSourceDirectory( sourcePath );
-            }
+        for (String sourcePath : sourcePaths) {
+            ProjectService.addSourceDirectory( sourcePath );
         }
     }
 

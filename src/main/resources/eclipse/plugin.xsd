@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="plugin">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="extension" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="file-association" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="content-type" type="xs:string" />
+									<xs:attribute name="file-names" type="xs:string" />
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="content-type" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="id" type="xs:string" />
+									<xs:attribute name="name" type="xs:string" />
+									<xs:attribute name="base-type" type="xs:string" />
+									<xs:attribute name="file-extensions" type="xs:string" />
+									<xs:attribute name="priority" type="xs:string" />
+								</xs:complexType>
+							</xs:element>
+							<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+						<xs:attribute name="id" type="xs:string" />
+						<xs:attribute name="name" type="xs:string" />
+						<xs:attribute name="point" type="xs:string" />
+					</xs:complexType>
+				</xs:element>
+				<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

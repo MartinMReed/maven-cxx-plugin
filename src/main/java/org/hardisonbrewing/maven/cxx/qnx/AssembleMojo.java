@@ -101,7 +101,7 @@ public class AssembleMojo extends JoJoMojoImpl {
             }
 
             Commandline commandLine = buildCommandline( cmd );
-            CommandLineService.appendEnvVar( commandLine, "PATH", QnxService.getQnxHostBinPath() );
+            CommandLineService.appendEnvVar( commandLine, "PATH", QnxService.getQnxHostBinDirPath() );
             commandLine.addEnvironment( "QNX_HOST", QnxService.getQnxHostDirPath() );
             commandLine.addEnvironment( "QNX_TARGET", QnxService.getQnxTargetDirPath() );
             execute( commandLine );
