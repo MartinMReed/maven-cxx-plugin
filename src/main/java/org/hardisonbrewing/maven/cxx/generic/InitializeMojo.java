@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.PropertiesService;
@@ -39,7 +41,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
     public Sources sources;
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         BuildConfiguration buildConfiguration = getBuildConfiguration();
         ProjectService.setSourceDirectory( buildConfiguration.getSourceDirectory() );

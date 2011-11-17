@@ -58,6 +58,7 @@
 							<generatePackage>generated.org.eclipse.cdt</generatePackage>
 							<schemaIncludes>
 								<schemaInclude>cproject.xsd</schemaInclude>
+								<schemaInclude>plugin.xsd</schemaInclude>
 							</schemaIncludes>
 						</configuration>
 					</execution>

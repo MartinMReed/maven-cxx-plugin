@@ -93,8 +93,8 @@ public final class QnxService {
 
     public static String getCompilerPlatform( ToolChain toolChain ) {
 
-        String compiler = QnxService.getDefaultCompiler();
-        String version = QnxService.getDefaultCompilerVersion( compiler );
+        String compiler = getDefaultCompiler();
+        String version = getDefaultCompilerVersion( compiler );
         String platform = getPlatform( toolChain );
 
         StringBuffer stringBuffer = new StringBuffer();
@@ -336,7 +336,7 @@ public final class QnxService {
 
     public static String getQnxHostDirPath() {
 
-        File file = new File( getQnxUsrPath() );
+        File file = new File( getQnxUsrDirPath() );
         return file.getParent();
     }
 
@@ -363,16 +363,16 @@ public final class QnxService {
         return properties.getProperty( "DIR" );
     }
 
-    public static String getQnxHostBinPath() {
+    public static String getQnxHostBinDirPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getQnxUsrPath() );
+        stringBuffer.append( getQnxUsrDirPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( "bin" );
         return stringBuffer.toString();
     }
 
-    public static String getQnxUsrPath() {
+    public static String getQnxUsrDirPath() {
 
         String[] includes = new String[] { QNX_USR_SEARCH };
         String[] files = FileUtils.listDirectoryPathsRecursive( getQnxHostBaseDir(), includes, null );
@@ -382,6 +382,17 @@ public final class QnxService {
         }
 
         return null;
+    }
+
+    public static final String getEclipseDirPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getQnxUsrDirPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "qde" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "eclipse" );
+        return stringBuffer.toString();
     }
 
     public static Cproject getCProject() {

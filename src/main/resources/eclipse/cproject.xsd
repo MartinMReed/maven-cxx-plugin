@@ -8,7 +8,6 @@
 			<xs:attribute name="storage_type_id" type="xs:string" use="optional" />
 		</xs:complexType>
 	</xs:element>
-
 	<xs:element name="storageModule">
 		<xs:complexType>
 			<xs:sequence>

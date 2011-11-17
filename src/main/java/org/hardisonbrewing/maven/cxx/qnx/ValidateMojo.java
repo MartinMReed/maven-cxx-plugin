@@ -56,19 +56,25 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
         String qnxTargetDirName = QnxService.getQnxTargetDirName();
         if ( qnxTargetDirName == null ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate the `qnx*` direectory under: " + QnxService.getQnxTargetBaseDirPath() );
+            JoJoMojo.getMojo().getLog().error( "Unable to locate the `qnx*` directory under: " + QnxService.getQnxTargetBaseDirPath() );
             throw new IllegalStateException();
         }
 
-        String qnxUsrPath = QnxService.getQnxUsrPath();
+        String qnxUsrPath = QnxService.getQnxUsrDirPath();
         if ( qnxUsrPath == null ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate `" + QnxService.QNX_USR_SEARCH + "` under: " + QnxService.getQnxHostBaseDirPath() );
             throw new IllegalStateException();
         }
 
-        File qccFile = new File( QnxService.getQnxHostBinPath(), "qcc" );
+        File qccFile = new File( QnxService.getQnxHostBinDirPath(), "qcc" );
         if ( !qccFile.exists() ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate `qcc`: " + qccFile );
+            throw new IllegalStateException();
+        }
+
+        File eclipseDir = new File( QnxService.getEclipseDirPath() );
+        if ( !eclipseDir.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate Eclipse directory: " + eclipseDir );
             throw new IllegalStateException();
         }
     }
