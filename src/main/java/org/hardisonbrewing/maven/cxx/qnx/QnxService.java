@@ -289,27 +289,28 @@ public final class QnxService {
         return CProjectService.getToolOptionValues( tool, QCC_OPTION_LINKER_LIBRARY_PATHS );
     }
 
-    public static String getQnxTargetBaseDirPath() {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME ) );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( "target" );
-        return stringBuffer.toString();
-    }
-
     public static String getQnxTargetDirPath() {
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getQnxTargetBaseDirPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( getQnxTargetDirName() );
-        return stringBuffer.toString();
+        File qnxTargetDir = PropertiesService.getPropertyAsFile( PropertiesService.ENV_QNX_TARGET );
+        if ( qnxTargetDir != null && qnxTargetDir.exists() ) {
+            return qnxTargetDir.getPath();
+        }
+
+        StringBuffer qnxTargetBaseDirPath = new StringBuffer();
+        qnxTargetBaseDirPath.append( PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME ) );
+        qnxTargetBaseDirPath.append( File.separator );
+        qnxTargetBaseDirPath.append( "target" );
+
+        StringBuffer qnxTargetDirPath = new StringBuffer();
+        qnxTargetDirPath.append( qnxTargetBaseDirPath );
+        qnxTargetDirPath.append( File.separator );
+        qnxTargetDirPath.append( getQnxTargetDirName( qnxTargetBaseDirPath.toString() ) );
+        return qnxTargetDirPath.toString();
     }
 
-    public static String getQnxTargetDirName() {
+    private static String getQnxTargetDirName( String fileDirPath ) {
 
-        File file = new File( getQnxTargetBaseDirPath() );
+        File file = new File( fileDirPath );
 
         for (String filename : file.list()) {
             if ( filename.startsWith( "qnx" ) ) {
@@ -320,24 +321,15 @@ public final class QnxService {
         return null;
     }
 
-    public static String getQnxHostBaseDirPath() {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME ) );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( "host" );
-        return stringBuffer.toString();
-    }
-
-    public static File getQnxHostBaseDir() {
-
-        return new File( getQnxHostBaseDirPath() );
-    }
-
     public static String getQnxHostDirPath() {
 
-        File file = new File( getQnxUsrDirPath() );
-        return file.getParent();
+        File qnxHostDir = PropertiesService.getPropertyAsFile( PropertiesService.ENV_QNX_HOST );
+        if ( qnxHostDir != null && qnxHostDir.exists() ) {
+            return qnxHostDir.getPath();
+        }
+
+        File qnxHostUsrDir = new File( getQnxHostUsrDirPath() );
+        return qnxHostUsrDir.getParent();
     }
 
     public static String getQnxCompilerDirPath() {
@@ -363,19 +355,26 @@ public final class QnxService {
         return properties.getProperty( "DIR" );
     }
 
-    public static String getQnxHostBinDirPath() {
+    public static String getQnxHostUsrDirPath() {
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getQnxUsrDirPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( "bin" );
-        return stringBuffer.toString();
-    }
+        File qnxHostDir = PropertiesService.getPropertyAsFile( PropertiesService.ENV_QNX_HOST );
+        if ( qnxHostDir != null && qnxHostDir.exists() ) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( qnxHostDir.getPath() );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( "usr" );
+            return stringBuffer.toString();
+        }
 
-    public static String getQnxUsrDirPath() {
+        StringBuffer qnxHostBaseDirPath = new StringBuffer();
+        qnxHostBaseDirPath.append( PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME ) );
+        qnxHostBaseDirPath.append( File.separator );
+        qnxHostBaseDirPath.append( "host" );
+
+        File qnxHostBaseDir = new File( qnxHostBaseDirPath.toString() );
 
         String[] includes = new String[] { QNX_USR_SEARCH };
-        String[] files = FileUtils.listDirectoryPathsRecursive( getQnxHostBaseDir(), includes, null );
+        String[] files = FileUtils.listDirectoryPathsRecursive( qnxHostBaseDir, includes, null );
 
         if ( files.length > 0 ) {
             return files[0];
@@ -387,7 +386,7 @@ public final class QnxService {
     public static final String getEclipseDirPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getQnxUsrDirPath() );
+        stringBuffer.append( getQnxHostUsrDirPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( "qde" );
         stringBuffer.append( File.separator );

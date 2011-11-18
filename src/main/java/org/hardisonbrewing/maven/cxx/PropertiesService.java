@@ -22,13 +22,17 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.model.Plugin;
-import org.hardisonbrewing.maven.cxx.ProjectService;
 
 public class PropertiesService extends org.hardisonbrewing.maven.core.PropertiesService {
 
     protected PropertiesService() {
 
         // do nothing
+    }
+
+    public static final String envVarKey( String key ) {
+
+        return "env." + key;
     }
 
     public static final boolean pluginVersionsHaveChanged() {
