@@ -48,7 +48,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
         Configuration configuration = QnxService.getBuildConfiguration( target );
         ToolChain toolChain = QnxService.getToolChain( target );
 
-        PropertiesService.putProperty( "QNX_TARGET", QnxService.getQnxTargetDirPath() );
+        PropertiesService.putProperty( PropertiesService.QNX_TARGET, QnxService.getQnxTargetDirPath() );
         PropertiesService.putProperty( "CPUVARDIR", QnxService.getPlatform( toolChain ) );
 
         loadSourcePaths( configuration );

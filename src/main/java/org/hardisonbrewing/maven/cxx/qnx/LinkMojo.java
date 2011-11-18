@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
@@ -103,9 +102,7 @@ public final class LinkMojo extends JoJoMojoImpl {
         }
 
         Commandline commandLine = buildCommandline( cmd );
-        CommandLineService.appendEnvVar( commandLine, "PATH", QnxService.getQnxHostBinDirPath() );
-        commandLine.addEnvironment( "QNX_HOST", QnxService.getQnxHostDirPath() );
-        commandLine.addEnvironment( "QNX_TARGET", QnxService.getQnxTargetDirPath() );
+        CommandLineService.addQnxEnvVars( commandLine );
         execute( commandLine );
     }
 }

@@ -24,6 +24,12 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
 
     public static final String BLACKBERRY_NDK_HOME = "blackberry.ndk.home";
 
+    public static final String QNX_HOST = "QNX_HOST";
+    public static final String QNX_TARGET = "QNX_TARGET";
+
+    public static final String ENV_QNX_HOST = envVarKey( QNX_HOST );
+    public static final String ENV_QNX_TARGET = envVarKey( QNX_TARGET );
+
     protected PropertiesService() {
 
         // do nothing
