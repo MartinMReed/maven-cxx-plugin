@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
@@ -48,9 +47,9 @@ public final class ValidateMojo extends JoJoMojoImpl {
             throw new IllegalStateException();
         }
 
-        QnxService.loadCProject();
+        CProjectService.loadCProject();
 
-        Configuration configuration = QnxService.getBuildConfiguration( target );
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
         if ( configuration == null ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate target: " + target );
             throw new IllegalStateException();

@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  * 
  */
-
 package org.wayoda.ang.libraries;
 
 import java.io.File;

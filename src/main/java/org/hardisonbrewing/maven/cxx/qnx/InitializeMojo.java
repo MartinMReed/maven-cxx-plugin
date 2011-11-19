@@ -14,19 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.ToolChain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.ProjectService;
-import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 import org.hardisonbrewing.maven.cxx.cdt.CdtService;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
+import org.hardisonbrewing.maven.cxx.generic.Sources;
 
 /**
  * @goal qnx-initialize
@@ -45,13 +47,84 @@ public final class InitializeMojo extends JoJoMojoImpl {
         CdtService.setEclipseDirPath( QnxService.getEclipseDirPath() );
         CdtService.loadCdtCoreFileExtensions();
 
-        Configuration configuration = QnxService.getBuildConfiguration( target );
-        ToolChain toolChain = QnxService.getToolChain( target );
+        loadSources();
+
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+        ToolChain toolChain = CProjectService.getToolChain( target );
 
         PropertiesService.putProperty( PropertiesService.QNX_TARGET, QnxService.getQnxTargetDirPath() );
-        PropertiesService.putProperty( "CPUVARDIR", QnxService.getPlatform( toolChain ) );
+        PropertiesService.putProperty( "CPUVARDIR", CProjectService.getPlatform( toolChain ) );
 
         loadSourcePaths( configuration );
+    }
+
+    private void loadSources() {
+
+        List<String> includes = new ArrayList<String>();
+        List<String> excludes = new ArrayList<String>();
+
+        loadSources( ProjectService.getSources(), includes, excludes );
+
+        String[] sourceExtensions = CdtService.getSourceExtensions();
+        if ( sourceExtensions != null ) {
+            for (String sourceExtension : sourceExtensions) {
+                String include = "**/*." + sourceExtension;
+                if ( !includes.contains( include ) ) {
+                    includes.add( include );
+                }
+            }
+        }
+
+        String[] resourceExtensions = CdtService.getResourceExtensions();
+        if ( resourceExtensions != null ) {
+            for (String resourceExtension : resourceExtensions) {
+                String exclude = "**/*." + resourceExtension;
+                if ( !excludes.contains( exclude ) ) {
+                    excludes.add( exclude );
+                }
+            }
+        }
+
+        Sources sources = new Sources();
+
+        if ( !includes.isEmpty() ) {
+            String[] _includes = new String[includes.size()];
+            includes.toArray( _includes );
+            sources.setIncludes( _includes );
+        }
+
+        if ( !excludes.isEmpty() ) {
+            String[] _excludes = new String[excludes.size()];
+            excludes.toArray( _excludes );
+            sources.setExcludes( _excludes );
+        }
+
+        ProjectService.setSources( sources );
+    }
+
+    private void loadSources( Sources sources, List<String> includes, List<String> excludes ) {
+
+        if ( sources == null ) {
+            return;
+        }
+
+        String[] _includes = sources.getIncludes();
+        if ( _includes != null ) {
+            for (String _include : _includes) {
+                if ( !includes.contains( _include ) ) {
+                    includes.add( _include );
+                }
+            }
+        }
+
+        String[] _excludes = sources.getExcludes();
+        if ( _excludes != null ) {
+            for (String _exclude : _excludes) {
+                if ( !includes.contains( _exclude ) ) {
+                    includes.add( _exclude );
+                }
+            }
+        }
     }
 
     private final void loadSourcePaths( Configuration configuration ) {

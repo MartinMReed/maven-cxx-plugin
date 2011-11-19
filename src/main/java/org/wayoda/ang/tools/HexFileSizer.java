@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  * 
  */
-
 package org.wayoda.ang.tools;
 
 import java.io.BufferedReader;

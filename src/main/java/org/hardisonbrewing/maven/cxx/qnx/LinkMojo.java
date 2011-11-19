@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.ToolChain;
@@ -25,9 +24,9 @@ import java.util.List;
 
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 
 /**
  * @goal o-qnx-link
@@ -43,15 +42,15 @@ public final class LinkMojo extends JoJoMojoImpl {
     @Override
     public void execute() {
 
-        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
+        String[] sources = ProjectService.getSourceFilePaths();
 
         if ( sources == null ) {
             getLog().info( "No sources found... skipping linker" );
             return;
         }
 
-        ToolChain toolChain = QnxService.getToolChain( target );
-        Tool tool = CProjectService.getTool( toolChain, QnxService.QCC_TOOL_LINKER );
+        ToolChain toolChain = CProjectService.getToolChain( target );
+        Tool tool = CProjectService.getTool( toolChain, CProjectService.QCC_TOOL_LINKER );
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "qcc" );
@@ -60,10 +59,11 @@ public final class LinkMojo extends JoJoMojoImpl {
         cmd.add( getProject().getArtifactId() + ".o" );
 
         for (String source : sources) {
+            source = TargetDirectoryService.resolveProcessedFilePath( source );
             cmd.add( SourceFiles.replaceExtension( source, "o" ) );
         }
 
-        String[] libIncludes = QnxService.getLinkerLibraryPaths( toolChain );
+        String[] libIncludes = CProjectService.getLinkerLibraryPaths( toolChain );
         if ( libIncludes != null ) {
             for (String include : libIncludes) {
                 include = PropertiesService.populateTemplateVariables( include, "${", "}" );
@@ -71,33 +71,33 @@ public final class LinkMojo extends JoJoMojoImpl {
             }
         }
 
-        String[] libs = QnxService.getLinkerLibraries( toolChain );
+        String[] libs = CProjectService.getLinkerLibraries( toolChain );
         if ( libs != null ) {
             for (String lib : libs) {
                 cmd.add( "-l" + lib );
             }
         }
 
-        cmd.add( "-V" + QnxService.getCompilerPlatform( toolChain ) );
+        cmd.add( "-V" + CProjectService.getCompilerPlatform( toolChain ) );
 
-        if ( QnxService.isDebug( tool ) ) {
+        if ( CProjectService.isDebug( tool ) ) {
             cmd.add( "-g" );
         }
 
         cmd.add( "-Wl,-z,relro" );
         cmd.add( "-Wl,-z,now" );
 
-        if ( QnxService.useCodeCoverage( tool ) ) {
+        if ( CProjectService.useCodeCoverage( tool ) ) {
             cmd.add( "-ftest-coverage" );
             cmd.add( "-fprofile-arcs" );
             cmd.add( "-p" );
         }
 
-        if ( QnxService.useProfile( tool ) ) {
+        if ( CProjectService.useProfile( tool ) ) {
             cmd.add( "-lprofilingS" );
         }
 
-        if ( QnxService.usePie( tool ) ) {
+        if ( CProjectService.usePie( tool ) ) {
             cmd.add( "-pie" );
         }
 

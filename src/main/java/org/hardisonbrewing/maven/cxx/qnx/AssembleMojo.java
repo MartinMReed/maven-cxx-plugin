@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.ToolChain;
@@ -25,9 +24,9 @@ import java.util.List;
 
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 
 /**
  * @goal o-qnx-assemble
@@ -43,25 +42,27 @@ public class AssembleMojo extends JoJoMojoImpl {
     @Override
     public void execute() {
 
-        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
+        String[] sources = ProjectService.getSourceFilePaths();
 
         if ( sources == null ) {
             getLog().info( "No sources found... skipping assembler" );
             return;
         }
 
-        ToolChain toolChain = QnxService.getToolChain( target );
-        Tool tool = CProjectService.getTool( toolChain, QnxService.QCC_TOOL_ASSEMBLER );
+        ToolChain toolChain = CProjectService.getToolChain( target );
+        Tool tool = CProjectService.getTool( toolChain, CProjectService.QCC_TOOL_ASSEMBLER );
 
-        String compilerPlatform = QnxService.getCompilerPlatform( toolChain );
-        boolean useDebug = QnxService.isDebug( tool );
-        boolean useSecurity = QnxService.useSecurity( tool );
-        boolean usePie = QnxService.usePie( tool );
-        int optLevel = QnxService.getOptLevel( tool );
-        boolean useProfile = QnxService.useProfile( tool );
-        boolean useCodeCoverage = QnxService.useCodeCoverage( tool );
+        String compilerPlatform = CProjectService.getCompilerPlatform( toolChain );
+        boolean useDebug = CProjectService.isDebug( tool );
+        boolean useSecurity = CProjectService.useSecurity( tool );
+        boolean usePie = CProjectService.usePie( tool );
+        int optLevel = CProjectService.getOptLevel( tool );
+        boolean useProfile = CProjectService.useProfile( tool );
+        boolean useCodeCoverage = CProjectService.useCodeCoverage( tool );
 
         for (String source : sources) {
+
+            source = TargetDirectoryService.resolveProcessedFilePath( source );
 
             List<String> cmd = new LinkedList<String>();
             cmd.add( "qcc" );
