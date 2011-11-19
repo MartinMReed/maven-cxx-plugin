@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.ToolChain;
@@ -26,10 +25,11 @@ import java.util.List;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 
 /**
  * @goal o-qnx-compile
@@ -45,33 +45,36 @@ public class CompileMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
+        String[] sources = ProjectService.getSourceFilePaths();
 
         if ( sources == null ) {
             getLog().info( "No sources found... skipping compiler" );
             return;
         }
 
-        ToolChain toolChain = QnxService.getToolChain( target );
-        Tool tool = CProjectService.getTool( toolChain, QnxService.QCC_TOOL_COMPILER );
+        ToolChain toolChain = CProjectService.getToolChain( target );
+        Tool tool = CProjectService.getTool( toolChain, CProjectService.QCC_TOOL_COMPILER );
 
-        String compilerPlatform = QnxService.getCompilerPlatform( toolChain );
-        boolean usePie = QnxService.usePie( tool );
-        boolean useSecurity = QnxService.useSecurity( tool );
-        boolean useDebug = QnxService.isDebug( tool );
-        int optLevel = QnxService.getOptLevel( tool );
-        boolean useProfile = QnxService.useProfile( tool );
-        boolean useCodeCoverage = QnxService.useCodeCoverage( tool );
-        String[] includes = QnxService.getCompilerIncludePaths( toolChain );
-        String[] defines = QnxService.getCompilerDefines( toolChain );
+        String compilerPlatform = CProjectService.getCompilerPlatform( toolChain );
+        boolean usePie = CProjectService.usePie( tool );
+        boolean useSecurity = CProjectService.useSecurity( tool );
+        boolean useDebug = CProjectService.isDebug( tool );
+        int optLevel = CProjectService.getOptLevel( tool );
+        boolean useProfile = CProjectService.useProfile( tool );
+        boolean useCodeCoverage = CProjectService.useCodeCoverage( tool );
+        String[] includes = CProjectService.getCompilerIncludePaths( toolChain );
+        String[] defines = CProjectService.getCompilerDefines( toolChain );
 
         for (String source : sources) {
+
+            String processedSource = TargetDirectoryService.resolveProcessedFilePath( source );
+            FileUtils.ensureParentExists( processedSource );
 
             List<String> cmd = new LinkedList<String>();
             cmd.add( "qcc" );
 
             cmd.add( "-o" );
-            cmd.add( SourceFiles.replaceExtension( source, "s" ) );
+            cmd.add( SourceFiles.replaceExtension( processedSource, "s" ) );
 
             cmd.add( "-S" );
             cmd.add( SourceFiles.escapeFileName( source ) );

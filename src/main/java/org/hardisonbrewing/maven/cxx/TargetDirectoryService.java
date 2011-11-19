@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.hardisonbrewing.maven.cxx;
 
 import java.io.File;
@@ -117,5 +116,14 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
     public static final File[] getProcessedSourceFiles() {
 
         return FileUtils.listFilesRecursive( getProcessedSourcesDirectory() );
+    }
+
+    public static final String resolveProcessedFilePath( String filePath ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getProcessedSourcesDirectory() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( FileUtils.getProjectCanonicalPath( filePath ) );
+        return stringBuffer.toString();
     }
 }
