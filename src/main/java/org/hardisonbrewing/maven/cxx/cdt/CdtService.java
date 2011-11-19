@@ -34,8 +34,6 @@ import org.hardisonbrewing.maven.core.JoJoMojo;
 
 public class CdtService {
 
-    public static final String ORG_CDT_CORE_JAR_SEARCH = "org.eclipse.cdt.core_*.jar";
-
     private static String eclipseDirPath;
     private static String[] sourceExtensions;
     private static String[] resourceExtensions;
@@ -112,7 +110,7 @@ public class CdtService {
 
         File baseDir = new File( getEclipsePluginsDirPath() );
 
-        String[] includes = new String[] { ORG_CDT_CORE_JAR_SEARCH };
+        String[] includes = new String[] { "org.eclipse.cdt.core_*.jar" };
         String[] files = FileUtils.listFilePathsRecursive( baseDir, includes, null );
 
         if ( files.length > 0 ) {
