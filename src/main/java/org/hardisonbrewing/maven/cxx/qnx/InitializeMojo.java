@@ -120,8 +120,8 @@ public final class InitializeMojo extends JoJoMojoImpl {
         String[] _excludes = sources.getExcludes();
         if ( _excludes != null ) {
             for (String _exclude : _excludes) {
-                if ( !includes.contains( _exclude ) ) {
-                    includes.add( _exclude );
+                if ( !excludes.contains( _exclude ) ) {
+                    excludes.add( _exclude );
                 }
             }
         }
