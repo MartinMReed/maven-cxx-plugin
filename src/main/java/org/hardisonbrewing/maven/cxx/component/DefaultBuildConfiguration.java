@@ -26,7 +26,6 @@ public class DefaultBuildConfiguration implements BuildConfiguration {
         _sourceDirectory = FileUtils.normalize( _sourceDirectory );
 
         StringBuffer sourceDirectoryPath = new StringBuffer();
-
         if ( !_sourceDirectory.startsWith( File.separator ) ) {
             sourceDirectoryPath.append( ProjectService.getBaseDirPath() );
             sourceDirectoryPath.append( File.separator );

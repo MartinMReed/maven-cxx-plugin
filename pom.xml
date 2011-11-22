@@ -98,7 +98,6 @@
 			<artifactId>plexus-component-api</artifactId>
 			<version>1.0-alpha-33</version>
 		</dependency>
-		<!-- JAXB -->
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-xjc</artifactId>
