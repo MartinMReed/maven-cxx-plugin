@@ -35,3 +35,5 @@ To download this plugin without building it manually, you can add the following 
 			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots/</url>
 		</pluginRepository>
 	</pluginRepositories>
+
+Bamboo Status: [http://hardisonbrewing.org:8083/browse/CXX](http://hardisonbrewing.org:8083/browse/CXX)
