@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.wayoda.ang.libraries.CodeManager;
 import org.wayoda.ang.libraries.Library;
