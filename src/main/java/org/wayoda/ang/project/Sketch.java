@@ -33,7 +33,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.wayoda.ang.libraries.CodeManager;
 import org.wayoda.ang.libraries.Library;
@@ -48,7 +47,7 @@ import org.wayoda.ang.utils.FileUtils;
  * The name of the directory matches the name of the sketch. 
  * Besides the main sketch file itself, 
  * four types of files are allowed they have the extensions 
- * *.pde, *.h, *.c  *·cpp 
+ * *.pde, *.h, *.c  *.cpp 
  * Before starting the compilation an existing build-directory is clean and a new one 
  * is created in which and all processing for a specific target happens.
  */
