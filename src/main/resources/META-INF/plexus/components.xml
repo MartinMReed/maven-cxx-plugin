@@ -326,9 +326,9 @@
 							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
 								org.hardisonbrewing:maven-cxx-plugin:qnx-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:o-qnx-compile,
-								org.hardisonbrewing:maven-cxx-plugin:o-qnx-assemble,
-								org.hardisonbrewing:maven-cxx-plugin:o-qnx-link</compile>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:qnx-compile,
+								org.hardisonbrewing:maven-cxx-plugin:qnx-assemble,
+								org.hardisonbrewing:maven-cxx-plugin:qnx-link</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:o-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:o-install</install>

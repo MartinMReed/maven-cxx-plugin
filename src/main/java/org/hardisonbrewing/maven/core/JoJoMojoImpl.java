@@ -190,7 +190,7 @@ public abstract class JoJoMojoImpl extends JoJoMojo implements Contextualizable 
 
     protected <T> T lookup( Class<T> role ) throws ComponentLookupException {
 
-        return (T) getPlexusContainer().lookup( role );
+        return (T) getPlexusContainer().lookup( role.getName() );
     }
 
     protected <T> T lookup( Class<T> role, String id ) throws ComponentLookupException {

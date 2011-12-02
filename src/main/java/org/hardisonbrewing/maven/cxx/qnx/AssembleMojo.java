@@ -29,7 +29,7 @@ import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
- * @goal o-qnx-assemble
+ * @goal qnx-assemble
  * @phase compile
  */
 public class AssembleMojo extends JoJoMojoImpl {
