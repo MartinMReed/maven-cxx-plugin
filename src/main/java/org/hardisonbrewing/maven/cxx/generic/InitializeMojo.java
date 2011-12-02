@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.core.model.ProjectConfiguration;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.PropertiesService;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
@@ -42,6 +43,9 @@ public final class InitializeMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
+        ProjectConfiguration projectConfiguration = new ProjectConfiguration();
+        ProjectService.setProjectConfiguration( projectConfiguration );
+
         BuildConfiguration buildConfiguration = getBuildConfiguration();
         ProjectService.setSourceDirectory( buildConfiguration.getSourceDirectory() );
         getLog().debug( "Using source directory: " + getProject().getBuild().getSourceDirectory() );
@@ -59,7 +63,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
     private final BuildConfiguration getBuildConfiguration() {
 
         try {
-            return lookup( BuildConfiguration.class, getProject().getPackaging() );
+            return lookup( BuildConfiguration.class );
         }
         catch (Exception e) {
             getLog().debug( "No custom build configuration found... skipping" );

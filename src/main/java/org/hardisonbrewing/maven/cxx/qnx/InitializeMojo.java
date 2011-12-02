@@ -136,6 +136,8 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         BuildConfiguration buildConfiguration = getBuildConfiguration();
         String sourceDirectory = getProject().getBuild().getSourceDirectory();
+        getLog().info( "sourceDirectory: " + sourceDirectory );
+        getLog().info( "buildConfiguration: " + buildConfiguration );
         if ( !sourceDirectory.equals( buildConfiguration.getSourceDirectory() ) ) {
             ProjectService.setSourceDirectory( sourcePaths[0] );
         }
@@ -148,7 +150,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
     private final BuildConfiguration getBuildConfiguration() {
 
         try {
-            return lookup( BuildConfiguration.class, getProject().getPackaging() );
+            return lookup( BuildConfiguration.class );
         }
         catch (Exception e) {
             getLog().debug( "No custom build configuration found... skipping" );

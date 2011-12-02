@@ -32,7 +32,7 @@ import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
- * @goal o-qnx-compile
+ * @goal qnx-compile
  * @phase compile
  */
 public class CompileMojo extends JoJoMojoImpl {
