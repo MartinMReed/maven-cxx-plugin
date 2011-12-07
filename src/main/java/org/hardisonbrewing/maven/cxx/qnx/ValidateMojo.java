@@ -17,10 +17,11 @@
 package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
+import generated.org.eclipse.cdt.ToolChain;
+import generated.org.eclipse.cdt.ToolChain.Builder;
 
 import java.io.File;
 
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
@@ -43,27 +44,65 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
         File cproject = QnxService.getCProjectFile();
         if ( !cproject.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate .cproject file: " + cproject );
+            getLog().error( "Unable to locate .cproject file: " + cproject );
             throw new IllegalStateException();
         }
 
         CProjectService.loadCProject();
 
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
-        if ( configuration == null ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate target: " + target );
+        Configuration targetConfiguration = CProjectService.getBuildConfiguration( target );
+        if ( targetConfiguration == null ) {
+
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( "Unable to locate target `" );
+            stringBuffer.append( target );
+            stringBuffer.append( "`. " );
+
+            Configuration[] configurations = CProjectService.getBuildConfigurations();
+            if ( configurations == null ) {
+                stringBuffer.append( "No targets are available!" );
+            }
+            else {
+
+                stringBuffer.append( "Available targets are: " );
+
+                for (int i = 0; i < configurations.length; i++) {
+
+                    Configuration configuration = configurations[i];
+
+                    if ( i > 0 ) {
+                        stringBuffer.append( ", " );
+                    }
+
+                    stringBuffer.append( "`" );
+                    stringBuffer.append( configuration.getName() );
+                    stringBuffer.append( "`" );
+                }
+
+                stringBuffer.append( "." );
+            }
+
+            getLog().error( stringBuffer.toString() );
             throw new IllegalStateException();
+        }
+
+        ToolChain targetToolChain = CProjectService.getToolChain( targetConfiguration );
+        Builder builder = targetToolChain.getBuilder();
+        getLog().info( "Using builder: " + builder.getName() );
+        if ( CProjectService.isMakefileBuilder( builder ) ) {
+            getLog().error( "Makefile builds are not currently supported!" );
+            throw new UnsupportedOperationException();
         }
 
         String qnxHostUsrDirPath = QnxService.getQnxHostUsrDirPath();
         if ( qnxHostUsrDirPath == null ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate `" + QnxService.QNX_USR_SEARCH + "` under <blackberry.ndk.home>" );
+            getLog().error( "Unable to locate `" + QnxService.QNX_USR_SEARCH + "` under <blackberry.ndk.home>" );
             throw new IllegalStateException();
         }
 
         File eclipseDir = new File( QnxService.getEclipseDirPath() );
         if ( !eclipseDir.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate Eclipse directory: " + eclipseDir );
+            getLog().error( "Unable to locate Eclipse directory: " + eclipseDir );
             throw new IllegalStateException();
         }
     }

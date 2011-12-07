@@ -27,6 +27,7 @@ import generated.org.eclipse.cdt.StorageModule.Configuration.FolderInfo;
 import generated.org.eclipse.cdt.StorageModule.Configuration.SourceEntries;
 import generated.org.eclipse.cdt.StorageModule.Project;
 import generated.org.eclipse.cdt.ToolChain;
+import generated.org.eclipse.cdt.ToolChain.Builder;
 import generated.org.eclipse.cdt.ToolChain.Tool;
 
 import java.io.File;
@@ -45,6 +46,8 @@ public class CProjectService {
 
     public static final String MODULE_SETTINGS = "org.eclipse.cdt.core.settings";
 
+    public static final String BUILDER_DEFAULT = "org.eclipse.cdt.build.core.settings.default.builder";
+
     private static final String CDT_BUILD_SYSTEM = "cdtBuildSystem";
 
     private static final String BUILD_TYPE = "org.eclipse.cdt.build.core.buildType";
@@ -62,6 +65,19 @@ public class CProjectService {
     public static Cproject readCProject( File file ) {
 
         return JAXB.unmarshal( file, Cproject.class );
+    }
+
+    public static boolean isMakefileBuilder( Configuration configuration ) {
+
+        ToolChain toolChain = CProjectService.getToolChain( configuration );
+        Builder builder = toolChain.getBuilder();
+        return isMakefileBuilder( builder );
+    }
+
+    public static boolean isMakefileBuilder( Builder builder ) {
+
+        Boolean managedBuildOn = builder.isManagedBuildOn();
+        return ( managedBuildOn == null || !managedBuildOn ) && BUILDER_DEFAULT.equals( builder.getSuperClass() );
     }
 
     public static List<Cconfiguration> getCconfigurations( Cproject cproject, String module ) {
@@ -250,6 +266,20 @@ public class CProjectService {
         }
 
         return values;
+    }
+
+    public static Configuration[] getBuildConfigurations( Cproject cproject, String module ) {
+
+        List<Configuration> configurations = new ArrayList<Configuration>();
+
+        for (Cconfiguration cconfiguration : getCconfigurations( cproject, module )) {
+            Configuration configuration = getBuildConfiguration( cconfiguration );
+            configurations.add( configuration );
+        }
+
+        Configuration[] _configurations = new Configuration[configurations.size()];
+        configurations.toArray( _configurations );
+        return _configurations;
     }
 
     public static Configuration getBuildConfiguration( Cproject cproject, String module, String name ) {

@@ -50,6 +50,11 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
 
     private static Cproject cproject;
 
+    public static Configuration[] getBuildConfigurations() {
+
+        return getBuildConfigurations( getCProject(), MODULE_SETTINGS );
+    }
+
     public static Configuration getBuildConfiguration( String target ) {
 
         return getBuildConfiguration( getCProject(), MODULE_SETTINGS, target );
