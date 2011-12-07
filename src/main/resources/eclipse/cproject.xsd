@@ -118,7 +118,7 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="option" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="targetPlatform" minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="targetPlatform" minOccurs="1" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
@@ -131,7 +131,7 @@
 						<xs:anyAttribute processContents="lax" />
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="builder" minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="builder" minOccurs="1" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="outputEntries" minOccurs="0" maxOccurs="unbounded">
@@ -145,7 +145,8 @@
 						</xs:sequence>
 						<xs:attribute name="buildPath" type="xs:string" use="optional" />
 						<xs:attribute name="id" type="xs:string" use="optional" />
-						<xs:attribute name="keepEnvironmentInBuildfile" type="xs:string" use="optional" />
+						<xs:attribute name="managedBuildOn" type="xs:boolean" use="optional" />
+						<xs:attribute name="keepEnvironmentInBuildfile" type="xs:boolean" use="optional" />
 						<xs:attribute name="name" type="xs:string" use="optional" />
 						<xs:attribute name="superClass" type="xs:string" use="optional" />
 						<xs:anyAttribute processContents="lax" />
