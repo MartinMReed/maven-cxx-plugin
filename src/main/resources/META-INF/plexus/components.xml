@@ -322,13 +322,16 @@
 						<id>default</id>
 						<phases>
 							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
-								org.hardisonbrewing:maven-cxx-plugin:qnx-validate</validate>
+								org.hardisonbrewing:maven-cxx-plugin:qde-validate,
+								org.hardisonbrewing:maven-cxx-plugin:qde-managed-validate</validate>
 							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
-								org.hardisonbrewing:maven-cxx-plugin:qnx-initialize</initialize>
+								org.hardisonbrewing:maven-cxx-plugin:qde-initialize,
+								org.hardisonbrewing:maven-cxx-plugin:qde-managed-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:qnx-compile,
-								org.hardisonbrewing:maven-cxx-plugin:qnx-assemble,
-								org.hardisonbrewing:maven-cxx-plugin:qnx-link</compile>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:qde-managed-compile,
+								org.hardisonbrewing:maven-cxx-plugin:qde-makefile-compile,
+								org.hardisonbrewing:maven-cxx-plugin:qde-managed-assemble,
+								org.hardisonbrewing:maven-cxx-plugin:qde-managed-link</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:o-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:o-install</install>

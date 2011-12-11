@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qnx;
+package org.hardisonbrewing.maven.cxx.qde;
 
 import java.io.File;
 
@@ -34,17 +34,17 @@ public class CommandLineService extends org.hardisonbrewing.maven.core.cli.Comma
     public static void addQnxEnvVars( Commandline commandLine ) {
 
         StringBuffer qnxHostBinDirPath = new StringBuffer();
-        qnxHostBinDirPath.append( QnxService.getQnxHostUsrDirPath() );
+        qnxHostBinDirPath.append( QdeService.getQnxHostUsrDirPath() );
         qnxHostBinDirPath.append( File.separator );
         qnxHostBinDirPath.append( "bin" );
         appendEnvVar( commandLine, "PATH", qnxHostBinDirPath.toString() );
 
         if ( !PropertiesService.hasProperty( PropertiesService.ENV_QNX_HOST ) ) {
-            commandLine.addEnvironment( PropertiesService.QNX_HOST, QnxService.getQnxHostDirPath() );
+            commandLine.addEnvironment( PropertiesService.QNX_HOST, QdeService.getQnxHostDirPath() );
         }
 
         if ( !PropertiesService.hasProperty( PropertiesService.ENV_QNX_TARGET ) ) {
-            commandLine.addEnvironment( PropertiesService.QNX_TARGET, QnxService.getQnxTargetDirPath() );
+            commandLine.addEnvironment( PropertiesService.QNX_TARGET, QdeService.getQnxTargetDirPath() );
         }
     }
 }

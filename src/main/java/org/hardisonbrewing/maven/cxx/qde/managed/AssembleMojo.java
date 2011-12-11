@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qnx;
+package org.hardisonbrewing.maven.cxx.qde.managed;
 
 import generated.org.eclipse.cdt.ToolChain;
 import generated.org.eclipse.cdt.ToolChain.Tool;
@@ -22,20 +22,19 @@ import generated.org.eclipse.cdt.ToolChain.Tool;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
-import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.qde.CProjectService;
+import org.hardisonbrewing.maven.cxx.qde.CommandLineService;
 
 /**
- * @goal qnx-compile
+ * @goal qde-managed-assemble
  * @phase compile
  */
-public class CompileMojo extends JoJoMojoImpl {
+public class AssembleMojo extends JoJoMojoImpl {
 
     /**
      * @parameter
@@ -43,48 +42,43 @@ public class CompileMojo extends JoJoMojoImpl {
     public String target;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() {
+
+        if ( CProjectService.isMakefileBuilder( target ) ) {
+            getLog().info( "Not a managed project... skipping" );
+            return;
+        }
 
         String[] sources = ProjectService.getSourceFilePaths();
 
         if ( sources == null ) {
-            getLog().info( "No sources found... skipping compiler" );
+            getLog().info( "No sources found... skipping assembler" );
             return;
         }
 
         ToolChain toolChain = CProjectService.getToolChain( target );
-        Tool tool = CProjectService.getTool( toolChain, CProjectService.QCC_TOOL_COMPILER );
+        Tool tool = CProjectService.getTool( toolChain, CProjectService.QCC_TOOL_ASSEMBLER );
 
         String compilerPlatform = CProjectService.getCompilerPlatform( toolChain );
-        boolean usePie = CProjectService.usePie( tool );
-        boolean useSecurity = CProjectService.useSecurity( tool );
         boolean useDebug = CProjectService.isDebug( tool );
+        boolean useSecurity = CProjectService.useSecurity( tool );
+        boolean usePie = CProjectService.usePie( tool );
         int optLevel = CProjectService.getOptLevel( tool );
         boolean useProfile = CProjectService.useProfile( tool );
         boolean useCodeCoverage = CProjectService.useCodeCoverage( tool );
-        String[] includes = CProjectService.getCompilerIncludePaths( toolChain );
-        String[] defines = CProjectService.getCompilerDefines( toolChain );
 
         for (String source : sources) {
 
-            String processedSource = TargetDirectoryService.resolveProcessedFilePath( source );
-            FileUtils.ensureParentExists( processedSource );
+            source = TargetDirectoryService.resolveProcessedFilePath( source );
 
             List<String> cmd = new LinkedList<String>();
             cmd.add( "qcc" );
 
             cmd.add( "-o" );
-            cmd.add( SourceFiles.replaceExtension( processedSource, "s" ) );
+            cmd.add( SourceFiles.replaceExtension( source, "o" ) );
 
-            cmd.add( "-S" );
-            cmd.add( SourceFiles.escapeFileName( source ) );
-
-            if ( includes != null ) {
-                for (String include : includes) {
-                    include = PropertiesService.populateTemplateVariables( include, "${", "}" );
-                    cmd.add( "-I" + include );
-                }
-            }
+            cmd.add( "-c" );
+            cmd.add( SourceFiles.replaceExtension( source, "s" ) );
 
             cmd.add( "-V" + compilerPlatform );
 
@@ -111,12 +105,6 @@ public class CompileMojo extends JoJoMojoImpl {
 
             if ( usePie ) {
                 cmd.add( "-fPIE" );
-            }
-
-            if ( defines != null ) {
-                for (String define : defines) {
-                    cmd.add( "-D" + define );
-                }
             }
 
             Commandline commandLine = buildCommandline( cmd );

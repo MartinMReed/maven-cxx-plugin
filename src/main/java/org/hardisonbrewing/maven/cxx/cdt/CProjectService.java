@@ -69,7 +69,7 @@ public class CProjectService {
 
     public static boolean isMakefileBuilder( Configuration configuration ) {
 
-        ToolChain toolChain = CProjectService.getToolChain( configuration );
+        ToolChain toolChain = getToolChain( configuration );
         Builder builder = toolChain.getBuilder();
         return isMakefileBuilder( builder );
     }
