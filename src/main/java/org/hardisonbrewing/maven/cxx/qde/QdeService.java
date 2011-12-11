@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qnx;
+package org.hardisonbrewing.maven.cxx.qde;
 
 import java.io.File;
 import java.util.Properties;
@@ -22,7 +22,7 @@ import java.util.Properties;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 
-public final class QnxService {
+public final class QdeService {
 
     public static final String QNX_USR_SEARCH;
 

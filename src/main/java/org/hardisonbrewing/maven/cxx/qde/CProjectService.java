@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qnx;
+package org.hardisonbrewing.maven.cxx.qde;
 
 import generated.org.eclipse.cdt.Cproject;
 import generated.org.eclipse.cdt.StorageModule.Configuration;
@@ -50,6 +50,12 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
 
     private static Cproject cproject;
 
+    public static boolean isMakefileBuilder( String name ) {
+
+        Configuration configuration = getBuildConfiguration( name );
+        return isMakefileBuilder( configuration );
+    }
+
     public static Configuration[] getBuildConfigurations() {
 
         return getBuildConfigurations( getCProject(), MODULE_SETTINGS );
@@ -68,8 +74,8 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
 
     public static String getCompilerPlatform( ToolChain toolChain ) {
 
-        String compiler = QnxService.getDefaultCompiler();
-        String version = QnxService.getDefaultCompilerVersion( compiler );
+        String compiler = QdeService.getDefaultCompiler();
+        String version = QdeService.getDefaultCompilerVersion( compiler );
         String platform = getPlatform( toolChain );
 
         StringBuffer stringBuffer = new StringBuffer();
@@ -271,6 +277,6 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
 
     public static void loadCProject() {
 
-        cproject = CProjectService.readCProject( QnxService.getCProjectFile() );
+        cproject = CProjectService.readCProject( QdeService.getCProjectFile() );
     }
 }

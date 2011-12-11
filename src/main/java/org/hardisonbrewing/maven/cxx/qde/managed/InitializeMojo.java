@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qnx;
+package org.hardisonbrewing.maven.cxx.qde.managed;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.ToolChain;
@@ -29,9 +29,12 @@ import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.cdt.CdtService;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
 import org.hardisonbrewing.maven.cxx.generic.Sources;
+import org.hardisonbrewing.maven.cxx.qde.CProjectService;
+import org.hardisonbrewing.maven.cxx.qde.PropertiesService;
+import org.hardisonbrewing.maven.cxx.qde.QdeService;
 
 /**
- * @goal qnx-initialize
+ * @goal qde-managed-initialize
  * @phase initialize
  */
 public final class InitializeMojo extends JoJoMojoImpl {
@@ -44,15 +47,17 @@ public final class InitializeMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        CdtService.setEclipseDirPath( QnxService.getEclipseDirPath() );
-        CdtService.loadCdtCoreFileExtensions();
+        if ( CProjectService.isMakefileBuilder( target ) ) {
+            getLog().info( "Not a managed project... skipping" );
+            return;
+        }
 
         loadSources();
 
         Configuration configuration = CProjectService.getBuildConfiguration( target );
         ToolChain toolChain = CProjectService.getToolChain( target );
 
-        PropertiesService.putProperty( PropertiesService.QNX_TARGET, QnxService.getQnxTargetDirPath() );
+        PropertiesService.putProperty( PropertiesService.QNX_TARGET, QdeService.getQnxTargetDirPath() );
         PropertiesService.putProperty( "CPUVARDIR", CProjectService.getPlatform( toolChain ) );
 
         loadSourcePaths( configuration );

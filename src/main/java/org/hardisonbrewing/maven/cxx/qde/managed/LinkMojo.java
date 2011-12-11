@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qnx;
+package org.hardisonbrewing.maven.cxx.qde.managed;
 
 import generated.org.eclipse.cdt.ToolChain;
 import generated.org.eclipse.cdt.ToolChain.Tool;
@@ -27,9 +27,12 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.qde.CProjectService;
+import org.hardisonbrewing.maven.cxx.qde.CommandLineService;
+import org.hardisonbrewing.maven.cxx.qde.PropertiesService;
 
 /**
- * @goal qnx-link
+ * @goal qde-managed-link
  * @phase compile
  */
 public final class LinkMojo extends JoJoMojoImpl {
@@ -41,6 +44,11 @@ public final class LinkMojo extends JoJoMojoImpl {
 
     @Override
     public void execute() {
+
+        if ( CProjectService.isMakefileBuilder( target ) ) {
+            getLog().info( "Not a managed project... skipping" );
+            return;
+        }
 
         String[] sources = ProjectService.getSourceFilePaths();
 

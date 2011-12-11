@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qnx;
+package org.hardisonbrewing.maven.cxx.qde;
 
 import java.io.File;
 import java.util.Properties;
@@ -37,7 +37,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     public static Properties getDefaultCompilerProperties() {
 
         StringBuffer filePath = new StringBuffer();
-        filePath.append( QnxService.getQnxCompilerDirPath() );
+        filePath.append( QdeService.getQnxCompilerDirPath() );
         filePath.append( File.separator );
         filePath.append( "default" );
         return PropertiesService.loadProperties( filePath.toString() );
@@ -46,7 +46,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     public static Properties getDefaultCompilerVersionProperties( String compiler ) {
 
         StringBuffer filePath = new StringBuffer();
-        filePath.append( QnxService.getQnxCompilerDirPath() );
+        filePath.append( QdeService.getQnxCompilerDirPath() );
         filePath.append( File.separator );
         filePath.append( compiler );
         filePath.append( File.separator );
