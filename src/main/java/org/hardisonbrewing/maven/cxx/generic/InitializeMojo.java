@@ -28,6 +28,7 @@ import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.PropertiesService;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
+import org.hardisonbrewing.maven.cxx.component.ProjectConfigurationFactory;
 
 /**
  * @goal initialize
@@ -43,7 +44,8 @@ public final class InitializeMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        ProjectConfiguration projectConfiguration = new ProjectConfiguration();
+        ProjectConfigurationFactory projectConfigurationFactory = getProjectConfigurationFactory();
+        ProjectConfiguration projectConfiguration = projectConfigurationFactory.createProjectConfiguration();
         ProjectService.setProjectConfiguration( projectConfiguration );
 
         BuildConfiguration buildConfiguration = getBuildConfiguration();
@@ -57,6 +59,17 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         if ( sources != null ) {
             ProjectService.setSources( sources );
+        }
+    }
+
+    private final ProjectConfigurationFactory getProjectConfigurationFactory() {
+
+        try {
+            return lookup( ProjectConfigurationFactory.class );
+        }
+        catch (Exception e) {
+            getLog().error( "Unable to locate ProjectConfigurationFactory implementation" );
+            throw new IllegalStateException();
         }
     }
 

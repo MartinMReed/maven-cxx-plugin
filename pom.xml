@@ -33,7 +33,7 @@
 				<artifactId>maven-jaxb2-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>generate-plist-dtd</id>
+						<id>generate-xcode-dtd</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
@@ -48,7 +48,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>generate-cproject-xsd</id>
+						<id>generate-eclipse-xsd</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
@@ -59,6 +59,20 @@
 							<schemaIncludes>
 								<schemaInclude>cproject.xsd</schemaInclude>
 								<schemaInclude>plugin.xsd</schemaInclude>
+							</schemaIncludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-bar-xsd</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory>src/main/resources/bar</schemaDirectory>
+							<generateDirectory>target/generated-sources/xjc/bar</generateDirectory>
+							<generatePackage>generated.net.rim.bar</generatePackage>
+							<schemaIncludes>
+								<schemaInclude>appDescriptor.xsd</schemaInclude>
 							</schemaIncludes>
 						</configuration>
 					</execution>
