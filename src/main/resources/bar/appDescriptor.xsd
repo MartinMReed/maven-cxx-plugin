@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="application">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="id" type="xs:string" />
+				<xs:element name="filename" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="versionNumber" type="xs:string" />
+				<xs:element name="build" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="versionLabel" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="author" type="xs:string" />
+				<xs:element name="authorId" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="copyright" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="initialWindow" minOccurs="0" maxOccurs="1" />
+				<xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="asset" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="configuration" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="icon" minOccurs="0" maxOccurs="1" />
+				<xs:element name="splashscreen" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="action" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="env" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="initialWindow">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="content" type="xs:string" />
+				<xs:element name="title" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="systemChrome" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="transparent" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+				<xs:element name="visible" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+				<xs:element name="minimizable" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+				<xs:element name="resizable" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+				<xs:element name="width" type="xs:int" minOccurs="0" maxOccurs="1" />
+				<xs:element name="height" type="xs:int" minOccurs="0" maxOccurs="1" />
+				<xs:element name="x" type="xs:int" minOccurs="0" maxOccurs="1" />
+				<xs:element name="y" type="xs:int" minOccurs="0" maxOccurs="1" />
+				<xs:element name="minSize" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="maxSize" type="xs:string" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="asset">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="path" type="xs:string" use="required" />
+					<xs:attribute name="entry" type="xs:string" use="optional" />
+					<xs:attribute name="type" type="xs:string" use="optional" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="configuration">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="platformArchitecture" type="xs:string" />
+				<xs:element ref="asset" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required" />
+			<xs:attribute name="name" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="icon">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="image" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="action">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="system" type="xs:boolean" use="optional" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="env">
+		<xs:complexType>
+			<xs:attribute name="var" type="xs:string" use="required" />
+			<xs:attribute name="value" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

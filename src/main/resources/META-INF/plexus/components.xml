@@ -1,5 +1,19 @@
 <component-set>
 	<components>
+
+		<component>
+			<role-hint>default</role-hint>
+			<role>org.hardisonbrewing.maven.cxx.component.ProjectConfigurationFactory</role>
+			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultProjectConfigurationFactory</implementation>
+		</component>
+		<component>
+			<role-hint>default</role-hint>
+			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
+			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
+			<configuration>
+				<sourceDirectory>src</sourceDirectory>
+			</configuration>
+		</component>
 		
 		<!--
 			.A (AR, Static Library)
@@ -39,14 +53,6 @@
 				<extension>jar</extension>
 				<packaging>a</packaging>
 				<type>a</type>
-			</configuration>
-		</component>
-		<component>
-			<role-hint>a</role-hint>
-			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
-			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
-			<configuration>
-				<sourceDirectory>src</sourceDirectory>
 			</configuration>
 		</component>
 		
@@ -93,14 +99,6 @@
 				<type>arduino</type>
 			</configuration>
 		</component>
-		<component>
-			<role-hint>arduino</role-hint>
-			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
-			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
-			<configuration>
-				<sourceDirectory>src</sourceDirectory>
-			</configuration>
-		</component>
 		
 		<!--
 			.AS.BAR (BLACKBERRY-AIRPACKAGER, BlackBerry TabletOS - AIR)
@@ -143,14 +141,6 @@
 				<extension>jar</extension>
 				<packaging>as.bar</packaging>
 				<type>as.bar</type>
-			</configuration>
-		</component>
-		<component>
-			<role-hint>as.bar</role-hint>
-			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
-			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
-			<configuration>
-				<sourceDirectory>src</sourceDirectory>
 			</configuration>
 		</component>
 		
@@ -199,14 +189,6 @@
 				<type>mxml.bar</type>
 			</configuration>
 		</component>
-		<component>
-			<role-hint>mxml.bar</role-hint>
-			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
-			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
-			<configuration>
-				<sourceDirectory>src</sourceDirectory>
-			</configuration>
-		</component>
 		
 		<!--
 			.JS.BAR (BLACKBERRY WEBWORKS PACKAGER, BlackBerry TabletOS - WEBWORKS)
@@ -251,14 +233,6 @@
 				<type>js.bar</type>
 			</configuration>
 		</component>
-		<component>
-			<role-hint>js.bar</role-hint>
-			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
-			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
-			<configuration>
-				<sourceDirectory>src</sourceDirectory>
-			</configuration>
-		</component>
 		
 		<!--
 			.O (GCC, Object File)
@@ -300,20 +274,12 @@
 				<type>o</type>
 			</configuration>
 		</component>
-		<component>
-			<role-hint>o</role-hint>
-			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
-			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
-			<configuration>
-				<sourceDirectory>src</sourceDirectory>
-			</configuration>
-		</component>
 		
 		<!--
-			.QNX (GCC, Object File, BlackBerry QNX)
+			.QDE (CDT Eclipse Project, BlackBerry QNX)
 		-->
 		<component>
-			<role-hint>qnx</role-hint>
+			<role-hint>qde</role-hint>
 			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
 			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
 			<configuration>
@@ -331,8 +297,9 @@
 							<compile>org.hardisonbrewing:maven-cxx-plugin:qde-managed-compile,
 								org.hardisonbrewing:maven-cxx-plugin:qde-makefile-compile,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-assemble,
-								org.hardisonbrewing:maven-cxx-plugin:qde-managed-link</compile>
-							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:o-prepare-package</prepare-package>
+								org.hardisonbrewing:maven-cxx-plugin:qde-managed-link,
+								org.hardisonbrewing:maven-cxx-plugin:qde-bar-compile</compile>
+							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:qde-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:o-install</install>
 						</phases>
@@ -341,21 +308,13 @@
 			</configuration>
 		</component>
 		<component>
-			<role-hint>qnx</role-hint>
+			<role-hint>qde</role-hint>
 			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
 			<implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
 			<configuration>
 				<extension>jar</extension>
-				<packaging>qnx</packaging>
-				<type>qnx</type>
-			</configuration>
-		</component>
-		<component>
-			<role-hint>qnx</role-hint>
-			<role>org.hardisonbrewing.maven.cxx.component.BuildConfiguration</role>
-			<implementation>org.hardisonbrewing.maven.cxx.component.DefaultBuildConfiguration</implementation>
-			<configuration>
-				<sourceDirectory>src</sourceDirectory>
+				<packaging>qde</packaging>
+				<type>qde</type>
 			</configuration>
 		</component>
 		
