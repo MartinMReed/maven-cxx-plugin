@@ -25,7 +25,6 @@ import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.bar.LaunchMojo;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
-import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
 
 /**
  * @goal qde-bar-compile
@@ -53,11 +52,11 @@ public class BarCompileMojo extends JoJoMojoImpl {
         cmd.add( "-package" );
         cmd.add( projectName + ".bar" );
 
-        cmd.add( "bar-descriptor.xml" );
+        cmd.add( TargetDirectoryService.getBarDescriptorXmlPath() );
 
-        cmd.add( "-e" );
-        cmd.add( TargetDirectoryService.RESOURCES_DIRECTORY );
-        cmd.add( "." );
+        //        cmd.add( "-e" );
+        //        cmd.add( TargetDirectoryService.RESOURCES_DIRECTORY );
+        //        cmd.add( "." );
 
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.addQnxEnvVars( commandLine );
