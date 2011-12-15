@@ -72,7 +72,7 @@
 							<generateDirectory>target/generated-sources/xjc/bar</generateDirectory>
 							<generatePackage>generated.net.rim.bar</generatePackage>
 							<schemaIncludes>
-								<schemaInclude>appDescriptor.xsd</schemaInclude>
+								<schemaInclude>barDescriptor.xsd</schemaInclude>
 							</schemaIncludes>
 						</configuration>
 					</execution>

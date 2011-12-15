@@ -17,7 +17,6 @@
 package org.hardisonbrewing.maven.cxx.qde.managed;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
-import generated.org.eclipse.cdt.ToolChain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +29,6 @@ import org.hardisonbrewing.maven.cxx.cdt.CdtService;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
 import org.hardisonbrewing.maven.cxx.generic.Sources;
 import org.hardisonbrewing.maven.cxx.qde.CProjectService;
-import org.hardisonbrewing.maven.cxx.qde.PropertiesService;
-import org.hardisonbrewing.maven.cxx.qde.QdeService;
 
 /**
  * @goal qde-managed-initialize
@@ -55,11 +52,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
         loadSources();
 
         Configuration configuration = CProjectService.getBuildConfiguration( target );
-        ToolChain toolChain = CProjectService.getToolChain( target );
-
-        PropertiesService.putProperty( PropertiesService.QNX_TARGET, QdeService.getQnxTargetDirPath() );
-        PropertiesService.putProperty( "CPUVARDIR", CProjectService.getPlatform( toolChain ) );
-
         loadSourcePaths( configuration );
     }
 
@@ -141,8 +133,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         BuildConfiguration buildConfiguration = getBuildConfiguration();
         String sourceDirectory = getProject().getBuild().getSourceDirectory();
-        getLog().info( "sourceDirectory: " + sourceDirectory );
-        getLog().info( "buildConfiguration: " + buildConfiguration );
+
         if ( !sourceDirectory.equals( buildConfiguration.getSourceDirectory() ) ) {
             ProjectService.setSourceDirectory( sourcePaths[0] );
         }

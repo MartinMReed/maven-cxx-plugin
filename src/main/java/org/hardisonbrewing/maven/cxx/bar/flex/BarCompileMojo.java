@@ -60,9 +60,9 @@ public class BarCompileMojo extends JoJoMojoImpl {
         cmd.add( artifactId + ".xml" );
         cmd.add( artifactId + ".swf" );
 
-        File tabletXmlFile = TargetDirectoryService.getTabletXmlFile();
+        File tabletXmlFile = TargetDirectoryService.getAppDescriptorFile();
         if ( tabletXmlFile.exists() ) {
-            cmd.add( TargetDirectoryService.BLACKBERRY_TABLET_XML );
+            cmd.add( TargetDirectoryService.APP_DESCRIPTOR_FILENAME );
         }
 
         cmd.add( "-e" );

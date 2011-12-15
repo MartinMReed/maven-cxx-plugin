@@ -31,7 +31,7 @@ public class GenerateResourcesMojo extends org.hardisonbrewing.maven.cxx.generic
         StringBuffer tabletXmlPath = new StringBuffer();
         tabletXmlPath.append( filePathPrefix );
         tabletXmlPath.append( File.separator );
-        tabletXmlPath.append( TargetDirectoryService.BLACKBERRY_TABLET_XML );
+        tabletXmlPath.append( TargetDirectoryService.APP_DESCRIPTOR_FILENAME );
         if ( srcFilePath.equals( tabletXmlPath.toString() ) ) {
             destDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
         }

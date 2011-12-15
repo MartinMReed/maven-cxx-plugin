@@ -36,8 +36,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBException;
 
+import org.hardisonbrewing.jaxb.JAXB;
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
 
 public class CProjectService {
@@ -64,7 +66,18 @@ public class CProjectService {
 
     public static Cproject readCProject( File file ) {
 
-        return JAXB.unmarshal( file, Cproject.class );
+        if ( !file.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate CPROJECT file: " + file );
+            throw new IllegalStateException();
+        }
+
+        try {
+            return JAXB.unmarshal( file, Cproject.class );
+        }
+        catch (JAXBException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal CPROJECT file: " + file );
+            throw new IllegalStateException( e );
+        }
     }
 
     public static boolean isMakefileBuilder( Configuration configuration ) {
