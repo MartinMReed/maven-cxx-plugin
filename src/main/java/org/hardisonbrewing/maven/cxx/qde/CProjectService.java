@@ -21,8 +21,11 @@ import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.ToolChain;
 import generated.org.eclipse.cdt.ToolChain.Tool;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hardisonbrewing.maven.cxx.ProjectService;
 
 public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectService {
 
@@ -49,6 +52,20 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
     public static final String QCC_TOOL_ARCHIVER = QCC_TOOL + ".archiver";
 
     private static Cproject cproject;
+
+    public static File getCProjectFile() {
+
+        return new File( getCProjectFilePath() );
+    }
+
+    public static String getCProjectFilePath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( ProjectService.getBaseDirPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( CProjectService.CPROJECT_FILENAME );
+        return stringBuffer.toString();
+    }
 
     public static boolean isMakefileBuilder( String name ) {
 
@@ -277,6 +294,6 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
 
     public static void loadCProject() {
 
-        cproject = CProjectService.readCProject( QdeService.getCProjectFile() );
+        cproject = readCProject( getCProjectFile() );
     }
 }

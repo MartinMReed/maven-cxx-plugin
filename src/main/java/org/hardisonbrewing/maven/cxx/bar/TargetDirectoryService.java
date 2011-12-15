@@ -20,24 +20,24 @@ import java.io.File;
 
 public final class TargetDirectoryService extends org.hardisonbrewing.maven.cxx.TargetDirectoryService {
 
-    public static final String BLACKBERRY_TABLET_XML = "blackberry-tablet.xml";
+    public static final String APP_DESCRIPTOR_FILENAME = "blackberry-tablet.xml";
 
     private TargetDirectoryService() {
 
         // do nothing
     }
 
-    public static String getTabletXmlPath() {
+    public static String getAppDescriptorPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
+        stringBuffer.append( getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( BLACKBERRY_TABLET_XML );
+        stringBuffer.append( APP_DESCRIPTOR_FILENAME );
         return stringBuffer.toString();
     }
 
-    public static File getTabletXmlFile() {
+    public static File getAppDescriptorFile() {
 
-        return new File( getTabletXmlPath() );
+        return new File( getAppDescriptorPath() );
     }
 }

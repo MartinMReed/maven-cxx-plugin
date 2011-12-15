@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2011 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,28 +14,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde;
+package org.hardisonbrewing.maven.cxx.qde.model;
 
-import java.io.File;
+public final class AssetResource {
 
-public final class TargetDirectoryService extends org.hardisonbrewing.maven.cxx.TargetDirectoryService {
+    private String srcFilePath;
+    private String destFilePath;
 
-    private TargetDirectoryService() {
+    public String getSrcFilePath() {
 
-        // do nothing
+        return srcFilePath;
     }
 
-    public static String getBarDescriptorPath() {
+    public void setSrcFilePath( String srcFilePath ) {
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getTargetDirectoryPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( BarDescriptorService.BAR_DESCRIPTOR_FILENAME );
-        return stringBuffer.toString();
+        this.srcFilePath = srcFilePath;
     }
 
-    public static File getBarDescriptorFile() {
+    public String getDestFilePath() {
 
-        return new File( getBarDescriptorPath() );
+        return destFilePath;
+    }
+
+    public void setDestFilePath( String destFilePath ) {
+
+        this.destFilePath = destFilePath;
     }
 }

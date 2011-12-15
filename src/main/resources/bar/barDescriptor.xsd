@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:element name="application">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="id" type="xs:string" />
-				<xs:element name="filename" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="versionNumber" type="xs:string" />
-				<xs:element name="build" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="versionLabel" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="author" type="xs:string" />
-				<xs:element name="authorId" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="copyright" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="initialWindow" minOccurs="0" maxOccurs="1" />
-				<xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="asset" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element ref="configuration" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element ref="icon" minOccurs="0" maxOccurs="1" />
-				<xs:element name="splashscreen" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element ref="action" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element ref="env" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.qnx.com/schemas/application/1.0" xmlns="http://www.qnx.com/schemas/application/1.0">
+
+	<xs:element name="qnx" type="BarDescriptor" />
+
+	<xs:complexType name="BarDescriptor">
+		<xs:sequence>
+			<xs:element name="id" type="xs:string" />
+			<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="versionNumber" type="xs:string" />
+			<xs:element name="build" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="versionLabel" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="copyright" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="author" type="xs:string" />
+			<xs:element name="authorId" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="splashscreen" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element ref="initialWindow" minOccurs="0" maxOccurs="1" />
+			<xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element ref="asset" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="configuration" type="AssetConfiguration" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="icon" minOccurs="0" maxOccurs="1" />
+			<xs:element ref="action" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="env" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 	<xs:element name="initialWindow">
 		<xs:complexType>
 			<xs:sequence>
@@ -54,16 +54,14 @@
 			</xs:simpleContent>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="configuration">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="platformArchitecture" type="xs:string" />
-				<xs:element ref="asset" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
-			<xs:attribute name="id" type="xs:string" use="required" />
-			<xs:attribute name="name" type="xs:string" use="required" />
-		</xs:complexType>
-	</xs:element>
+	<xs:complexType name="AssetConfiguration">
+		<xs:sequence>
+			<xs:element name="platformArchitecture" type="xs:string" />
+			<xs:element ref="asset" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required" />
+		<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
 	<xs:element name="icon">
 		<xs:complexType>
 			<xs:sequence>

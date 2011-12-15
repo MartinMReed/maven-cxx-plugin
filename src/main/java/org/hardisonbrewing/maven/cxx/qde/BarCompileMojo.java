@@ -16,7 +16,7 @@
  */
 package org.hardisonbrewing.maven.cxx.qde;
 
-import generated.org.eclipse.cdt.Cproject;
+import generated.net.rim.bar.BarDescriptor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,10 +35,7 @@ public class BarCompileMojo extends JoJoMojoImpl {
     @Override
     public void execute() {
 
-        Cproject cproject = CProjectService.getCProject();
-        String projectName = CProjectService.getProjectName( cproject );
-
-        getLog().info( "Building " + projectName + ".bar..." );
+        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "blackberry-nativepackager" );
@@ -50,13 +47,12 @@ public class BarCompileMojo extends JoJoMojoImpl {
         }
 
         cmd.add( "-package" );
-        cmd.add( projectName + ".bar" );
+        cmd.add( barDescriptor.getName() + ".bar" );
 
-        cmd.add( TargetDirectoryService.getBarDescriptorXmlPath() );
+        cmd.add( TargetDirectoryService.getBarDescriptorPath() );
 
-        //        cmd.add( "-e" );
-        //        cmd.add( TargetDirectoryService.RESOURCES_DIRECTORY );
-        //        cmd.add( "." );
+        cmd.add( "-C" );
+        cmd.add( TargetDirectoryService.getGeneratedResourcesDirectoryPath() );
 
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.addQnxEnvVars( commandLine );

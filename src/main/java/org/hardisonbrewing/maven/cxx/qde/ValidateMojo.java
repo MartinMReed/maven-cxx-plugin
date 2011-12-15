@@ -36,7 +36,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
     @Override
     public final void execute() {
 
-        File cproject = QdeService.getCProjectFile();
+        File cproject = CProjectService.getCProjectFile();
         if ( !cproject.exists() ) {
             getLog().error( "Unable to locate .cproject file: " + cproject );
             throw new IllegalStateException();

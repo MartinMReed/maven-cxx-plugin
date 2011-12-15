@@ -16,10 +16,14 @@
  */
 package org.hardisonbrewing.maven.cxx.qde;
 
-import java.io.File;
+import generated.net.rim.bar.BarDescriptor;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.qde.model.AssetResource;
 
 /**
  * @goal qde-generate-resources
@@ -27,17 +31,43 @@ import org.hardisonbrewing.maven.core.ProjectService;
  */
 public class GenerateResourcesMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String target;
+
     @Override
     public void execute() {
 
-        String filePathPrefix = ProjectService.getBaseDirPath();
+        copyBarDescriptor();
+
+        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
+        AssetResource[] assetResources = BarDescriptorService.getAssetResources( barDescriptor, target );
+
+        if ( assetResources != null ) {
+
+            for (AssetResource assetResource : assetResources) {
+
+                String srcFilePath = assetResource.getSrcFilePath();
+                String destFilePath = assetResource.getDestFilePath();
+
+                try {
+                    FileUtils.copyFile( srcFilePath, destFilePath );
+                }
+                catch (IOException e) {
+                    throw new IllegalStateException( e.getMessage(), e );
+                }
+            }
+        }
+    }
+
+    private void copyBarDescriptor() {
+
         String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( filePathPrefix );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( TargetDirectoryService.BAR_DESCRIPTOR_XML );
-        String filePath = stringBuffer.toString();
+        File file = BarDescriptorService.getBarDescriptorFile();
+        String filePath = file.getPath();
+        String filePathPrefix = file.getParent();
 
         org.hardisonbrewing.maven.cxx.generic.GenerateSourcesMojo.copyFile( filePath, filePathPrefix, targetDirectoryPath );
     }

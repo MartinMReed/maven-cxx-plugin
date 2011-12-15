@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.cxx.ProjectService;
 
 public final class QdeService {
 
@@ -32,20 +31,6 @@ public final class QdeService {
         qnxUsrSearch.append( File.separator );
         qnxUsrSearch.append( "usr" );
         QNX_USR_SEARCH = qnxUsrSearch.toString();
-    }
-
-    public static File getCProjectFile() {
-
-        return new File( getCProjectFilePath() );
-    }
-
-    public static String getCProjectFilePath() {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( ProjectService.getBaseDirPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( CProjectService.CPROJECT_FILENAME );
-        return stringBuffer.toString();
     }
 
     public static String getQnxTargetDirPath() {
