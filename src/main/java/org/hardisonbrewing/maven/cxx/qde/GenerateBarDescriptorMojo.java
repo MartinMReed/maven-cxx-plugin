@@ -19,6 +19,7 @@ package org.hardisonbrewing.maven.cxx.qde;
 import generated.net.rim.bar.Asset;
 import generated.net.rim.bar.AssetConfiguration;
 import generated.net.rim.bar.Qnx;
+import generated.org.eclipse.cdt.StorageModule.Configuration;
 
 import java.io.File;
 import java.util.List;
@@ -35,6 +36,11 @@ import org.hardisonbrewing.maven.cxx.ProjectService;
  */
 public class GenerateBarDescriptorMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String target;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -43,10 +49,19 @@ public class GenerateBarDescriptorMojo extends JoJoMojoImpl {
 
         updateAssets( barDescriptor.getAsset() );
 
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+        String configurationId = configuration.getId();
+
         List<AssetConfiguration> assetConfigurations = barDescriptor.getConfiguration();
         if ( assetConfigurations != null ) {
-            for (AssetConfiguration assetConfiguration : assetConfigurations) {
-                updateAssets( assetConfiguration.getAsset() );
+            for (int i = assetConfigurations.size() - 1; i >= 0; i--) {
+                AssetConfiguration assetConfiguration = assetConfigurations.get( i );
+                if ( configurationId.equals( assetConfiguration.getId() ) ) {
+                    updateAssets( assetConfiguration.getAsset() );
+                }
+                else {
+                    assetConfigurations.remove( i );
+                }
             }
         }
 
