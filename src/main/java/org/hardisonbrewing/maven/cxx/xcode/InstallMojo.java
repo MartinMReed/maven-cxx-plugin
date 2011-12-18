@@ -16,6 +16,9 @@
  */
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+
 /**
  * @goal xcode-install
  * @phase install
@@ -23,7 +26,7 @@ package org.hardisonbrewing.maven.cxx.xcode;
 public final class InstallMojo extends org.hardisonbrewing.maven.cxx.generic.InstallMojo {
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         classifier = "xcode";
         super.execute();

@@ -16,6 +16,9 @@
  */
 package org.hardisonbrewing.maven.cxx.bar;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+
 /**
  * @goal bar-prepare-package
  * @phase prepare-package
@@ -23,7 +26,7 @@ package org.hardisonbrewing.maven.cxx.bar;
 public final class PreparePackageMojo extends org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo {
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         classifier = "bar";
         super.execute();

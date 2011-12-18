@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.bar.flex.mxml;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 import org.hardisonbrewing.maven.cxx.bar.ValidateMojo;
 
@@ -26,7 +28,7 @@ import org.hardisonbrewing.maven.cxx.bar.ValidateMojo;
 public final class MxmlValidateMojo extends ValidateMojo {
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         super.execute();
 

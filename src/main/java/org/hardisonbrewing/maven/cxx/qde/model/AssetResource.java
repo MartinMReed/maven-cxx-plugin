@@ -16,8 +16,11 @@
  */
 package org.hardisonbrewing.maven.cxx.qde.model;
 
+import generated.net.rim.bar.Asset;
+
 public final class AssetResource {
 
+    private Asset asset;
     private String srcFilePath;
     private String destFilePath;
 
@@ -39,5 +42,15 @@ public final class AssetResource {
     public void setDestFilePath( String destFilePath ) {
 
         this.destFilePath = destFilePath;
+    }
+
+    public Asset getAsset() {
+
+        return asset;
+    }
+
+    public void setAsset( Asset asset ) {
+
+        this.asset = asset;
     }
 }

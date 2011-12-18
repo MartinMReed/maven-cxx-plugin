@@ -22,6 +22,8 @@ import generated.org.eclipse.cdt.ToolChain.Tool;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.ProjectService;
@@ -43,7 +45,7 @@ public final class LinkMojo extends JoJoMojoImpl {
     public String target;
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         if ( CProjectService.isMakefileBuilder( target ) ) {
             getLog().info( "Not a managed project... skipping" );

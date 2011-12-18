@@ -20,6 +20,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -34,7 +36,7 @@ import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
 public class ProcessResourcesMojo extends JoJoMojoImpl {
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         String artifactId = getProject().getArtifactId();
 

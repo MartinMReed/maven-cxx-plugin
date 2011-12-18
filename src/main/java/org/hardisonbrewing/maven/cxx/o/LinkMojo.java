@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.hardisonbrewing.maven.core.DependencyService;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -51,7 +53,7 @@ public final class LinkMojo extends JoJoMojoImpl {
     public String[] frameworks;
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
 

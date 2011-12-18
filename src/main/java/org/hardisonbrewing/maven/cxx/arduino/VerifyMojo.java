@@ -19,6 +19,8 @@ package org.hardisonbrewing.maven.cxx.arduino;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.wayoda.ang.project.ArduinoBuildEnvironment;
 import org.wayoda.ang.project.Sketch;
@@ -42,7 +44,7 @@ public final class VerifyMojo extends JoJoMojoImpl {
     public String targetDevice;
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         if ( targetDevice == null ) {
             getLog().error( "<targetDevice /> must be set." );

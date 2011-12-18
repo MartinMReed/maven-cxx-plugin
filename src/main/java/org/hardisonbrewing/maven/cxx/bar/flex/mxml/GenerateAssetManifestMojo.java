@@ -34,7 +34,7 @@
 //public class GenerateAssetManifestMojo extends JoJoMojoImpl {
 //
 //    @Override
-//    public void execute() {
+//    public void execute() throws MojoExecutionException, MojoFailureException {
 //
 //        if ( !shouldExecute() ) {
 //            getLog().info( "assets.xml is up-to-date, not rebuilding!" );

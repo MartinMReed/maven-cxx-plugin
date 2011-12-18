@@ -294,7 +294,7 @@
 								org.hardisonbrewing:maven-cxx-plugin:qde-initialize,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:qde-generate-resources</generate-resources>
+							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:qde-generate-bar-descriptor</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:qde-managed-compile,
 								org.hardisonbrewing:maven-cxx-plugin:qde-makefile-compile,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-assemble,

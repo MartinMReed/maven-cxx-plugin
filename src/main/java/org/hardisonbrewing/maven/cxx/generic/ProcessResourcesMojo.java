@@ -18,6 +18,8 @@ package org.hardisonbrewing.maven.cxx.generic;
 
 import java.io.File;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
@@ -29,7 +31,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 public final class ProcessResourcesMojo extends JoJoMojoImpl {
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         File generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectory();
         if ( !generatedResourcesDirectory.exists() ) {

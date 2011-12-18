@@ -20,6 +20,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
@@ -31,7 +33,7 @@ import org.hardisonbrewing.maven.core.cli.CommandLineService;
 public final class DeviceInstallMojo extends JoJoMojoImpl {
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         if ( !shouldExecute() ) {
             getLog().info( "Not installing to device." );

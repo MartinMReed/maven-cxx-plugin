@@ -21,6 +21,8 @@ import generated.plist.Plist;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -37,7 +39,7 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
     private static final String ITUNES_ICON_URL = "itunesIconUrl";
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         for (String target : XCodeService.getTargets()) {
             execute( target );
@@ -116,7 +118,7 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
             velocityContext.put( ITUNES_ICON_URL, iconUrlValue );
         }
 
-        Template template = TemplateService.getTemplate( "/xcode/ipaManifest.vm" );
+        Template template = TemplateService.getTemplateFromClasspath( "/xcode/ipaManifest.vm" );
 
         try {
             TemplateService.writeTemplate( template, velocityContext, dest );

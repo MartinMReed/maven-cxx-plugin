@@ -19,6 +19,8 @@ package org.hardisonbrewing.maven.cxx.bar.js;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.hardisonbrewing.maven.core.ArchiveService;
 import org.hardisonbrewing.maven.core.FileUtils;
@@ -35,7 +37,7 @@ public class GenerateZipMojo extends JoJoMojoImpl {
     public String classifier;
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         String generatedSourcesDirectoryPath = TargetDirectoryService.getGeneratedSourcesDirectoryPath();
         File generatedSourcesDirectory = new File( generatedSourcesDirectoryPath );

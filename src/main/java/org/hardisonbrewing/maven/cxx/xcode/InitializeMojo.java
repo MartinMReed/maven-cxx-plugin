@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
@@ -40,7 +42,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
     public String codesignCertificate;
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         XCodeService.setConfiguration( configuration );
 

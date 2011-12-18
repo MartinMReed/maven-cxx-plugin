@@ -20,6 +20,8 @@ import java.io.File;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.installer.ArtifactInstallationException;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.DependencyService;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
@@ -42,7 +44,7 @@ public abstract class InstallMojo extends JoJoMojoImpl {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         String classifier = this.projectClassifier;
         if ( classifier == null ) {

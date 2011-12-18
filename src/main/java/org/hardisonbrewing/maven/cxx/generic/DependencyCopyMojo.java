@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.generic;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.DependencyService;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
@@ -27,7 +29,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 public final class DependencyCopyMojo extends JoJoMojoImpl {
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         try {
             DependencyService.extractDependencies( TargetDirectoryService.getProcessedSourcesDirectory() );

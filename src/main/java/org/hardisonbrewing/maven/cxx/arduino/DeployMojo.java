@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.wayoda.ang.project.ArduinoBuildEnvironment;
@@ -67,7 +69,7 @@ public final class DeployMojo extends JoJoMojoImpl {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         if ( targetDevice == null ) {
             throw new IllegalArgumentException( "<targetDevice /> must be set." );

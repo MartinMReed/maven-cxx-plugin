@@ -16,16 +16,23 @@
  */
 package org.hardisonbrewing.maven.cxx.qde;
 
+import generated.net.rim.bar.Qnx;
+
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+
 /**
  * @goal qde-prepare-package
  * @phase prepare-package
  */
-public final class PreparePackageMojo extends org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo {
+public final class PreparePackageMojo extends JoJoMojoImpl {
 
     @Override
-    public final void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
-        classifier = "bar";
-        super.execute();
+        Qnx barDescriptor = BarDescriptorService.getBarDescriptor();
+        String barPath = BarDescriptorService.getBarPath( barDescriptor );
+        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( barPath );
     }
 }
