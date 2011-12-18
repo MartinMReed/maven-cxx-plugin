@@ -20,6 +20,8 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
@@ -31,7 +33,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 public class GenerateResourcesMojo extends JoJoMojoImpl {
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         String generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
         for (Resource resource : (List<Resource>) getProject().getResources()) {

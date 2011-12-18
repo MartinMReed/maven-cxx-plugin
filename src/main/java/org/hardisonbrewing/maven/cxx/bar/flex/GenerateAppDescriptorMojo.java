@@ -19,6 +19,8 @@ package org.hardisonbrewing.maven.cxx.bar.flex;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -33,7 +35,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 public class GenerateAppDescriptorMojo extends JoJoMojoImpl {
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         MavenProject project = getProject();
         String artifactId = project.getArtifactId();
@@ -45,7 +47,7 @@ public class GenerateAppDescriptorMojo extends JoJoMojoImpl {
 
         getLog().info( "Generating " + artifactId + ".xml..." );
 
-        Template template = TemplateService.getTemplate( "/bar/appDescriptor.vm" );
+        Template template = TemplateService.getTemplateFromClasspath( "/bar/appDescriptor.vm" );
 
         String version = project.getVersion();
 

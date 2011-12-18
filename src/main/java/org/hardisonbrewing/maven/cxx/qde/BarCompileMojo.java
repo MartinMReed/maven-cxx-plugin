@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2011 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,15 +16,16 @@
  */
 package org.hardisonbrewing.maven.cxx.qde;
 
-import generated.net.rim.bar.BarDescriptor;
+import generated.net.rim.bar.Qnx;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.bar.LaunchMojo;
-import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 
 /**
  * @goal qde-bar-compile
@@ -33,28 +34,20 @@ import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 public class BarCompileMojo extends JoJoMojoImpl {
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
-        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
+        Qnx barDescriptor = BarDescriptorService.getBarDescriptor();
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "blackberry-nativepackager" );
 
-        // this is only here to ensure the entry point in the Manifest shows as AIRDebug
-        if ( PropertiesService.getPropertyAsBoolean( PropertiesService.DEBUG ) ) {
-            cmd.add( "-connect" );
-            cmd.add( LaunchMojo.getIpAddress() );
-        }
-
         cmd.add( "-package" );
-        cmd.add( barDescriptor.getName() + ".bar" );
+        cmd.add( BarDescriptorService.getBarPath( barDescriptor ) );
 
         cmd.add( TargetDirectoryService.getBarDescriptorPath() );
 
-        cmd.add( "-C" );
-        cmd.add( TargetDirectoryService.getGeneratedResourcesDirectoryPath() );
-
         Commandline commandLine = buildCommandline( cmd );
+        commandLine.setWorkingDirectory( ProjectService.getBaseDirPath() );
         CommandLineService.addQnxEnvVars( commandLine );
         execute( commandLine );
     }

@@ -18,6 +18,8 @@ package org.hardisonbrewing.maven.cxx.qde.managed;
 
 import java.io.File;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.qde.CProjectService;
 import org.hardisonbrewing.maven.cxx.qde.PropertiesService;
@@ -35,7 +37,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
     public String target;
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         if ( CProjectService.isMakefileBuilder( target ) ) {
             getLog().info( "Not a managed project... skipping" );

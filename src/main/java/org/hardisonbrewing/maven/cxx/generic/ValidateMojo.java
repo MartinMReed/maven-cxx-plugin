@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.generic;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -29,7 +31,7 @@ import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 public final class ValidateMojo extends JoJoMojoImpl {
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         String[] resourceFilePaths = TargetDirectoryService.getResourceFilePaths();
         for (int i = 0; resourceFilePaths != null && i < resourceFilePaths.length; i++) {

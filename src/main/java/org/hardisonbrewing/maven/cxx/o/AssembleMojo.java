@@ -19,6 +19,8 @@ package org.hardisonbrewing.maven.cxx.o;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
@@ -35,7 +37,7 @@ public class AssembleMojo extends JoJoMojoImpl {
     public String language;
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
 

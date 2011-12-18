@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
@@ -36,7 +38,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
     public String[] targetExcludes;
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         if ( XCodeService.getProject() == null ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate project entry! Expected a file with the extension `" + XCodeService.XCODEPROJ_EXTENSION + "`." );

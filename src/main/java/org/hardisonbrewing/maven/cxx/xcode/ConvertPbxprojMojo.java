@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
@@ -54,7 +56,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
     private final Hashtable<String, Vector<String>> isaIndex = new Hashtable<String, Vector<String>>();
 
     @Override
-    public final void execute() {
+    public final void execute() throws MojoExecutionException, MojoFailureException {
 
         File plistFile = getPlistFile();
         generatePlistFile( plistFile );
