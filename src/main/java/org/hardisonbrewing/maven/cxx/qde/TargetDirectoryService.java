@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2011 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.qde;
 
+import generated.net.rim.bar.BarDescriptor;
+
 import java.io.File;
 
 public final class TargetDirectoryService extends org.hardisonbrewing.maven.cxx.TargetDirectoryService {
@@ -25,17 +27,13 @@ public final class TargetDirectoryService extends org.hardisonbrewing.maven.cxx.
         // do nothing
     }
 
-    public static String getBarDescriptorPath() {
+    public static final String getBarPath( BarDescriptor barDescriptor ) {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getTargetDirectoryPath() );
+        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( BarDescriptorService.BAR_DESCRIPTOR_FILENAME );
+        stringBuffer.append( barDescriptor.getName() );
+        stringBuffer.append( ".bar" );
         return stringBuffer.toString();
-    }
-
-    public static File getBarDescriptorFile() {
-
-        return new File( getBarDescriptorPath() );
     }
 }

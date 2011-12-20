@@ -16,7 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.qde;
 
-import generated.net.rim.bar.Qnx;
+import generated.net.rim.bar.BarDescriptor;
+import generated.org.eclipse.cdt.StorageModule.Configuration;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -33,18 +34,29 @@ import org.hardisonbrewing.maven.cxx.ProjectService;
  */
 public class BarCompileMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String target;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        Qnx barDescriptor = BarDescriptorService.getBarDescriptor();
+        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "blackberry-nativepackager" );
 
         cmd.add( "-package" );
-        cmd.add( BarDescriptorService.getBarPath( barDescriptor ) );
+        cmd.add( TargetDirectoryService.getBarPath( barDescriptor ) );
 
-        cmd.add( TargetDirectoryService.getBarDescriptorPath() );
+        cmd.add( BarDescriptorService.BAR_DESCRIPTOR_FILENAME );
+
+        CommandLineService.addQnxEnvVarArgs( cmd );
+
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+        cmd.add( "-configuration" );
+        cmd.add( configuration.getId() );
 
         Commandline commandLine = buildCommandline( cmd );
         commandLine.setWorkingDirectory( ProjectService.getBaseDirPath() );
