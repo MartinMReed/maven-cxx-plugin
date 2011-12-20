@@ -1,47 +1,46 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="2.0" targetNamespace="http://www.qnx.com/schemas/application/1.0" xmlns="http://www.qnx.com/schemas/application/1.0" elementFormDefault="qualified">
-	<xs:element name="qnx">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="id" type="xs:string" />
-				<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="versionNumber" type="xs:string" />
-				<xs:element name="build" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="versionLabel" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="copyright" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="author" type="xs:string" />
-				<xs:element name="authorId" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="splashscreen" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="initialWindow" type="initialWindow" minOccurs="0" maxOccurs="1" />
-				<xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="asset" type="asset" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="configuration" type="AssetConfiguration" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="icon" minOccurs="0" maxOccurs="1">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="image" type="xs:string" />
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="action" minOccurs="0" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:simpleContent>
-							<xs:extension base="xs:string">
-								<xs:attribute name="system" type="xs:boolean" use="optional" />
-							</xs:extension>
-						</xs:simpleContent>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="env" minOccurs="0" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:attribute name="var" type="xs:string" use="required" />
-						<xs:attribute name="value" type="xs:string" use="required" />
-					</xs:complexType>
-				</xs:element>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xs:element name="qnx" type="BarDescriptor" />
+	<xs:complexType name="BarDescriptor">
+		<xs:sequence>
+			<xs:element name="id" type="xs:string" />
+			<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="versionNumber" type="xs:string" />
+			<xs:element name="build" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="versionLabel" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="copyright" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="author" type="xs:string" />
+			<xs:element name="authorId" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="splashscreen" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="initialWindow" type="initialWindow" minOccurs="0" maxOccurs="1" />
+			<xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="asset" type="asset" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="configuration" type="AssetConfiguration" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="icon" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="image" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="action" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="system" type="xs:boolean" use="optional" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="env" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="var" type="xs:string" use="required" />
+					<xs:attribute name="value" type="xs:string" use="required" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="initialWindow">
 		<xs:sequence>
 			<xs:element name="content" type="xs:string" />

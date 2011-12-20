@@ -285,6 +285,13 @@
 			<configuration>
 				<lifecycles>
 					<lifecycle>
+						<id>clean</id>
+						<phases>
+							<clean>org.apache.maven.plugins:maven-clean-plugin:clean,
+								org.hardisonbrewing:maven-cxx-plugin:clean</clean>
+						</phases>
+					</lifecycle>
+					<lifecycle>
 						<id>default</id>
 						<phases>
 							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
@@ -294,7 +301,6 @@
 								org.hardisonbrewing:maven-cxx-plugin:qde-initialize,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:qde-generate-bar-descriptor</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:qde-managed-compile,
 								org.hardisonbrewing:maven-cxx-plugin:qde-makefile-compile,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-assemble,

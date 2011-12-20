@@ -18,7 +18,7 @@ package org.hardisonbrewing.maven.cxx.qde;
 
 import generated.net.rim.bar.Asset;
 import generated.net.rim.bar.AssetConfiguration;
-import generated.net.rim.bar.Qnx;
+import generated.net.rim.bar.BarDescriptor;
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 
 import java.io.File;
@@ -37,14 +37,14 @@ public final class BarDescriptorService {
 
     public static final String BAR_DESCRIPTOR_FILENAME = "bar-descriptor.xml";
 
-    private static Qnx barDescriptor;
+    private static BarDescriptor barDescriptor;
 
     private BarDescriptorService() {
 
         // do nothing
     }
 
-    public static Qnx readBarDescriptor( File file ) {
+    public static BarDescriptor readBarDescriptor( File file ) {
 
         if ( !file.exists() ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate application descriptor file: " + file );
@@ -52,7 +52,7 @@ public final class BarDescriptorService {
         }
 
         try {
-            return JAXB.unmarshal( file, Qnx.class );
+            return JAXB.unmarshal( file, BarDescriptor.class );
         }
         catch (JAXBException e) {
             JoJoMojo.getMojo().getLog().error( "Unable to unmarshal bar-descriptor file: " + file );
@@ -60,7 +60,7 @@ public final class BarDescriptorService {
         }
     }
 
-    public static void writeBarDescriptor( Qnx barDescriptor, File file ) {
+    public static void writeBarDescriptor( BarDescriptor barDescriptor, File file ) {
 
         try {
             JAXB.marshal( file, barDescriptor );
@@ -71,7 +71,7 @@ public final class BarDescriptorService {
         }
     }
 
-    public static final AssetResource[] getAssetResources( Qnx barDescriptor, String target ) {
+    public static final AssetResource[] getAssetResources( BarDescriptor barDescriptor, String target ) {
 
         List<AssetResource> assetResources = new ArrayList<AssetResource>();
 
@@ -151,17 +151,7 @@ public final class BarDescriptorService {
         return new File( getBarDescriptorPath() );
     }
 
-    public static final String getBarPath( Qnx barDescriptor ) {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( barDescriptor.getName() );
-        stringBuffer.append( ".bar" );
-        return stringBuffer.toString();
-    }
-
-    public static Qnx getBarDescriptor() {
+    public static BarDescriptor getBarDescriptor() {
 
         return barDescriptor;
     }

@@ -17,6 +17,7 @@
 package org.hardisonbrewing.maven.cxx.qde;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.codehaus.plexus.util.cli.Commandline;
@@ -29,6 +30,43 @@ public class CommandLineService extends org.hardisonbrewing.maven.core.cli.Comma
     protected CommandLineService() {
 
         // do nothing
+    }
+
+    public static void addQnxEnvVarArgs( List<String> cmd ) {
+
+        cmd.add( "-D" );
+        cmd.add( getQnxHostEnvVarPair() );
+
+        cmd.add( "-D" );
+        cmd.add( getQnxTargetEnvVarPair() );
+    }
+
+    private static String getQnxHostEnvVarPair() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( PropertiesService.QNX_HOST );
+        stringBuffer.append( "=" );
+        if ( PropertiesService.hasProperty( PropertiesService.ENV_QNX_HOST ) ) {
+            stringBuffer.append( PropertiesService.getProperty( PropertiesService.ENV_QNX_HOST ) );
+        }
+        else {
+            stringBuffer.append( QdeService.getQnxHostDirPath() );
+        }
+        return stringBuffer.toString();
+    }
+
+    private static String getQnxTargetEnvVarPair() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( PropertiesService.QNX_TARGET );
+        stringBuffer.append( "=" );
+        if ( PropertiesService.hasProperty( PropertiesService.ENV_QNX_TARGET ) ) {
+            stringBuffer.append( PropertiesService.getProperty( PropertiesService.ENV_QNX_TARGET ) );
+        }
+        else {
+            stringBuffer.append( QdeService.getQnxTargetDirPath() );
+        }
+        return stringBuffer.toString();
     }
 
     public static void addQnxEnvVars( Commandline commandLine ) {
