@@ -84,7 +84,7 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
             FileUtils.copyFile( src, dest );
         }
         catch (IOException e) {
-            throw new IllegalStateException( e.getMessage(), e );
+            throw new IllegalStateException( e );
         }
     }
 }

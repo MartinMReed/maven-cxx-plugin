@@ -94,7 +94,7 @@ public final class CompileMojo extends JoJoMojoImpl {
             return CommandLineService.build( cmd );
         }
         catch (CommandLineException e) {
-            throw new IllegalStateException( e.getMessage() );
+            throw new IllegalStateException( e );
         }
     }
 }

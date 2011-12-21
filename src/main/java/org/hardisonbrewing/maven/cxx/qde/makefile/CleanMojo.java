@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2011 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,28 +14,43 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.generic;
+package org.hardisonbrewing.maven.cxx.qde.makefile;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.hardisonbrewing.maven.core.DependencyService;
+import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.cxx.qde.CProjectService;
 
 /**
- * @goal dependency-copy
- * @phase generate-sources
+ * @goal qde-makefile-clean
+ * @phase clean
  */
-public final class DependencyCopyMojo extends JoJoMojoImpl {
+public final class CleanMojo extends JoJoMojoImpl {
+
+    /**
+     * @parameter
+     */
+    public String target;
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        try {
-            DependencyService.extractDependencies( TargetDirectoryService.getProcessedSourcesDirectory() );
+        if ( !CProjectService.isMakefileBuilder( target ) ) {
+            getLog().info( "Not a makefile project... skipping" );
+            return;
         }
-        catch (Exception e) {
-            throw new IllegalStateException( e );
-        }
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "make" );
+        cmd.add( "clean" );
+
+        Commandline commandLine = buildCommandline( cmd );
+        commandLine.setWorkingDirectory( ProjectService.getBaseDirPath() );
+        execute( commandLine );
     }
 }

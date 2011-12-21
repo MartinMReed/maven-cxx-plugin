@@ -68,7 +68,7 @@ public class GenerateConfigMojo extends JoJoMojoImpl {
             TemplateService.writeTemplate( configFile, velocityContext, outputFile );
         }
         catch (IOException e) {
-            throw new IllegalStateException( e.getMessage(), e );
+            throw new IllegalStateException( e );
         }
 
         outputFile.renameTo( configFile );

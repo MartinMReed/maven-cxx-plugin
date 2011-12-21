@@ -17,15 +17,11 @@
 package org.hardisonbrewing.maven.cxx;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 
 public class TargetDirectoryService extends org.hardisonbrewing.maven.core.TargetDirectoryService {
 
-    public static final String TARGET_CLEANUP_FILE = "target_directories.txt";
     public static final String SOURCES_DIRECTORY = "generated-sources";
     public static final String RESOURCES_DIRECTORY = "generated-resources";
     public static final String PROCESSED_SOURCES_DIRECTORY = "processed-sources";
@@ -33,62 +29,6 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
     protected TargetDirectoryService() {
 
         // do nothing
-    }
-
-    public static final String[] getTargetCleaupDirectories() {
-
-        File file = getTargetCleanupFile();
-
-        if ( !file.exists() ) {
-            return null;
-        }
-
-        String contents;
-
-        try {
-            contents = FileUtils.fileRead( file );
-        }
-        catch (Exception e) {
-            JoJoMojo.getMojo().getLog().error( "Unable to read target cleanup directory file: " + file );
-            throw new IllegalStateException();
-        }
-
-        return contents.split( "\n\r" );
-    }
-
-    public static final void registerTargetDirectory( String dirPath ) {
-
-        File file = getTargetCleanupFile();
-
-        boolean append = file.exists();
-
-        OutputStream outputStream = null;
-
-        try {
-            outputStream = new FileOutputStream( file, append );
-            if ( append ) {
-                outputStream.write( "\n".getBytes() );
-            }
-            outputStream.write( dirPath.getBytes() );
-        }
-        catch (Exception e) {
-            JoJoMojo.getMojo().getLog().error( "Unable to write target directory file: " + file );
-            throw new IllegalStateException();
-        }
-    }
-
-    public static String getTargetCleanupFilePath() {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getTargetDirectoryPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( TARGET_CLEANUP_FILE );
-        return stringBuffer.toString();
-    }
-
-    public static File getTargetCleanupFile() {
-
-        return new File( getTargetCleanupFilePath() );
     }
 
     private static String getTargetDirectoryPath( String type ) {

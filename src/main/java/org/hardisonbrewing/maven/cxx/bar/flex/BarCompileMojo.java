@@ -24,7 +24,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.cli.CommandLineService;
+import org.hardisonbrewing.maven.cxx.bar.CommandLineService;
 import org.hardisonbrewing.maven.cxx.bar.LaunchMojo;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
@@ -72,12 +72,7 @@ public class BarCompileMojo extends JoJoMojoImpl {
         cmd.add( "." );
 
         Commandline commandLine = buildCommandline( cmd );
-
-        String sdkHome = PropertiesService.getProperty( PropertiesService.BLACKBERRY_TABLET_HOME );
-        if ( sdkHome != null ) {
-            CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
-        }
-
+        CommandLineService.addTabletEnvVars( commandLine );
         execute( commandLine );
     }
 

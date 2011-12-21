@@ -19,12 +19,14 @@ package org.hardisonbrewing.maven.cxx.qde;
 import generated.org.eclipse.cdt.Cproject;
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.ToolChain;
+import generated.org.eclipse.cdt.ToolChain.Builder;
 import generated.org.eclipse.cdt.ToolChain.Tool;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 
 public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectService {
@@ -67,10 +69,36 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
         return stringBuffer.toString();
     }
 
+    public static String getBuildPath( String name ) {
+
+        Builder builder = getBuilder( name );
+        return getBuildPath( builder );
+    }
+
+    public static String getBuildPath( Builder builder ) {
+
+        String buildPath = builder.getBuildPath();
+
+        if ( PropertiesService.isWorkspaceValue( buildPath ) ) {
+            buildPath = PropertiesService.getWorkspacePath( buildPath );
+        }
+
+        return buildPath;
+    }
+
+    public static Builder getBuilder( String name ) {
+
+        Configuration configuration = getBuildConfiguration( name );
+        ToolChain toolChain = getToolChain( configuration );
+        return toolChain.getBuilder();
+    }
+
     public static boolean isMakefileBuilder( String name ) {
 
         Configuration configuration = getBuildConfiguration( name );
-        return isMakefileBuilder( configuration );
+        ToolChain toolChain = getToolChain( configuration );
+        Builder builder = toolChain.getBuilder();
+        return isMakefileBuilder( builder );
     }
 
     public static Configuration[] getBuildConfigurations() {
@@ -217,7 +245,8 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
         else if ( QCC_TOOL_ARCHIVER.equals( superClass ) ) {
             return QCC_OPTION_ARCHIVER;
         }
-        throw new IllegalArgumentException( "Unknown tool: " + superClass );
+        JoJoMojo.getMojo().getLog().error( "Unknown tool: " + superClass );
+        throw new IllegalArgumentException();
     }
 
     public static boolean isDebug( Tool tool ) {
@@ -294,6 +323,13 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
 
     public static void loadCProject() {
 
-        cproject = readCProject( getCProjectFile() );
+        File cprojectFile = getCProjectFile();
+
+        if ( !cprojectFile.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate .cproject file: " + cproject );
+            throw new IllegalStateException();
+        }
+
+        cproject = readCProject( cprojectFile );
     }
 }

@@ -36,7 +36,8 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
         File arduinoHome = new File( ProjectService.getProperty( "arduino.home" ) );
         if ( !arduinoHome.exists() || !arduinoHome.isDirectory() ) {
-            throw new IllegalArgumentException( "Property `arduino.home` must be a valid directory." );
+            getLog().error( "Property `arduino.home` must be a valid directory." );
+            throw new IllegalArgumentException();
         }
     }
 }

@@ -124,7 +124,7 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
             TemplateService.writeTemplate( template, velocityContext, dest );
         }
         catch (IOException e) {
-            throw new IllegalStateException( e.getMessage(), e );
+            throw new IllegalStateException( e );
         }
     }
 }

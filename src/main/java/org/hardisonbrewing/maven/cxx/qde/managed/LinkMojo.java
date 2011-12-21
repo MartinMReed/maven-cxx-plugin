@@ -16,19 +16,24 @@
  */
 package org.hardisonbrewing.maven.cxx.qde.managed;
 
+import generated.net.rim.bar.Asset;
+import generated.net.rim.bar.BarDescriptor;
 import generated.org.eclipse.cdt.ToolChain;
 import generated.org.eclipse.cdt.ToolChain.Tool;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
+import org.hardisonbrewing.maven.cxx.qde.BarDescriptorService;
 import org.hardisonbrewing.maven.cxx.qde.CProjectService;
 import org.hardisonbrewing.maven.cxx.qde.CommandLineService;
 import org.hardisonbrewing.maven.cxx.qde.PropertiesService;
@@ -62,11 +67,14 @@ public final class LinkMojo extends JoJoMojoImpl {
         ToolChain toolChain = CProjectService.getToolChain( target );
         Tool tool = CProjectService.getTool( toolChain, CProjectService.QCC_TOOL_LINKER );
 
+        String buildFilePath = getBuildFilePath();
+        FileUtils.ensureParentExists( buildFilePath );
+
         List<String> cmd = new LinkedList<String>();
         cmd.add( "qcc" );
 
         cmd.add( "-o" );
-        cmd.add( getProject().getArtifactId() + ".o" );
+        cmd.add( buildFilePath );
 
         for (String source : sources) {
             source = TargetDirectoryService.resolveProcessedFilePath( source );
@@ -114,5 +122,17 @@ public final class LinkMojo extends JoJoMojoImpl {
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.addQnxEnvVars( commandLine );
         execute( commandLine );
+    }
+
+    private final String getBuildFilePath() {
+
+        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
+        Asset entryPoint = BarDescriptorService.getEntryPoint( barDescriptor, target );
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( CProjectService.getBuildPath( target ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( entryPoint.getValue() );
+        return stringBuffer.toString();
     }
 }

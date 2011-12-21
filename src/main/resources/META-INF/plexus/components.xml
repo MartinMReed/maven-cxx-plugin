@@ -287,8 +287,10 @@
 					<lifecycle>
 						<id>clean</id>
 						<phases>
+							<pre-clean>org.hardisonbrewing:maven-cxx-plugin:qde-pre-clean</pre-clean>
 							<clean>org.apache.maven.plugins:maven-clean-plugin:clean,
-								org.hardisonbrewing:maven-cxx-plugin:clean</clean>
+								org.hardisonbrewing:maven-cxx-plugin:qde-makefile-clean,
+								org.hardisonbrewing:maven-cxx-plugin:qde-managed-clean</clean>
 						</phases>
 					</lifecycle>
 					<lifecycle>
@@ -301,8 +303,8 @@
 								org.hardisonbrewing:maven-cxx-plugin:qde-initialize,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:qde-managed-compile,
-								org.hardisonbrewing:maven-cxx-plugin:qde-makefile-compile,
+							<compile>org.hardisonbrewing:maven-cxx-plugin:qde-makefile-compile,
+								org.hardisonbrewing:maven-cxx-plugin:qde-managed-compile,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-assemble,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-link,
 								org.hardisonbrewing:maven-cxx-plugin:qde-bar-compile</compile>

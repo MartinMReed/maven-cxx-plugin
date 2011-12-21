@@ -24,9 +24,7 @@ import java.util.Properties;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.ProjectService;
 
 /**
  * @goal xcode-install-codesign-certificate
@@ -50,17 +48,17 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
             return;
         }
 
-        File file = getCertificateFile( codesignCertificate );
+        File certificateFile = CodesignCertificateService.getCertificateFile( codesignCertificate );
 
-        storeIdentity( file );
+        storeIdentity( certificateFile );
 
-        String serialNumber = getSerialNumber( file );
+        String serialNumber = getSerialNumber( certificateFile );
         if ( hasSerialNumber( serialNumber ) ) {
             getLog().info( "Codesign certificate already installed, skipping." );
             return;
         }
 
-        importCertificateFile( file );
+        importCertificateFile( certificateFile );
     }
 
     private void storeIdentity( File file ) {
@@ -132,27 +130,5 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         execute( cmd, streamConsumer, streamConsumer );
 
         return serialNumber.equals( streamConsumer.getOutput().trim() );
-    }
-
-    public static File getCertificateFile( String certificateFile ) {
-
-        if ( certificateFile == null ) {
-            JoJoMojo.getMojo().getLog().info( "Codesign certificate not specified, skipping." );
-        }
-
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( ProjectService.getBaseDirPath() );
-        filePath.append( File.separator );
-        filePath.append( certificateFile );
-        return new File( filePath.toString() );
-    }
-
-    public static void assertCodesignCertificate( String codesignCertificate ) {
-
-        File file = getCertificateFile( codesignCertificate );
-        if ( !file.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate codesign certificate: " + file );
-            throw new IllegalStateException();
-        }
     }
 }

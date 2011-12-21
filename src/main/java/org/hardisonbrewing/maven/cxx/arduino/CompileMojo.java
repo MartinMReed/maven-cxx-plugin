@@ -96,14 +96,16 @@ public final class CompileMojo extends JoJoMojoImpl {
         ArduinoBuildEnvironment arduinoBuildEnvironment = ArduinoBuildEnvironment.getInstance();
         Target target = arduinoBuildEnvironment.getDefaultTargetList().getTarget( targetDevice );
         if ( target == null ) {
-            throw new IllegalArgumentException( "Unknown target '" + targetDevice + "'" );
+            getLog().error( "Unknown target '" + targetDevice + "'" );
+            throw new IllegalArgumentException();
         }
 
         try {
             compileSketch( new Sketch( new File( sketchbook ) ), target );
         }
         catch (FileNotFoundException e) {
-            throw new IllegalStateException( "<sketchbook=\"" + sketchbook + "\"/> is not a valid Sketch-Directory or does not contain valid Sketch files" );
+            getLog().error( "<sketchbook=\"" + sketchbook + "\"/> is not a valid Sketch-Directory or does not contain valid Sketch files" );
+            throw new IllegalStateException();
         }
     }
 

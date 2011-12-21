@@ -70,7 +70,7 @@ public class GenerateAppDescriptorMojo extends JoJoMojoImpl {
             TemplateService.writeTemplate( template, velocityContext, appDescriptorFile );
         }
         catch (IOException e) {
-            throw new IllegalStateException( e.getMessage(), e );
+            throw new IllegalStateException( e );
         }
     }
 

@@ -52,7 +52,8 @@ public abstract class InstallMojo extends JoJoMojoImpl {
         }
 
         if ( classifier == null ) {
-            throw new IllegalStateException( "Classifier could not be determined. Please specify manually as <classifier />." );
+            getLog().error( "Classifier could not be determined. Please specify manually as <classifier />." );
+            throw new IllegalStateException();
         }
 
         File src = new File( TargetDirectoryService.getTempPackagePath() + ".jar" );
@@ -62,7 +63,7 @@ public abstract class InstallMojo extends JoJoMojoImpl {
             DependencyService.install( src, artifact );
         }
         catch (ArtifactInstallationException e) {
-            throw new IllegalStateException( e.getMessage(), e );
+            throw new IllegalStateException( e );
         }
     }
 }
