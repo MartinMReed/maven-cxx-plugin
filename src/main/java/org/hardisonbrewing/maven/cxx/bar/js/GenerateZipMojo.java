@@ -60,14 +60,15 @@ public class GenerateZipMojo extends JoJoMojoImpl {
             ArchiveService.archive( src, dest );
         }
         catch (ArchiverException e) {
-            throw new IllegalStateException( e.getMessage(), e );
+            throw new IllegalStateException( e );
         }
     }
 
     private final void prepareFile( File src, String fileName ) {
 
         if ( !src.exists() ) {
-            throw new IllegalStateException( src.getAbsolutePath() + " does not exist." );
+            getLog().error( src.getAbsolutePath() + " does not exist." );
+            throw new IllegalStateException();
         }
         StringBuffer destPath = new StringBuffer();
         destPath.append( getTempPackagePath() );
@@ -81,7 +82,7 @@ public class GenerateZipMojo extends JoJoMojoImpl {
             FileUtils.copyFileToDirectory( src, dest.getParentFile() );
         }
         catch (IOException e) {
-            throw new IllegalStateException( e.getMessage(), e );
+            throw new IllegalStateException( e );
         }
     }
 

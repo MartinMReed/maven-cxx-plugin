@@ -72,15 +72,18 @@ public final class DeployMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         if ( targetDevice == null ) {
-            throw new IllegalArgumentException( "<targetDevice /> must be set." );
+            getLog().error( "<targetDevice /> must be set." );
+            throw new IllegalArgumentException();
         }
 
         if ( sketchbook == null ) {
-            throw new IllegalArgumentException( "<sketchbook /> must be set." );
+            getLog().error( "<sketchbook /> must be set." );
+            throw new IllegalArgumentException();
         }
 
         if ( ProjectService.getProperty( "serial.port" ) == null ) {
-            throw new IllegalArgumentException( "Property `serial.port` must be set." );
+            getLog().error( "Property `serial.port` must be set." );
+            throw new IllegalArgumentException();
         }
 
         prepareCommands();

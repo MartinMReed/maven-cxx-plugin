@@ -16,7 +16,6 @@
  */
 package org.hardisonbrewing.maven.cxx.bar;
 
-import java.io.File;
 import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +25,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.cli.CommandLineService;
 
 /**
  * @goal bar-launch
@@ -74,12 +72,7 @@ public final class LaunchMojo extends JoJoMojoImpl {
         }
 
         Commandline commandLine = buildCommandline( cmd );
-
-        String sdkHome = PropertiesService.getProperty( PropertiesService.BLACKBERRY_TABLET_HOME );
-        if ( sdkHome != null ) {
-            CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
-        }
-
+        CommandLineService.addTabletEnvVars( commandLine );
         execute( commandLine );
     }
 
@@ -90,7 +83,7 @@ public final class LaunchMojo extends JoJoMojoImpl {
         }
         catch (Exception e) {
             JoJoMojo.getMojo().getLog().error( "Unable to determine the local IP address for debugging!" );
-            throw new IllegalStateException( e.getMessage() );
+            throw new IllegalStateException( e );
         }
     }
 

@@ -68,7 +68,7 @@ public final class GenerateSourcesMojo extends JoJoMojoImpl {
                 FileUtils.copyFileToDirectory( srcFile, destFile.getParentFile() );
             }
             catch (IOException e) {
-                throw new IllegalStateException( e.getMessage(), e );
+                throw new IllegalStateException( e );
             }
         }
     }

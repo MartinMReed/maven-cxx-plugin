@@ -47,11 +47,11 @@ public final class InitializeMojo extends JoJoMojoImpl {
         XCodeService.setConfiguration( configuration );
 
         if ( provisioningProfile != null ) {
-            InstallProvisioningProfileMojo.assertProvisioningProfile( provisioningProfile );
+            ProvisioningProfileService.assertProvisioningProfile( provisioningProfile );
         }
 
         if ( codesignCertificate != null ) {
-            InstallCodesignCertificateMojo.assertCodesignCertificate( codesignCertificate );
+            CodesignCertificateService.assertCodesignCertificate( codesignCertificate );
         }
     }
 }

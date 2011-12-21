@@ -42,7 +42,8 @@ public final class ValidateMojo extends JoJoMojoImpl {
     public static final void validate( String fileName ) {
 
         if ( fileName.startsWith( FileUtils.PARENT_DIRECTORY_MARKER ) ) {
-            throw new IllegalArgumentException( "File[" + fileName + "] is outside the project domain." );
+            JoJoMojo.getMojo().getLog().error( "File[" + fileName + "] is outside the project domain." );
+            throw new IllegalArgumentException();
         }
     }
 

@@ -18,6 +18,11 @@ package org.hardisonbrewing.maven.cxx.qde;
 
 import java.io.File;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.hardisonbrewing.maven.core.JoJoMojo;
+import org.hardisonbrewing.maven.cxx.ProjectService;
 
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
@@ -29,9 +34,63 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     public static final String ENV_QNX_HOST = envVarKey( QNX_HOST );
     public static final String ENV_QNX_TARGET = envVarKey( QNX_TARGET );
 
+    private static final String WORKSPACE_PATH_REGEX = "\\$\\{workspace_loc:(.*)\\}";
+
     protected PropertiesService() {
 
         // do nothing
+    }
+
+    public static boolean isWorkspaceValue( String value ) {
+
+        Pattern pattern = Pattern.compile( WORKSPACE_PATH_REGEX );
+        Matcher matcher = pattern.matcher( value );
+        return matcher.matches();
+    }
+
+    public static String getWorkspaceValue( String value ) {
+
+        Pattern pattern = Pattern.compile( WORKSPACE_PATH_REGEX );
+        Matcher matcher = pattern.matcher( value );
+
+        if ( !matcher.matches() ) {
+            return null;
+        }
+
+        return matcher.group( 1 );
+    }
+
+    public static String getWorkspacePath( String value ) {
+
+        String filePath = getWorkspaceValue( value );
+
+        if ( filePath == null ) {
+            return filePath;
+        }
+
+        File baseDir = ProjectService.getBaseDir();
+        String baseDirName = baseDir.getName();
+        int indexOf = filePath.indexOf( baseDirName );
+
+        if ( indexOf == -1 ) {
+            JoJoMojo.getMojo().getLog().warn( "Unable to locate target build directory to clean up... bailing" );
+            return null;
+        }
+
+        indexOf += baseDirName.length();
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( baseDir.getPath() );
+        if ( filePath.charAt( indexOf ) != File.separatorChar ) {
+            stringBuffer.append( File.separator );
+        }
+        stringBuffer.append( filePath.substring( indexOf ) );
+        return stringBuffer.toString();
+    }
+
+    public static File getWorkspaceFile( String value ) {
+
+        return new File( getWorkspacePath( value ) );
     }
 
     public static Properties getDefaultCompilerProperties() {

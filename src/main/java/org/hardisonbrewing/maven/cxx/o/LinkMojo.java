@@ -76,7 +76,7 @@ public final class LinkMojo extends JoJoMojoImpl {
             buildArguments( cmd, getProject(), TargetDirectoryService.getProcessedSourcesDirectory() );
         }
         catch (Exception e) {
-            throw new IllegalStateException( e.getMessage(), e );
+            throw new IllegalStateException( e );
         }
 
         if ( libs != null ) {

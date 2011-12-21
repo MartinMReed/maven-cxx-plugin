@@ -76,7 +76,7 @@
 //        }
 //        catch (Exception e) {
 //            getLog().error( "Unable to generate assets.xml" );
-//            throw new IllegalStateException( e.getMessage() );
+//            throw new IllegalStateException( e );
 //        }
 //        finally {
 //            IOUtil.close( outputStream );

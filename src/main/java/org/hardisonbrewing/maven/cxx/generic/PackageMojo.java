@@ -43,7 +43,7 @@ public final class PackageMojo extends JoJoMojoImpl {
             ArchiveService.archive( src, dest );
         }
         catch (ArchiverException e) {
-            throw new IllegalStateException( e.getMessage(), e );
+            throw new IllegalStateException( e );
         }
     }
 }

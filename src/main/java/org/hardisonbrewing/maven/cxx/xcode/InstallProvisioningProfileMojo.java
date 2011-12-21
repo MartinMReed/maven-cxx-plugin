@@ -22,18 +22,14 @@ import java.io.IOException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.PropertiesService;
-import org.hardisonbrewing.maven.cxx.ProjectService;
 
 /**
  * @goal xcode-install-provisioning-profile
  * @phase xcode-install-provisioning-profile
  */
 public class InstallProvisioningProfileMojo extends JoJoMojoImpl {
-
-    private static final String PROVISIONING_PROFILES = "Library/MobileDevice/Provisioning Profiles";
 
     /**
      * @parameter
@@ -48,12 +44,12 @@ public class InstallProvisioningProfileMojo extends JoJoMojoImpl {
             return;
         }
 
-        File file = getProvisioningProfile( provisioningProfile );
+        File file = ProvisioningProfileService.getProvisioningProfile( provisioningProfile );
 
         StringBuffer directoryPath = new StringBuffer();
         directoryPath.append( PropertiesService.getProperty( "user.home" ) );
         directoryPath.append( File.separator );
-        directoryPath.append( PROVISIONING_PROFILES );
+        directoryPath.append( ProvisioningProfileService.PROVISIONING_PROFILES );
 
         File directory = new File( directoryPath.toString() );
         if ( !directory.exists() ) {
@@ -65,28 +61,6 @@ public class InstallProvisioningProfileMojo extends JoJoMojoImpl {
         }
         catch (IOException e) {
             getLog().error( "Unable to copy provisioning profile: " + file );
-            throw new IllegalStateException();
-        }
-    }
-
-    public static File getProvisioningProfile( String provisioningProfile ) {
-
-        if ( provisioningProfile == null ) {
-            JoJoMojo.getMojo().getLog().info( "Provisioning profile not specified, skipping." );
-        }
-
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( ProjectService.getBaseDirPath() );
-        filePath.append( File.separator );
-        filePath.append( provisioningProfile );
-        return new File( filePath.toString() );
-    }
-
-    public static void assertProvisioningProfile( String provisioningProfile ) {
-
-        File file = InstallProvisioningProfileMojo.getProvisioningProfile( provisioningProfile );
-        if ( !file.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate provisioning profile: " + file );
             throw new IllegalStateException();
         }
     }

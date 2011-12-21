@@ -18,8 +18,6 @@ package org.hardisonbrewing.maven.cxx.qde;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -37,12 +35,6 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
-
-        File cproject = CProjectService.getCProjectFile();
-        if ( !cproject.exists() ) {
-            getLog().error( "Unable to locate .cproject file: " + cproject );
-            throw new IllegalStateException();
-        }
 
         CProjectService.loadCProject();
 

@@ -71,6 +71,47 @@ public final class BarDescriptorService {
         }
     }
 
+    public static final AssetConfiguration getAssetConfiguration( BarDescriptor barDescriptor, String target ) {
+
+        List<AssetConfiguration> assetConfigurations = barDescriptor.getConfiguration();
+        if ( assetConfigurations == null ) {
+            return null;
+        }
+
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+        String configurationId = configuration.getId();
+
+        for (AssetConfiguration assetConfiguration : assetConfigurations) {
+            if ( configurationId.equals( assetConfiguration.getId() ) ) {
+                return assetConfiguration;
+            }
+        }
+
+        return null;
+    }
+
+    public static final Asset getEntryPoint( BarDescriptor barDescriptor, String target ) {
+
+        AssetConfiguration assetConfiguration = getAssetConfiguration( barDescriptor, target );
+        return getEntryPoint( assetConfiguration );
+    }
+
+    public static final Asset getEntryPoint( AssetConfiguration assetConfiguration ) {
+
+        List<Asset> assets = assetConfiguration.getAsset();
+        if ( assets == null ) {
+            return null;
+        }
+
+        for (Asset asset : assets) {
+            if ( asset.isEntry() ) {
+                return asset;
+            }
+        }
+
+        return null;
+    }
+
     public static final AssetResource[] getAssetResources( BarDescriptor barDescriptor, String target ) {
 
         List<AssetResource> assetResources = new ArrayList<AssetResource>();

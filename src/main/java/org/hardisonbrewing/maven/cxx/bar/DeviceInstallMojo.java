@@ -16,7 +16,6 @@
  */
 package org.hardisonbrewing.maven.cxx.bar;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.cli.CommandLineService;
 
 /**
  * @goal bar-device-install
@@ -63,12 +61,7 @@ public final class DeviceInstallMojo extends JoJoMojoImpl {
         }
 
         Commandline commandLine = buildCommandline( cmd );
-
-        String sdkHome = PropertiesService.getProperty( PropertiesService.BLACKBERRY_TABLET_HOME );
-        if ( sdkHome != null ) {
-            CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
-        }
-
+        CommandLineService.addTabletEnvVars( commandLine );
         execute( commandLine );
     }
 

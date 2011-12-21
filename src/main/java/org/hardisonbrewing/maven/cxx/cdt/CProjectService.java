@@ -80,13 +80,6 @@ public class CProjectService {
         }
     }
 
-    public static boolean isMakefileBuilder( Configuration configuration ) {
-
-        ToolChain toolChain = getToolChain( configuration );
-        Builder builder = toolChain.getBuilder();
-        return isMakefileBuilder( builder );
-    }
-
     public static boolean isMakefileBuilder( Builder builder ) {
 
         Boolean managedBuildOn = builder.isManagedBuildOn();

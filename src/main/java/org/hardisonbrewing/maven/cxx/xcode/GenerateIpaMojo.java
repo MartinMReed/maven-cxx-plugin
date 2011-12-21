@@ -55,26 +55,18 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
     private void generateIpaFile( String target ) {
 
         List<String> cmd = new LinkedList<String>();
+
         cmd.add( "xcrun" );
+
         cmd.add( "-sdk" );
         cmd.add( "iphoneos" );
+
         cmd.add( "PackageApplication" );
 
-        StringBuffer appFilePath = new StringBuffer();
-        appFilePath.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
-        appFilePath.append( File.separator );
-        appFilePath.append( PropertiesService.getTargetProductName( target ) );
-        cmd.add( appFilePath.toString() );
-
-        StringBuffer ipaFilePath = new StringBuffer();
-        ipaFilePath.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
-        ipaFilePath.append( File.separator );
-        ipaFilePath.append( target );
-        ipaFilePath.append( "." );
-        ipaFilePath.append( XCodeService.IPA_EXTENSION );
+        cmd.add( getAppFilePath( target ) );
 
         cmd.add( "-o" );
-        cmd.add( ipaFilePath.toString() );
+        cmd.add( getIpaFilePath( target ) );
 
         String codesignIdentity = PropertiesService.getXCodeProperty( XCodeService.CODE_SIGN_IDENTITY );
         if ( codesignIdentity != null ) {
@@ -83,14 +75,33 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         }
 
         if ( provisioningProfile != null ) {
-            File provisioningFile = InstallProvisioningProfileMojo.getProvisioningProfile( provisioningProfile );
+            File provisioningFile = ProvisioningProfileService.getProvisioningProfile( provisioningProfile );
             cmd.add( "--embed" );
             cmd.add( provisioningFile.getAbsolutePath() );
         }
 
         Commandline commandLine = buildCommandline( cmd );
         commandLine.addEnvironment( "CODESIGN_ALLOCATE", "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate" );
-
         execute( commandLine );
+    }
+
+    private String getAppFilePath( String target ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( PropertiesService.getTargetProductName( target ) );
+        return stringBuffer.toString();
+    }
+
+    private String getIpaFilePath( String target ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( target );
+        stringBuffer.append( "." );
+        stringBuffer.append( XCodeService.IPA_EXTENSION );
+        return stringBuffer.toString();
     }
 }

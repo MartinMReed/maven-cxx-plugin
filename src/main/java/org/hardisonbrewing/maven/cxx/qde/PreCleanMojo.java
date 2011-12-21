@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2011 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,28 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.generic;
+package org.hardisonbrewing.maven.cxx.qde;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.hardisonbrewing.maven.core.DependencyService;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
- * @goal dependency-copy
- * @phase generate-sources
+ * @goal qde-pre-clean
+ * @phase pre-clean
  */
-public final class DependencyCopyMojo extends JoJoMojoImpl {
+public final class PreCleanMojo extends JoJoMojoImpl {
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        try {
-            DependencyService.extractDependencies( TargetDirectoryService.getProcessedSourcesDirectory() );
-        }
-        catch (Exception e) {
-            throw new IllegalStateException( e );
-        }
+        CProjectService.loadCProject();
     }
 }
