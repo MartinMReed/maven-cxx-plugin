@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,28 +16,7 @@
  */
 package org.hardisonbrewing.maven.cxx.generic;
 
-public final class Sources {
+public final class Source extends org.hardisonbrewing.maven.core.model.Source {
 
-    public String[] includes;
-    public String[] excludes;
-
-    public String[] getIncludes() {
-
-        return includes;
-    }
-
-    public void setIncludes( String[] includes ) {
-
-        this.includes = includes;
-    }
-
-    public String[] getExcludes() {
-
-        return excludes;
-    }
-
-    public void setExcludes( String[] excludes ) {
-
-        this.excludes = excludes;
-    }
+    // do nothing
 }
