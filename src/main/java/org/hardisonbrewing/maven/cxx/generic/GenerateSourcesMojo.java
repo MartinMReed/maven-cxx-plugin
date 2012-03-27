@@ -35,8 +35,11 @@ public final class GenerateSourcesMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        for (String sourceDirectoryPath : ProjectService.getSourceDirectoryPaths()) {
-            copyFiles( null, ProjectService.getSourceFilePaths(), sourceDirectoryPath );
+        for (org.hardisonbrewing.maven.core.model.Source source : ProjectService.getSourceDirectoryPaths()) {
+            String directory = source.directory;
+            String[] includes = source.includes;
+            String[] excludes = source.excludes;
+            copyFiles( null, ProjectService.getSourceFilePaths( directory, includes, excludes ), directory );
         }
     }
 

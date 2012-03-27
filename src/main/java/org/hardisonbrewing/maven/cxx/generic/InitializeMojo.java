@@ -39,7 +39,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public Sources sources;
+    public Source[] sources;
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
@@ -58,7 +58,9 @@ public final class InitializeMojo extends JoJoMojoImpl {
         PropertiesService.storeBuildProperties();
 
         if ( sources != null ) {
-            ProjectService.setSources( sources );
+            for (Source source : sources) {
+                ProjectService.addSourceDirectory( source );
+            }
         }
     }
 

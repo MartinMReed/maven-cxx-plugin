@@ -30,16 +30,41 @@ import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
  */
 public final class ValidateMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public Source[] sources;
+
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
         String[] resourceFilePaths = TargetDirectoryService.getResourceFilePaths();
         for (int i = 0; resourceFilePaths != null && i < resourceFilePaths.length; i++) {
-            validate( resourceFilePaths[i] );
+            validateInsideProject( resourceFilePaths[i] );
+        }
+
+        if ( sources != null ) {
+
+            boolean defaultDirectoryUsed = false;
+
+            for (Source source : sources) {
+
+                if ( source.directory != null ) {
+                    validateInsideProject( source.directory );
+                    continue;
+                }
+
+                if ( defaultDirectoryUsed ) {
+                    JoJoMojo.getMojo().getLog().error( "Default directory used for multiple <source/> entries." );
+                    throw new IllegalArgumentException();
+                }
+
+                defaultDirectoryUsed = true;
+            }
         }
     }
 
-    public static final void validate( String fileName ) {
+    private static final void validateInsideProject( String fileName ) {
 
         if ( fileName.startsWith( FileUtils.PARENT_DIRECTORY_MARKER ) ) {
             JoJoMojo.getMojo().getLog().error( "File[" + fileName + "] is outside the project domain." );
