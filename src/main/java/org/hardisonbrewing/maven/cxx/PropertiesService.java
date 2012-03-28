@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.model.Plugin;
+import org.hardisonbrewing.maven.core.ProjectService;
 
 public class PropertiesService extends org.hardisonbrewing.maven.core.PropertiesService {
 

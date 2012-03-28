@@ -24,10 +24,10 @@ import java.util.List;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.core.model.Source;
 import org.hardisonbrewing.maven.cxx.cdt.CdtService;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
-import org.hardisonbrewing.maven.cxx.generic.Sources;
 import org.hardisonbrewing.maven.cxx.qde.CProjectService;
 
 /**
@@ -49,18 +49,15 @@ public final class InitializeMojo extends JoJoMojoImpl {
             return;
         }
 
-        loadSources();
-
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
-        loadSourcePaths( configuration );
-    }
-
-    private void loadSources() {
-
         List<String> includes = new ArrayList<String>();
         List<String> excludes = new ArrayList<String>();
+        loadSources( includes, excludes );
 
-        loadSources( ProjectService.getSources(), includes, excludes );
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+        loadSourcePaths( configuration, includes, excludes );
+    }
+
+    private void loadSources( List<String> includes, List<String> excludes ) {
 
         String[] sourceExtensions = CdtService.getSourceExtensions();
         if ( sourceExtensions != null ) {
@@ -81,50 +78,9 @@ public final class InitializeMojo extends JoJoMojoImpl {
                 }
             }
         }
-
-        Sources sources = new Sources();
-
-        if ( !includes.isEmpty() ) {
-            String[] _includes = new String[includes.size()];
-            includes.toArray( _includes );
-            sources.setIncludes( _includes );
-        }
-
-        if ( !excludes.isEmpty() ) {
-            String[] _excludes = new String[excludes.size()];
-            excludes.toArray( _excludes );
-            sources.setExcludes( _excludes );
-        }
-
-        ProjectService.setSources( sources );
     }
 
-    private void loadSources( Sources sources, List<String> includes, List<String> excludes ) {
-
-        if ( sources == null ) {
-            return;
-        }
-
-        String[] _includes = sources.getIncludes();
-        if ( _includes != null ) {
-            for (String _include : _includes) {
-                if ( !includes.contains( _include ) ) {
-                    includes.add( _include );
-                }
-            }
-        }
-
-        String[] _excludes = sources.getExcludes();
-        if ( _excludes != null ) {
-            for (String _exclude : _excludes) {
-                if ( !excludes.contains( _exclude ) ) {
-                    excludes.add( _exclude );
-                }
-            }
-        }
-    }
-
-    private final void loadSourcePaths( Configuration configuration ) {
+    private final void loadSourcePaths( Configuration configuration, List<String> includes, List<String> excludes ) {
 
         String[] sourcePaths = CProjectService.getSourcePaths( configuration );
         if ( sourcePaths == null ) {
@@ -139,7 +95,17 @@ public final class InitializeMojo extends JoJoMojoImpl {
         }
 
         for (String sourcePath : sourcePaths) {
-            ProjectService.addSourceDirectory( sourcePath );
+
+            Source source = new Source();
+            source.directory = sourcePath;
+
+            source.includes = new String[includes.size()];
+            includes.toArray( source.includes );
+
+            source.excludes = new String[excludes.size()];
+            excludes.toArray( source.excludes );
+
+            ProjectService.addSourceDirectory( source );
         }
     }
 

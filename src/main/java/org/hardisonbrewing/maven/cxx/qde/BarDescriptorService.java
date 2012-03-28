@@ -30,7 +30,7 @@ import javax.xml.bind.JAXBException;
 import org.hardisonbrewing.jaxb.JAXB;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
-import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.cxx.qde.model.AssetResource;
 
 public final class BarDescriptorService {

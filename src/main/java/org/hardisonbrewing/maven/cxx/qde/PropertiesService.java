@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
-import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.core.ProjectService;
 
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 

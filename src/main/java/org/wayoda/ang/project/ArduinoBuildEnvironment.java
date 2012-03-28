@@ -29,7 +29,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
-import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.core.ProjectService;
 
 /**
  * A class for all the information we need about the Arduino build environment
