@@ -21,7 +21,7 @@ import java.io.File;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.core.ProjectService;
 
 /**
  * @goal arduino-validate

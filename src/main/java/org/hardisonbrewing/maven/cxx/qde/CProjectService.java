@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
-import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.core.ProjectService;
 
 public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectService {
 

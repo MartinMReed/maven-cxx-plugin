@@ -19,7 +19,7 @@ package org.hardisonbrewing.maven.cxx.xcode;
 import java.io.File;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
-import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.core.ProjectService;
 
 public class CodesignCertificateService {
 

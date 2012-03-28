@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.ProjectService;
+import org.hardisonbrewing.maven.core.ProjectService;
 import org.wayoda.ang.libraries.CodeManager;
 import org.wayoda.ang.libraries.Core;
 import org.wayoda.ang.libraries.Library;
