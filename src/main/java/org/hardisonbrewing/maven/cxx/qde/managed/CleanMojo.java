@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.qde.managed;
 
+import generated.org.eclipse.cdt.StorageModule.Configuration;
+import generated.org.eclipse.cdt.ToolChain;
 import generated.org.eclipse.cdt.ToolChain.Builder;
 
 import java.io.File;
@@ -33,15 +35,18 @@ import org.hardisonbrewing.maven.cxx.qde.CProjectService;
  */
 public final class CleanMojo extends JoJoMojoImpl {
 
-    /**
-     * @parameter
-     */
-    public String target;
-
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        Builder builder = CProjectService.getBuilder( target );
+        Configuration[] configurations = CProjectService.getBuildConfigurations();
+        for (Configuration configuration : configurations) {
+
+            ToolChain toolChain = CProjectService.getToolChain( configuration );
+            cleanBuilder( toolChain.getBuilder() );
+        }
+    }
+
+    private void cleanBuilder( Builder builder ) {
 
         if ( CProjectService.isMakefileBuilder( builder ) ) {
             getLog().info( "Not a managed project... skipping" );

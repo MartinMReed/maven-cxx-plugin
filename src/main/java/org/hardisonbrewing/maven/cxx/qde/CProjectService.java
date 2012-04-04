@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.qde;
 
+import generated.net.rim.bar.Asset;
+import generated.net.rim.bar.BarDescriptor;
 import generated.org.eclipse.cdt.Cproject;
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.ToolChain;
@@ -65,8 +67,13 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( ProjectService.getBaseDirPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( CProjectService.CPROJECT_FILENAME );
+        stringBuffer.append( CPROJECT_FILENAME );
         return stringBuffer.toString();
+    }
+
+    public static String getProjectName() {
+
+        return getProjectName( getCProject() );
     }
 
     public static String getBuildPath( String name ) {
@@ -84,6 +91,29 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
         }
 
         return buildPath;
+    }
+
+    public static String getBuildFilePath( String target ) {
+
+        Configuration configuration = getBuildConfiguration( target );
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getBuildPath( target ) );
+        stringBuffer.append( File.separator );
+
+        if ( isStaticLib( configuration ) ) {
+            stringBuffer.append( "lib" );
+            stringBuffer.append( getProjectName() );
+            stringBuffer.append( "." );
+            stringBuffer.append( configuration.getArtifactExtension() );
+        }
+        else {
+            BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
+            Asset entryPoint = BarDescriptorService.getEntryPoint( barDescriptor, target );
+            stringBuffer.append( entryPoint.getValue() );
+        }
+
+        return stringBuffer.toString();
     }
 
     public static Builder getBuilder( String name ) {

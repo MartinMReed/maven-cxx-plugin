@@ -58,11 +58,22 @@ public class CProjectService {
 
     private static final String BUILD_ARTIFACT_TYPE = "org.eclipse.cdt.build.core.buildArtefactType";
     private static final String BUILD_ARTIFACT_TYPE_EXE = BUILD_ARTIFACT_TYPE + ".exe";
+    private static final String BUILD_ARTIFACT_TYPE_STATIC_LIB = BUILD_ARTIFACT_TYPE + ".staticLib";
 
     private static final String SOURCE_KIND_PATH = "sourcePath";
 
     private static final String VALUE_WORKSPACE_PATH = "VALUE_WORKSPACE_PATH";
     private static final String RESOLVED = "RESOLVED";
+
+    public static boolean isApplication( Configuration configuration ) {
+
+        return BUILD_ARTIFACT_TYPE_EXE.equals( configuration.getBuildArtefactType() );
+    }
+
+    public static boolean isStaticLib( Configuration configuration ) {
+
+        return BUILD_ARTIFACT_TYPE_STATIC_LIB.equals( configuration.getBuildArtefactType() );
+    }
 
     public static Cproject readCProject( File file ) {
 

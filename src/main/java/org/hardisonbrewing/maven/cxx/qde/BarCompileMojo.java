@@ -42,6 +42,12 @@ public class BarCompileMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+        if ( !CProjectService.isApplication( configuration ) ) {
+            getLog().info( "Not an application... skipping" );
+            return;
+        }
+
         BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
 
         List<String> cmd = new LinkedList<String>();
@@ -54,7 +60,6 @@ public class BarCompileMojo extends JoJoMojoImpl {
 
         CommandLineService.addQnxEnvVarArgs( cmd );
 
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
         cmd.add( "-configuration" );
         cmd.add( configuration.getId() );
 
