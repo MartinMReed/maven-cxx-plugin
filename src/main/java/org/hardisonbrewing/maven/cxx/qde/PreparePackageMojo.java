@@ -17,6 +17,9 @@
 package org.hardisonbrewing.maven.cxx.qde;
 
 import generated.net.rim.bar.BarDescriptor;
+import generated.org.eclipse.cdt.StorageModule.Configuration;
+
+import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -28,11 +31,27 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  */
 public final class PreparePackageMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String target;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
-        String barPath = TargetDirectoryService.getBarPath( barDescriptor );
-        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( barPath );
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+
+        if ( CProjectService.isApplication( configuration ) ) {
+
+            BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
+            String barPath = TargetDirectoryService.getBarPath( barDescriptor );
+            org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( barPath );
+        }
+        else if ( CProjectService.isStaticLib( configuration ) ) {
+
+            String buildFilePath = CProjectService.getBuildFilePath( target );
+            File buildFile = new File( buildFilePath );
+            org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( buildFile, buildFile.getName() );
+        }
     }
 }

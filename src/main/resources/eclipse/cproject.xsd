@@ -42,6 +42,7 @@
 							</xs:element>
 						</xs:sequence>
 						<xs:attribute name="artifactName" type="xs:string" use="optional" />
+						<xs:attribute name="artifactExtension" type="xs:string" use="optional" />
 						<xs:attribute name="buildArtefactType" type="xs:string" use="optional" />
 						<xs:attribute name="buildProperties" type="xs:string" use="optional" />
 						<xs:attribute name="description" type="xs:string" use="optional" />

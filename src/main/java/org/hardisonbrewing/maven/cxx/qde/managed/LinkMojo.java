@@ -16,12 +16,10 @@
  */
 package org.hardisonbrewing.maven.cxx.qde.managed;
 
-import generated.net.rim.bar.Asset;
-import generated.net.rim.bar.BarDescriptor;
+import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.ToolChain;
 import generated.org.eclipse.cdt.ToolChain.Tool;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +31,6 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.qde.BarDescriptorService;
 import org.hardisonbrewing.maven.cxx.qde.CProjectService;
 import org.hardisonbrewing.maven.cxx.qde.CommandLineService;
 import org.hardisonbrewing.maven.cxx.qde.PropertiesService;
@@ -67,13 +64,23 @@ public final class LinkMojo extends JoJoMojoImpl {
         ToolChain toolChain = CProjectService.getToolChain( target );
         Tool tool = CProjectService.getTool( toolChain, CProjectService.QCC_TOOL_LINKER );
 
-        String buildFilePath = getBuildFilePath();
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+        boolean staticLib = CProjectService.isStaticLib( configuration );
+        boolean application = CProjectService.isApplication( configuration );
+
+        String buildFilePath = CProjectService.getBuildFilePath( target );
         FileUtils.ensureParentExists( buildFilePath );
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "qcc" );
 
-        cmd.add( "-o" );
+        if ( staticLib ) {
+            cmd.add( "-A" );
+        }
+        else {
+            cmd.add( "-o" );
+        }
+
         cmd.add( buildFilePath );
 
         for (String source : sources) {
@@ -81,18 +88,21 @@ public final class LinkMojo extends JoJoMojoImpl {
             cmd.add( SourceFiles.replaceExtension( source, "o" ) );
         }
 
-        String[] libIncludes = CProjectService.getLinkerLibraryPaths( toolChain );
-        if ( libIncludes != null ) {
-            for (String include : libIncludes) {
-                include = PropertiesService.populateTemplateVariables( include, "${", "}" );
-                cmd.add( "-L" + include );
-            }
-        }
+        if ( application ) {
 
-        String[] libs = CProjectService.getLinkerLibraries( toolChain );
-        if ( libs != null ) {
-            for (String lib : libs) {
-                cmd.add( "-l" + lib );
+            String[] libIncludes = CProjectService.getLinkerLibraryPaths( toolChain );
+            if ( libIncludes != null ) {
+                for (String include : libIncludes) {
+                    include = PropertiesService.populateTemplateVariables( include, "${", "}" );
+                    cmd.add( "-L" + include );
+                }
+            }
+
+            String[] libs = CProjectService.getLinkerLibraries( toolChain );
+            if ( libs != null ) {
+                for (String lib : libs) {
+                    cmd.add( "-l" + lib );
+                }
             }
         }
 
@@ -102,37 +112,28 @@ public final class LinkMojo extends JoJoMojoImpl {
             cmd.add( "-g" );
         }
 
-        cmd.add( "-Wl,-z,relro" );
-        cmd.add( "-Wl,-z,now" );
+        if ( application ) {
 
-        if ( CProjectService.useCodeCoverage( tool ) ) {
-            cmd.add( "-ftest-coverage" );
-            cmd.add( "-fprofile-arcs" );
-            cmd.add( "-p" );
-        }
+            cmd.add( "-Wl,-z,relro" );
+            cmd.add( "-Wl,-z,now" );
 
-        if ( CProjectService.useProfile( tool ) ) {
-            cmd.add( "-lprofilingS" );
-        }
+            if ( CProjectService.useCodeCoverage( tool ) ) {
+                cmd.add( "-ftest-coverage" );
+                cmd.add( "-fprofile-arcs" );
+                cmd.add( "-p" );
+            }
 
-        if ( CProjectService.usePie( tool ) ) {
-            cmd.add( "-pie" );
+            if ( CProjectService.useProfile( tool ) ) {
+                cmd.add( "-lprofilingS" );
+            }
+
+            if ( CProjectService.usePie( tool ) ) {
+                cmd.add( "-pie" );
+            }
         }
 
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.addQnxEnvVars( commandLine );
         execute( commandLine );
-    }
-
-    private final String getBuildFilePath() {
-
-        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
-        Asset entryPoint = BarDescriptorService.getEntryPoint( barDescriptor, target );
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( CProjectService.getBuildPath( target ) );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( entryPoint.getValue() );
-        return stringBuffer.toString();
     }
 }
