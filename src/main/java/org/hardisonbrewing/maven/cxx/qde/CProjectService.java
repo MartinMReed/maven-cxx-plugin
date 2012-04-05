@@ -57,6 +57,12 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
 
     private static Cproject cproject;
 
+    public static boolean isCProject() {
+
+        File file = getCProjectFile();
+        return file.exists();
+    }
+
     public static File getCProjectFile() {
 
         return new File( getCProjectFilePath() );
