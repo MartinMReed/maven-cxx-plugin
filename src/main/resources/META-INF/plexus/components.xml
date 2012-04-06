@@ -340,20 +340,18 @@
 						<id>clean</id>
 						<phases>
 							<clean>org.apache.maven.plugins:maven-clean-plugin:clean,
-								org.hardisonbrewing:maven-cxx-plugin:qde-makefile-clean</clean>
+								org.hardisonbrewing:maven-cxx-plugin:qnx-clean</clean>
 						</phases>
 					</lifecycle>
 					<lifecycle>
 						<id>default</id>
 						<phases>
-							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
-								org.hardisonbrewing:maven-cxx-plugin:qde-validate</validate>
+							<validate>org.hardisonbrewing:maven-cxx-plugin:validate</validate>
 							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
-								org.hardisonbrewing:maven-cxx-plugin:qde-initialize</initialize>
+								org.hardisonbrewing:maven-cxx-plugin:qnx-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:qde-makefile-compile,
-								org.hardisonbrewing:maven-cxx-plugin:qde-bar-compile</compile>
-							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:qde-prepare-package</prepare-package>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:qnx-compile</compile>
+							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:qnx-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:o-install</install>
 						</phases>

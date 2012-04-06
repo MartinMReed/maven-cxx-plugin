@@ -24,6 +24,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.qde.CProjectService;
 import org.hardisonbrewing.maven.cxx.qde.PropertiesService;
 import org.hardisonbrewing.maven.cxx.qde.QdeService;
+import org.hardisonbrewing.maven.cxx.qnx.QnxService;
 
 /**
  * @goal qde-managed-validate
@@ -48,9 +49,9 @@ public final class ValidateMojo extends JoJoMojoImpl {
             org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.BLACKBERRY_NDK_HOME, true );
         }
 
-        String qnxHostUsrDirPath = QdeService.getQnxHostUsrDirPath();
+        String qnxHostUsrDirPath = QnxService.getQnxHostUsrDirPath();
         if ( qnxHostUsrDirPath == null ) {
-            getLog().error( "Unable to locate `" + QdeService.QNX_USR_SEARCH + "` under <blackberry.ndk.home>" );
+            getLog().error( "Unable to locate `" + QnxService.QNX_USR_SEARCH + "` under <blackberry.ndk.home>" );
             throw new IllegalStateException();
         }
 

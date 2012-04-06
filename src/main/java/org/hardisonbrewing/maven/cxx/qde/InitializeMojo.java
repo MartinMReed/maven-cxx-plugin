@@ -21,14 +21,13 @@ import generated.org.eclipse.cdt.ToolChain;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.cdt.CdtService;
 
 /**
  * @goal qde-initialize
  * @phase initialize
  */
-public final class InitializeMojo extends JoJoMojoImpl {
+public final class InitializeMojo extends org.hardisonbrewing.maven.cxx.qnx.InitializeMojo {
 
     /**
      * @parameter
@@ -41,8 +40,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
         CdtService.setEclipseDirPath( QdeService.getEclipseDirPath() );
         CdtService.loadCdtCoreFileExtensions();
 
-        PropertiesService.putProperty( PropertiesService.QNX_TARGET, QdeService.getQnxTargetDirPath() );
-
         ToolChain toolChain = CProjectService.getToolChain( target );
         PropertiesService.putProperty( "CPUVARDIR", CProjectService.getPlatform( toolChain ) );
 
@@ -50,5 +47,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
         if ( CProjectService.isApplication( configuration ) ) {
             BarDescriptorService.loadBarDescriptor();
         }
+
+        super.execute();
     }
 }

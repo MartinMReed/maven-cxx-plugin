@@ -31,7 +31,6 @@ import org.hardisonbrewing.jaxb.JAXB;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
-import org.hardisonbrewing.maven.cxx.qde.model.AssetResource;
 
 public final class BarDescriptorService {
 
@@ -172,9 +171,9 @@ public final class BarDescriptorService {
         String targetPath = targetPathBuffer.toString();
 
         AssetResource assetResource = new AssetResource();
-        assetResource.setAsset( asset );
-        assetResource.setSrcFilePath( filePath );
-        assetResource.setDestFilePath( targetPath );
+        assetResource.asset = asset;
+        assetResource.srcFilePath = filePath;
+        assetResource.destFilePath = targetPath;
         return assetResource;
     }
 
@@ -200,5 +199,12 @@ public final class BarDescriptorService {
     public static void loadBarDescriptor() {
 
         barDescriptor = readBarDescriptor( getBarDescriptorFile() );
+    }
+
+    public static final class AssetResource {
+
+        public Asset asset;
+        public String srcFilePath;
+        public String destFilePath;
     }
 }
