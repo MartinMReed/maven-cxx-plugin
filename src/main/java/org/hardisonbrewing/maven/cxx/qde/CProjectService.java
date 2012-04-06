@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.qnx.QnxService;
 
 public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectService {
 
@@ -155,8 +156,8 @@ public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectS
 
     public static String getCompilerPlatform( ToolChain toolChain ) {
 
-        String compiler = QdeService.getDefaultCompiler();
-        String version = QdeService.getDefaultCompilerVersion( compiler );
+        String compiler = QnxService.getDefaultCompiler();
+        String version = QnxService.getDefaultCompilerVersion( compiler );
         String platform = getPlatform( toolChain );
 
         StringBuffer stringBuffer = new StringBuffer();

@@ -14,10 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde;
-
-import generated.net.rim.bar.BarDescriptor;
-import generated.org.eclipse.cdt.StorageModule.Configuration;
+package org.hardisonbrewing.maven.cxx.qnx;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,46 +24,22 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
-import org.hardisonbrewing.maven.cxx.qnx.CommandLineService;
 
 /**
- * @goal qde-bar-compile
- * @phase compile
+ * @goal qnx-clean
+ * @phase clean
  */
-public class BarCompileMojo extends JoJoMojoImpl {
-
-    /**
-     * @parameter
-     */
-    public String target;
+public class CleanMojo extends JoJoMojoImpl {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
-        if ( !CProjectService.isApplication( configuration ) ) {
-            getLog().info( "Not an application... skipping" );
-            return;
-        }
-
-        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
-
         List<String> cmd = new LinkedList<String>();
-        cmd.add( "blackberry-nativepackager" );
-
-        cmd.add( "-package" );
-        cmd.add( TargetDirectoryService.getBarPath( barDescriptor ) );
-
-        cmd.add( BarDescriptorService.BAR_DESCRIPTOR_FILENAME );
-
-        CommandLineService.addQnxEnvVarArgs( cmd );
-
-        cmd.add( "-configuration" );
-        cmd.add( configuration.getId() );
+        cmd.add( "make" );
+        cmd.add( "clean" );
 
         Commandline commandLine = buildCommandline( cmd );
         commandLine.setWorkingDirectory( ProjectService.getBaseDirPath() );
-        CommandLineService.addQnxEnvVars( commandLine );
         execute( commandLine );
     }
 }

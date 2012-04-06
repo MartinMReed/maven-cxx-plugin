@@ -17,22 +17,13 @@
 package org.hardisonbrewing.maven.cxx.qde;
 
 import java.io.File;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
 
-public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
-
-    public static final String BLACKBERRY_NDK_HOME = "blackberry.ndk.home";
-
-    public static final String QNX_HOST = "QNX_HOST";
-    public static final String QNX_TARGET = "QNX_TARGET";
-
-    public static final String ENV_QNX_HOST = envVarKey( QNX_HOST );
-    public static final String ENV_QNX_TARGET = envVarKey( QNX_TARGET );
+public class PropertiesService extends org.hardisonbrewing.maven.cxx.qnx.PropertiesService {
 
     private static final String WORKSPACE_PATH_REGEX = "\\$\\{workspace_loc:(.*)\\}";
 
@@ -91,25 +82,5 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     public static File getWorkspaceFile( String value ) {
 
         return new File( getWorkspacePath( value ) );
-    }
-
-    public static Properties getDefaultCompilerProperties() {
-
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( QdeService.getQnxCompilerDirPath() );
-        filePath.append( File.separator );
-        filePath.append( "default" );
-        return PropertiesService.loadProperties( filePath.toString() );
-    }
-
-    public static Properties getDefaultCompilerVersionProperties( String compiler ) {
-
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( QdeService.getQnxCompilerDirPath() );
-        filePath.append( File.separator );
-        filePath.append( compiler );
-        filePath.append( File.separator );
-        filePath.append( "default" );
-        return PropertiesService.loadProperties( filePath.toString() );
     }
 }

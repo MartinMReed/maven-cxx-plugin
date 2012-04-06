@@ -16,21 +16,15 @@
  */
 package org.hardisonbrewing.maven.cxx.qde.makefile;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.plexus.util.cli.Commandline;
-import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.cxx.qde.CProjectService;
 
 /**
  * @goal qde-makefile-clean
  * @phase clean
  */
-public final class CleanMojo extends JoJoMojoImpl {
+public final class CleanMojo extends org.hardisonbrewing.maven.cxx.qnx.CleanMojo {
 
     /**
      * @parameter
@@ -45,12 +39,6 @@ public final class CleanMojo extends JoJoMojoImpl {
             return;
         }
 
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "make" );
-        cmd.add( "clean" );
-
-        Commandline commandLine = buildCommandline( cmd );
-        commandLine.setWorkingDirectory( ProjectService.getBaseDirPath() );
-        execute( commandLine );
+        super.execute();
     }
 }

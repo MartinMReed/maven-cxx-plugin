@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde;
+package org.hardisonbrewing.maven.cxx.qnx;
 
 import java.io.File;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.codehaus.plexus.util.cli.Commandline;
+import org.hardisonbrewing.maven.cxx.qnx.QnxService;
 
 /**
  * Utility methods for handling {@link CommandLine} execution.
@@ -50,7 +51,7 @@ public class CommandLineService extends org.hardisonbrewing.maven.core.cli.Comma
             stringBuffer.append( PropertiesService.getProperty( PropertiesService.ENV_QNX_HOST ) );
         }
         else {
-            stringBuffer.append( QdeService.getQnxHostDirPath() );
+            stringBuffer.append( QnxService.getQnxHostDirPath() );
         }
         return stringBuffer.toString();
     }
@@ -64,7 +65,7 @@ public class CommandLineService extends org.hardisonbrewing.maven.core.cli.Comma
             stringBuffer.append( PropertiesService.getProperty( PropertiesService.ENV_QNX_TARGET ) );
         }
         else {
-            stringBuffer.append( QdeService.getQnxTargetDirPath() );
+            stringBuffer.append( QnxService.getQnxTargetDirPath() );
         }
         return stringBuffer.toString();
     }
@@ -72,17 +73,17 @@ public class CommandLineService extends org.hardisonbrewing.maven.core.cli.Comma
     public static void addQnxEnvVars( Commandline commandLine ) {
 
         StringBuffer qnxHostBinDirPath = new StringBuffer();
-        qnxHostBinDirPath.append( QdeService.getQnxHostUsrDirPath() );
+        qnxHostBinDirPath.append( QnxService.getQnxHostUsrDirPath() );
         qnxHostBinDirPath.append( File.separator );
         qnxHostBinDirPath.append( "bin" );
         appendEnvVar( commandLine, "PATH", qnxHostBinDirPath.toString() );
 
         if ( !PropertiesService.hasProperty( PropertiesService.ENV_QNX_HOST ) ) {
-            commandLine.addEnvironment( PropertiesService.QNX_HOST, QdeService.getQnxHostDirPath() );
+            commandLine.addEnvironment( PropertiesService.QNX_HOST, QnxService.getQnxHostDirPath() );
         }
 
         if ( !PropertiesService.hasProperty( PropertiesService.ENV_QNX_TARGET ) ) {
-            commandLine.addEnvironment( PropertiesService.QNX_TARGET, QdeService.getQnxTargetDirPath() );
+            commandLine.addEnvironment( PropertiesService.QNX_TARGET, QnxService.getQnxTargetDirPath() );
         }
     }
 }

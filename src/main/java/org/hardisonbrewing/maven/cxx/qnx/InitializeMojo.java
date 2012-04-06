@@ -14,43 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde.model;
+package org.hardisonbrewing.maven.cxx.qnx;
 
-import generated.net.rim.bar.Asset;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
-public final class AssetResource {
+/**
+ * @goal qnx-initialize
+ * @phase initialize
+ */
+public class InitializeMojo extends JoJoMojoImpl {
 
-    private Asset asset;
-    private String srcFilePath;
-    private String destFilePath;
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
-    public String getSrcFilePath() {
-
-        return srcFilePath;
-    }
-
-    public void setSrcFilePath( String srcFilePath ) {
-
-        this.srcFilePath = srcFilePath;
-    }
-
-    public String getDestFilePath() {
-
-        return destFilePath;
-    }
-
-    public void setDestFilePath( String destFilePath ) {
-
-        this.destFilePath = destFilePath;
-    }
-
-    public Asset getAsset() {
-
-        return asset;
-    }
-
-    public void setAsset( Asset asset ) {
-
-        this.asset = asset;
+        PropertiesService.putProperty( PropertiesService.QNX_TARGET, QnxService.getQnxTargetDirPath() );
     }
 }

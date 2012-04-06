@@ -30,7 +30,7 @@ import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.qde.CProjectService;
-import org.hardisonbrewing.maven.cxx.qde.CommandLineService;
+import org.hardisonbrewing.maven.cxx.qnx.CommandLineService;
 
 /**
  * @goal qde-managed-assemble
