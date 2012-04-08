@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.qnx.BarDescriptorService;
 import org.hardisonbrewing.maven.cxx.qnx.QnxService;
 
 public class CProjectService extends org.hardisonbrewing.maven.cxx.cdt.CProjectService {

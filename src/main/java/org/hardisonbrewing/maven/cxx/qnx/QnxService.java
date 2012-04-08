@@ -162,4 +162,46 @@ public final class QnxService {
         stringBuffer.append( "Makefile" );
         return stringBuffer.toString();
     }
+
+    public static String convertMakefileDirectoryToPlatform( File dir ) {
+
+        String endian = null;
+        String version = null;
+        boolean debug = false;
+        boolean staticLib = false;
+        boolean application = false;
+
+        for (String variant : dir.getName().split( "\\." )) {
+
+            if ( "le".equals( variant ) ) {
+                endian = "le";
+            }
+            else if ( "be".equals( variant ) ) {
+                endian = "be";
+            }
+            else if ( "g".equals( variant ) ) {
+                debug = true;
+            }
+            else if ( "a".equals( variant ) ) {
+                staticLib = true;
+            }
+            else if ( "o".equals( variant ) ) {
+                application = true;
+            }
+            else if ( variant.startsWith( "v" ) ) {
+                version = variant;
+            }
+        }
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( dir.getParentFile().getName() );
+        if ( endian != null ) {
+            stringBuffer.append( endian );
+        }
+        if ( version != null ) {
+            stringBuffer.append( "-" );
+            stringBuffer.append( version );
+        }
+        return stringBuffer.toString();
+    }
 }

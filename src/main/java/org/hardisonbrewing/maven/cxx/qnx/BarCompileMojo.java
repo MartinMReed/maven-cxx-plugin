@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde;
+package org.hardisonbrewing.maven.cxx.qnx;
 
+import generated.net.rim.bar.AssetConfiguration;
 import generated.net.rim.bar.BarDescriptor;
-import generated.org.eclipse.cdt.StorageModule.Configuration;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,10 +27,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
-import org.hardisonbrewing.maven.cxx.qnx.CommandLineService;
 
 /**
- * @goal qde-bar-compile
+ * @goal qnx-bar-compile
  * @phase compile
  */
 public class BarCompileMojo extends JoJoMojoImpl {
@@ -43,13 +42,16 @@ public class BarCompileMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
-        if ( !CProjectService.isApplication( configuration ) ) {
-            getLog().info( "Not an application... skipping" );
+        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
+
+        if ( barDescriptor == null ) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( "No " );
+            stringBuffer.append( BarDescriptorService.BAR_DESCRIPTOR_FILENAME );
+            stringBuffer.append( "... skipping" );
+            getLog().info( stringBuffer.toString() );
             return;
         }
-
-        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "blackberry-nativepackager" );
@@ -61,6 +63,7 @@ public class BarCompileMojo extends JoJoMojoImpl {
 
         CommandLineService.addQnxEnvVarArgs( cmd );
 
+        AssetConfiguration configuration = BarDescriptorService.getAssetConfiguration( barDescriptor, target );
         cmd.add( "-configuration" );
         cmd.add( configuration.getId() );
 

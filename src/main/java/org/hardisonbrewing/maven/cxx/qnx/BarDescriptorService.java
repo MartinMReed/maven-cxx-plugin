@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde;
+package org.hardisonbrewing.maven.cxx.qnx;
 
 import generated.net.rim.bar.Asset;
 import generated.net.rim.bar.AssetConfiguration;
 import generated.net.rim.bar.BarDescriptor;
-import generated.org.eclipse.cdt.StorageModule.Configuration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,42 +31,15 @@ import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
 
-public final class BarDescriptorService {
+public class BarDescriptorService {
 
     public static final String BAR_DESCRIPTOR_FILENAME = "bar-descriptor.xml";
 
     private static BarDescriptor barDescriptor;
 
-    private BarDescriptorService() {
+    protected BarDescriptorService() {
 
         // do nothing
-    }
-
-    public static BarDescriptor readBarDescriptor( File file ) {
-
-        if ( !file.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate application descriptor file: " + file );
-            throw new IllegalStateException();
-        }
-
-        try {
-            return JAXB.unmarshal( file, BarDescriptor.class );
-        }
-        catch (JAXBException e) {
-            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal bar-descriptor file: " + file );
-            throw new IllegalStateException( e );
-        }
-    }
-
-    public static void writeBarDescriptor( BarDescriptor barDescriptor, File file ) {
-
-        try {
-            JAXB.marshal( file, barDescriptor );
-        }
-        catch (JAXBException e) {
-            JoJoMojo.getMojo().getLog().error( "Unable to marshal bar-descriptor file: " + file );
-            throw new IllegalStateException( e );
-        }
     }
 
     public static final AssetConfiguration getAssetConfiguration( BarDescriptor barDescriptor, String target ) {
@@ -77,11 +49,8 @@ public final class BarDescriptorService {
             return null;
         }
 
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
-        String configurationId = configuration.getId();
-
         for (AssetConfiguration assetConfiguration : assetConfigurations) {
-            if ( configurationId.equals( assetConfiguration.getId() ) ) {
+            if ( target.equals( assetConfiguration.getName() ) ) {
                 return assetConfiguration;
             }
         }
@@ -117,13 +86,10 @@ public final class BarDescriptorService {
 
         getResources( barDescriptor.getAsset(), assetResources );
 
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
-        String configurationId = configuration.getId();
-
         List<AssetConfiguration> assetConfigurations = barDescriptor.getConfiguration();
         if ( assetConfigurations != null ) {
             for (AssetConfiguration assetConfiguration : assetConfigurations) {
-                if ( configurationId.equals( assetConfiguration.getId() ) ) {
+                if ( target.equals( assetConfiguration.getName() ) ) {
                     getResources( assetConfiguration.getAsset(), assetResources );
                     break;
                 }
@@ -175,6 +141,33 @@ public final class BarDescriptorService {
         assetResource.srcFilePath = filePath;
         assetResource.destFilePath = targetPath;
         return assetResource;
+    }
+
+    public static BarDescriptor readBarDescriptor( File file ) {
+
+        if ( !file.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate application descriptor file: " + file );
+            throw new IllegalStateException();
+        }
+
+        try {
+            return JAXB.unmarshal( file, BarDescriptor.class );
+        }
+        catch (JAXBException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal bar-descriptor file: " + file );
+            throw new IllegalStateException( e );
+        }
+    }
+
+    public static void writeBarDescriptor( BarDescriptor barDescriptor, File file ) {
+
+        try {
+            JAXB.marshal( file, barDescriptor );
+        }
+        catch (JAXBException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to marshal bar-descriptor file: " + file );
+            throw new IllegalStateException( e );
+        }
     }
 
     public static String getBarDescriptorPath() {
