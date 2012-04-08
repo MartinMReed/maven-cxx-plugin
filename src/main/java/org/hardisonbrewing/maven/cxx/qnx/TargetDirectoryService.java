@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.qnx;
 
+import generated.net.rim.bar.BarDescriptor;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,16 @@ import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.ProjectService;
 
 public class TargetDirectoryService extends org.hardisonbrewing.maven.cxx.TargetDirectoryService {
+
+    public static final String getBarPath( BarDescriptor barDescriptor ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( barDescriptor.getName() );
+        stringBuffer.append( ".bar" );
+        return stringBuffer.toString();
+    }
 
     public static String[] getMakefileDirectoryPaths() {
 

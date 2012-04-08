@@ -307,7 +307,7 @@
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-compile,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-assemble,
 								org.hardisonbrewing:maven-cxx-plugin:qde-managed-link,
-								org.hardisonbrewing:maven-cxx-plugin:qde-bar-compile</compile>
+								org.hardisonbrewing:maven-cxx-plugin:qnx-bar-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:qde-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:o-install</install>
@@ -350,7 +350,8 @@
 							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
 								org.hardisonbrewing:maven-cxx-plugin:qnx-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:qnx-compile</compile>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:qnx-compile,
+								org.hardisonbrewing:maven-cxx-plugin:qnx-bar-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:qnx-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:o-install</install>

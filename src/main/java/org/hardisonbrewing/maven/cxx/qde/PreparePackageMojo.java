@@ -24,6 +24,8 @@ import java.io.File;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.cxx.qnx.BarDescriptorService;
+import org.hardisonbrewing.maven.cxx.qnx.TargetDirectoryService;
 
 /**
  * @goal qde-prepare-package
@@ -39,15 +41,16 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
+        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
+        if ( barDescriptor != null ) {
+            String barFilePath = TargetDirectoryService.getBarPath( barDescriptor );
+            org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( barFilePath );
+            return;
+        }
+
         Configuration configuration = CProjectService.getBuildConfiguration( target );
 
-        if ( CProjectService.isApplication( configuration ) ) {
-
-            BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
-            String barPath = TargetDirectoryService.getBarPath( barDescriptor );
-            org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( barPath );
-        }
-        else if ( CProjectService.isStaticLib( configuration ) ) {
+        if ( CProjectService.isStaticLib( configuration ) ) {
 
             String buildFilePath = CProjectService.getBuildFilePath( target );
             File buildFile = new File( buildFilePath );

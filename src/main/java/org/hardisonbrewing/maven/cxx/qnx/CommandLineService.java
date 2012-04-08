@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.codehaus.plexus.util.cli.Commandline;
-import org.hardisonbrewing.maven.cxx.qnx.QnxService;
 
 /**
  * Utility methods for handling {@link CommandLine} execution.

@@ -16,7 +16,6 @@
  */
 package org.hardisonbrewing.maven.cxx.qde;
 
-import generated.org.eclipse.cdt.StorageModule.Configuration;
 import generated.org.eclipse.cdt.ToolChain;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -42,11 +41,6 @@ public final class InitializeMojo extends org.hardisonbrewing.maven.cxx.qnx.Init
 
         ToolChain toolChain = CProjectService.getToolChain( target );
         PropertiesService.putProperty( "CPUVARDIR", CProjectService.getPlatform( toolChain ) );
-
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
-        if ( CProjectService.isApplication( configuration ) ) {
-            BarDescriptorService.loadBarDescriptor();
-        }
 
         super.execute();
     }

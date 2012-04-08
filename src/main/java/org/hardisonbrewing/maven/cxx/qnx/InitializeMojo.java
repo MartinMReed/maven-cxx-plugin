@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.qnx;
 
+import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -28,6 +30,11 @@ public class InitializeMojo extends JoJoMojoImpl {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+
+        File barDescriptorFile = BarDescriptorService.getBarDescriptorFile();
+        if ( barDescriptorFile.exists() ) {
+            BarDescriptorService.loadBarDescriptor();
+        }
 
         PropertiesService.putProperty( PropertiesService.QNX_TARGET, QnxService.getQnxTargetDirPath() );
     }

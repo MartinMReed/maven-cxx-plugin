@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.qnx;
 
+import generated.net.rim.bar.BarDescriptor;
+
 import java.io.File;
 import java.io.FileFilter;
 
@@ -33,23 +35,28 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
+        BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
+        if ( barDescriptor != null ) {
+            String barFilePath = TargetDirectoryService.getBarPath( barDescriptor );
+            org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( barFilePath );
+            return;
+        }
+
         for (File file : TargetDirectoryService.getMakefileDirectories()) {
 
-            String cpu = file.getParentFile().getName();
             String variant = file.getName();
-
             boolean staticLib = variant.matches( ".*[\\.]?a[\\.]?.*" );
-            boolean application = variant.matches( ".*[\\.]?o[\\.]?.*" );
 
-            if ( staticLib ) {
-                File[] staticLibFiles = file.listFiles( (FileFilter) new WildcardFileFilter( "lib*.a" ) );
-                for (File staticLibFile : staticLibFiles) {
-                    String filename = cpu + File.separator + staticLibFile.getName();
-                    org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( staticLibFile, filename );
-                }
+            if ( !staticLib ) {
+                continue;
             }
-            else if ( application ) {
-                throw new UnsupportedOperationException( "Application currently not supported" );
+
+            String cpu = file.getParentFile().getName();
+
+            File[] staticLibFiles = file.listFiles( (FileFilter) new WildcardFileFilter( "lib*.a" ) );
+            for (File staticLibFile : staticLibFiles) {
+                String filename = cpu + File.separator + staticLibFile.getName();
+                org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( staticLibFile, filename );
             }
         }
     }
