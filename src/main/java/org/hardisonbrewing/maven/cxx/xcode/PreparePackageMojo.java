@@ -137,16 +137,16 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         prepareTargetFile( target, ipaFile, getFilename( rootDirectory, ipaFile ) );
     }
 
-    private final void prepareTargetFile( String target, File src, String fileName ) {
+    private final void prepareTargetFile( String target, File src, String filename ) {
 
         if ( XCodeService.getTargets().size() > 1 ) {
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append( target );
             stringBuffer.append( File.separator );
-            stringBuffer.append( fileName );
-            fileName = stringBuffer.toString();
+            stringBuffer.append( filename );
+            filename = stringBuffer.toString();
         }
 
-        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( src, fileName );
+        org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( src, filename );
     }
 }

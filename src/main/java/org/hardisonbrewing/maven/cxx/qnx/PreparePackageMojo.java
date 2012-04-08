@@ -16,6 +16,10 @@
  */
 package org.hardisonbrewing.maven.cxx.qnx;
 
+import java.io.File;
+import java.io.FileFilter;
+
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -29,5 +33,24 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
+        for (File file : TargetDirectoryService.getMakefileDirectories()) {
+
+            String cpu = file.getParentFile().getName();
+            String variant = file.getName();
+
+            boolean staticLib = variant.matches( ".*[\\.]?a[\\.]?.*" );
+            boolean application = variant.matches( ".*[\\.]?o[\\.]?.*" );
+
+            if ( staticLib ) {
+                File[] staticLibFiles = file.listFiles( (FileFilter) new WildcardFileFilter( "lib*.a" ) );
+                for (File staticLibFile : staticLibFiles) {
+                    String filename = cpu + File.separator + staticLibFile.getName();
+                    org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( staticLibFile, filename );
+                }
+            }
+            else if ( application ) {
+                throw new UnsupportedOperationException( "Application currently not supported" );
+            }
+        }
     }
 }
