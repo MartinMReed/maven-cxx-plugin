@@ -62,10 +62,10 @@
 //                //                filePath = filePath.substring( 0, filePath.lastIndexOf( '.' ) );
 //                filePath = filePath.replace( File.separatorChar, '.' );
 //
-//                String fileName = file.getName();
+//                String filename = file.getName();
 //
 //                outputStream.writeChars( "<component id=\"" );
-//                //                outputStream.writeChars( fileName.substring( 0, fileName.lastIndexOf( '.' ) ) );
+//                //                outputStream.writeChars( filename.substring( 0, filename.lastIndexOf( '.' ) ) );
 //                outputStream.writeChars( filePath );
 //                outputStream.writeChars( "\" class=\"" );
 //                outputStream.writeChars( filePath );

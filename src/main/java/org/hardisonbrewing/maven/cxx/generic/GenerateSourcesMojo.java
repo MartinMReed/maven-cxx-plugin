@@ -43,16 +43,16 @@ public final class GenerateSourcesMojo extends JoJoMojoImpl {
         }
     }
 
-    private static final void copyFiles( String parentFileName, String[] fileNames, String filePathPrefix ) {
+    private static final void copyFiles( String parentFileName, String[] filenames, String filePathPrefix ) {
 
         String generatedSourcesDirectory = TargetDirectoryService.getGeneratedSourcesDirectoryPath();
-        for (String fileName : fileNames) {
+        for (String filename : filenames) {
             StringBuffer srcChildPath = new StringBuffer();
             if ( parentFileName != null ) {
                 srcChildPath.append( parentFileName );
                 srcChildPath.append( File.separator );
             }
-            srcChildPath.append( fileName );
+            srcChildPath.append( filename );
             copyFile( srcChildPath.toString(), filePathPrefix, generatedSourcesDirectory );
         }
     }

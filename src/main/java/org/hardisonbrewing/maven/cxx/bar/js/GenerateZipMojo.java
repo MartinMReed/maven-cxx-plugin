@@ -64,7 +64,7 @@ public class GenerateZipMojo extends JoJoMojoImpl {
         }
     }
 
-    private final void prepareFile( File src, String fileName ) {
+    private final void prepareFile( File src, String filename ) {
 
         if ( !src.exists() ) {
             getLog().error( src.getAbsolutePath() + " does not exist." );
@@ -73,7 +73,7 @@ public class GenerateZipMojo extends JoJoMojoImpl {
         StringBuffer destPath = new StringBuffer();
         destPath.append( getTempPackagePath() );
         destPath.append( File.separator );
-        destPath.append( fileName );
+        destPath.append( filename );
         File dest = new File( destPath.toString() );
 
         JoJoMojo.getMojo().getLog().info( "Copying " + src + " to " + dest );

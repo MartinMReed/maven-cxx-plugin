@@ -30,8 +30,6 @@ public final class QnxService {
     public static final String PACKAGING_QNX = "qnx";
     public static final String PACKAGING_QDE = "qde";
 
-    private static final String MAKEFILE_FILENAME = "Makefile";
-
     public static final String QNX_USR_SEARCH;
 
     static {
@@ -161,7 +159,7 @@ public final class QnxService {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( ProjectService.getBaseDirPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( MAKEFILE_FILENAME );
+        stringBuffer.append( "Makefile" );
         return stringBuffer.toString();
     }
 }

@@ -51,6 +51,10 @@ public class CompileMojo extends JoJoMojoImpl {
         StreamConsumer systemOut = new MyLogStreamConsumer( qccCommands, LogStreamConsumer.LEVEL_INFO );
         StreamConsumer systemErr = new MyLogStreamConsumer( qccCommands, LogStreamConsumer.LEVEL_ERROR );
         execute( commandLine, systemOut, systemErr );
+
+        QccCommand[] _qccCommands = new QccCommand[qccCommands.size()];
+        qccCommands.toArray( _qccCommands );
+        QccService.setCompileQccCommands( _qccCommands );
     }
 
     private final class MyLogStreamConsumer extends LogStreamConsumer {
@@ -72,7 +76,6 @@ public class CompileMojo extends JoJoMojoImpl {
             if ( QccService.isQccCommand( line ) ) {
                 QccCommand qccCommand = QccService.parseQccCommand( line );
                 qccCommands.add( qccCommand );
-                qccCommand.printDebug();
             }
         }
     }

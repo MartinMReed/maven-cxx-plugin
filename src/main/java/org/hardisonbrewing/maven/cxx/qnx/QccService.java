@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 
 public final class QccService {
 
+    private static QccCommand[] compileQccCommands;
+
     public static boolean isQccCommand( String command ) {
 
         Pattern pattern = Pattern.compile( "^[^\\s]*qcc\\s" );
@@ -154,5 +156,15 @@ public final class QccService {
             System.out.println( "\tSTATICLIB: " + ( staticLib ? outputFile : "false" ) );
             System.out.println( "\tAPPLICATION: " + ( application ? outputFile : "false" ) );
         }
+    }
+
+    public static QccCommand[] getCompileQccCommands() {
+
+        return compileQccCommands;
+    }
+
+    public static void setCompileQccCommands( QccCommand[] compileQccCommands ) {
+
+        QccService.compileQccCommands = compileQccCommands;
     }
 }

@@ -53,26 +53,26 @@ public abstract class PreparePackageMojo extends JoJoMojoImpl {
         prepareTargetFile( artifactId + "." + classifier );
     }
 
-    public static final void prepareTargetFile( String fileName ) {
+    public static final void prepareTargetFile( String filename ) {
 
         String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
-        if ( !fileName.startsWith( targetDirectoryPath ) ) {
+        if ( !filename.startsWith( targetDirectoryPath ) ) {
             StringBuffer srcPath = new StringBuffer();
             srcPath.append( TargetDirectoryService.getTargetDirectoryPath() );
             srcPath.append( File.separator );
-            srcPath.append( fileName );
-            fileName = srcPath.toString();
+            srcPath.append( filename );
+            filename = srcPath.toString();
         }
-        File src = new File( fileName );
+        File src = new File( filename );
         prepareTargetFile( src, FileUtils.getTargetCanonicalPath( src.getPath() ) );
     }
 
-    public static final void prepareTargetFile( File src, String fileName ) {
+    public static final void prepareTargetFile( File src, String filename ) {
 
         StringBuffer destPath = new StringBuffer();
         destPath.append( TargetDirectoryService.getTempPackagePath() );
         destPath.append( File.separator );
-        destPath.append( fileName );
+        destPath.append( filename );
         File dest = new File( destPath.toString() );
 
         prepareTargetFile( src, dest );
