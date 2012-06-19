@@ -92,10 +92,10 @@ targetExcludes</td></tr>
 sourceFile (i.e. src/Main.mxml)<br/>
 libDirectory (Directory containing SWC libs)<br/>
 descriptorFile (Application descriptor XML)<br/>
-keystore
-keystore/keystore
-keystore/storepass
-keystore/keypass
+keystore<br/>
+keystore/keystore<br/>
+keystore/storepass<br/>
+keystore/keypass<br/>
 keystore/alias</td></tr>
 </table>
 
