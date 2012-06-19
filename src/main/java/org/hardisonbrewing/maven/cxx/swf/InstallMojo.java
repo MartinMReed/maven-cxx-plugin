@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,24 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf.mxml;
+package org.hardisonbrewing.maven.cxx.swf;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
-import org.hardisonbrewing.maven.cxx.bar.ValidateMojo;
 
 /**
- * @goal mxml-swf-validate
- * @phase validate
+ * @goal swf-install
+ * @phase install
  */
-public final class MxmlValidateMojo extends ValidateMojo {
+public final class InstallMojo extends org.hardisonbrewing.maven.cxx.generic.InstallMojo {
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
+        classifier = "swf";
         super.execute();
-
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.ADOBE_FLEX_HOME, true );
     }
 }

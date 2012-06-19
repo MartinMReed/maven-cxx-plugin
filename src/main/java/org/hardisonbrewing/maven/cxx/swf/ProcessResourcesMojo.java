@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf.mxml;
+package org.hardisonbrewing.maven.cxx.swf;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -68,8 +68,8 @@ public class ProcessResourcesMojo extends JoJoMojoImpl {
         cmd.add( "-load-config" );
         cmd.add( configPath.toString() );
 
-        String generatedResourcesDirectoryPath = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
         String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
+        String generatedResourcesDirectoryPath = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
         for (File file : TargetDirectoryService.getResourceFiles()) {
             cmd.add( "-include-file" );
             cmd.add( FileUtils.getCanonicalPath( file.getPath(), generatedResourcesDirectoryPath ) );
