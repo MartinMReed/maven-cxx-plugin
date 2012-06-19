@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,21 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf.mxml;
+package org.hardisonbrewing.maven.cxx.swf;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+public class KeyStore {
 
-/**
- * @goal swf-prepare-package
- * @phase prepare-package
- */
-public final class PreparePackageMojo extends org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo {
-
-    @Override
-    public final void execute() throws MojoExecutionException, MojoFailureException {
-
-        classifier = "swf";
-        super.execute();
-    }
+    public String keystore;
+    public String storepass;
+    public String keypass;
+    public String alias;
 }
