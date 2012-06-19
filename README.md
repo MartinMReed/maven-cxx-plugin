@@ -63,6 +63,7 @@ th {
 <tr><td>qnx</td><td>BlackBerry 10, Makefile</td></tr>
 <tr><td>arduino</td><td>Arduino</td></tr>
 <tr><td>xcode</td><td>xcodebuild</td></tr>
+<tr><td>swf</td><td>Adobe Air/Flex</td></tr>
 </table>
 
 ## Configuring the plugin
@@ -87,6 +88,15 @@ provisioningProfile<br/>
 codesignCertificate<br/>
 targetIncludes<br/>
 targetExcludes</td></tr>
+<tr><td>swf</td><td>configFile (i.e. air-config.xml)<br/>
+sourceFile (i.e. src/Main.mxml)<br/>
+libDirectory (Directory containing SWC libs)<br/>
+descriptorFile (Application descriptor XML)<br/>
+keystore
+keystore/keystore
+keystore/storepass
+keystore/keypass
+keystore/alias</td></tr>
 </table>
 
 ## Properties
@@ -109,6 +119,7 @@ avr.bin<br/>
 avrdude.config.path<br/>
 serial.port</td></tr>
 <tr><td>xcode</td><td/></tr>
+<tr><td>swf</td><td>adobe.flex.home</td></tr>
 </table>
 
 # Sample: C++ Library POM
@@ -119,62 +130,62 @@ serial.port</td></tr>
 	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 >
 	  <modelVersion>4.0.0</modelVersion>
 	  <parent>
-		<groupId>org.hardisonbrewing</groupId>
-		<artifactId>commons-c-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+	  <groupId>org.hardisonbrewing</groupId>
+	    <artifactId>commons-c-parent</artifactId>
+	    <version>1.0-SNAPSHOT</version>
 	  </parent>
 	  <groupId>org.hardisonbrewing</groupId>
 	  <artifactId>libhbc_math</artifactId>
 	  <name>${project.artifactId}</name>
 	  <packaging>a</packaging>
 	  <build>
-		<!-- <sourceDirectory/> not required -->
-		<sourceDirectory>src</sourceDirectory/> 
-		<resources>
-		 <resource>
-		  <directory>src</directory>
-			<includes>
-			  <include>**/*.h</include>
-			</includes>
-		 </resource>
-		 <resource>
-		  <directory>third-party</directory>
-			<includes>
-			  <include>**/*.h</include>
-			</includes>
-		 </resource> 
-		</resources>
-		<plugins>
-		 <plugin>
-		  <groupId>org.hardisonbrewing</groupId>
-		  <artifactId>maven-cxx-plugin</artifactId>
-		  <extensions>true</extensions>
-		  <configuration>
-			<!-- language of c++ will delegate to g++ instead of gcc -->
-			<language>c++</language>
-			<sources>
-			  <source>
-				<!-- no <directory/> means use <sourceDirectory/> -->
-				<includes>
-				  <include>**/*.cc</include>
-				</includes>
+	    <!-- <sourceDirectory/> not required -->
+	    <sourceDirectory>src</sourceDirectory/> 
+	    <resources>
+	     <resource>
+	      <directory>src</directory>
+	        <includes>
+	          <include>**/*.h</include>
+	        </includes>
+	     </resource>
+	     <resource>
+	      <directory>third-party</directory>
+	        <includes>
+	          <include>**/*.h</include>
+	        </includes>
+	     </resource> 
+	    </resources>
+	    <plugins>
+	     <plugin>
+	      <groupId>org.hardisonbrewing</groupId>
+	      <artifactId>maven-cxx-plugin</artifactId>
+	      <extensions>true</extensions>
+	      <configuration>
+	        <!-- language of c++ will delegate to g++ instead of gcc -->
+	        <language>c++</language>
+	        <sources>
+	          <source>
+	            <!-- no <directory/> means use <sourceDirectory/> -->
+	            <includes>
+	              <include>**/*.cc</include>
+	            </includes>
 	<!--             <excludes>-->
 	<!--                <exclude>**/*.m</exclude>-->
 	<!--             </excludes>-->
-			  </source> 
-			  <source>
-				<directory>third-party</directory>
+	          </source> 
+	          <source>
+	            <directory>third-party</directory>
 	<!--             <includes>-->
 	<!--              <include>**/*.cc</include>-->
 	<!--             </includes>-->
-				<excludes>
-				  <exclude>**/*.m</exclude>
-				</excludes>
-			  </source>
-			</sources>
-		  </configuration>
-		 </plugin>
-		</plugins>
+	            <excludes>
+	              <exclude>**/*.m</exclude>
+	            </excludes>
+	          </source>
+	        </sources>
+	      </configuration>
+	     </plugin>
+	    </plugins>
 	  </build>
 	</project>
 
@@ -191,37 +202,75 @@ serial.port</td></tr>
 	  <name>${project.artifactId}</name>
 	  <packaging>xcode</packaging>
 	  <profiles>
-		<profile>
-		  <id>ios-distribution</id>
-		  <build>
-			<plugins>
-			  <plugin>
-				<groupId>org.hardisonbrewing</groupId>
-				<artifactId>maven-cxx-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-				  <provisioningProfile>Komodododo_AdHoc_Dist.mobileprovision</provisioningProfile>
-				  <codesignCertificate>distribution_identity.cer</codesignCertificate>
-				</configuration>
-			  </plugin>
-			</plugins>
-		  </build>
-		</profile>
+	    <profile>
+	      <id>ios-distribution</id>
+	      <build>
+	        <plugins>
+	          <plugin>
+	            <groupId>org.hardisonbrewing</groupId>
+	            <artifactId>maven-cxx-plugin</artifactId>
+	            <extensions>true</extensions>
+	            <configuration>
+	              <provisioningProfile>Komodododo_AdHoc_Dist.mobileprovision</provisioningProfile>
+	              <codesignCertificate>distribution_identity.cer</codesignCertificate>
+	            </configuration>
+	          </plugin>
+	        </plugins>
+	      </build>
+	    </profile>
 	  </profiles>
 	  <build>
-		<plugins>
-		  <plugin>
-			<groupId>org.hardisonbrewing</groupId>
-			<artifactId>maven-cxx-plugin</artifactId>
-			<extensions>true</extensions>
-			<configuration>
-			  <provisioningProfile>Komodododo_AdHoc.mobileprovision</provisioningProfile>
-			  <codesignCertificate>developer_identity.cer</codesignCertificate>
-			  <targetExcludes>
-				<targetExclude>KomodododoTests</targetExclude>
-			  </targetExcludes>
-			</configuration>
-		  </plugin>
-		</plugins>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.hardisonbrewing</groupId>
+	        <artifactId>maven-cxx-plugin</artifactId>
+	        <extensions>true</extensions>
+	        <configuration>
+	          <provisioningProfile>Komodododo_AdHoc.mobileprovision</provisioningProfile>
+	          <codesignCertificate>developer_identity.cer</codesignCertificate>
+	          <targetExcludes>
+	            <targetExclude>KomodododoTests</targetExclude>
+	          </targetExcludes>
+	        </configuration>
+	      </plugin>
+	    </plugins>
+	  </build>
+	</project>
+
+# Sample: Adobe Air/Flex Project POM
+	
+	<project xmlns="http://maven.apache.org/POM/4.0.0"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
+	  <modelVersion>4.0.0</modelVersion>
+	  <groupId>net.hardisonbrewing</groupId>
+	  <artifactId>komodododo</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+	  <name>${project.artifactId}</name>
+	  <packaging>swf</packaging>
+	  <properties>
+	    <adobe.flex.home>/tools/adobe/flex_sdk_4.5</adobe.flex.home>
+	  </properties>
+	  <build>
+	    <sourceDirectory>src</sourceDirectory>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.hardisonbrewing</groupId>
+	        <artifactId>maven-cxx-plugin</artifactId>
+	        <extensions>true</extensions>
+	        <configuration>
+	          <!--<configFile>air-config.xml</configFile>-->
+	          <sourceFile>Main.mxml</sourceFile>
+	          <libDirectory>libs</libDirectory>
+	          <descriptorFile>src/Main-app.xml</descriptorFile>
+	          <keystore>
+	            <keystore>keystore.p12</keystore>
+	            <storepass>storepass</storepass>
+	            <!--<keypass>keypass</keypass>-->
+	            <!--<alias>alias</alias>-->
+	          </keystore>
+	        </configuration>
+	      </plugin>
+	    </plugins>
 	  </build>
 	</project>
