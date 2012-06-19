@@ -37,16 +37,29 @@ public class GenerateResourcesMojo extends JoJoMojoImpl {
 
         String generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
         for (Resource resource : (List<Resource>) getProject().getResources()) {
+
             File resourceDirectory = new File( resource.getDirectory() );
             if ( !resourceDirectory.exists() ) {
                 getLog().info( resourceDirectory + " does not exist, skipping resource copy" );
                 continue;
             }
+
+            String targetResourceDirectory = generatedResourcesDirectory;
+
+            String target = resource.getTargetPath();
+            if ( target != null && target.length() > 0 ) {
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append( targetResourceDirectory );
+                stringBuffer.append( File.separator );
+                stringBuffer.append( target );
+                targetResourceDirectory = stringBuffer.toString();
+            }
+
             List<String> includes = resource.getIncludes();
             List<String> excludes = resource.getExcludes();
             String[] filePaths = FileUtils.listFilePathsRecursive( resourceDirectory, includes, excludes );
             for (String filePath : filePaths) {
-                copyFile( filePath, resource.getDirectory(), generatedResourcesDirectory );
+                copyFile( filePath, resource.getDirectory(), targetResourceDirectory );
             }
         }
     }
