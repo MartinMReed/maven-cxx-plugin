@@ -260,10 +260,12 @@ serial.port</td></tr>
 	        <artifactId>maven-cxx-plugin</artifactId>
 	        <extensions>true</extensions>
 	        <configuration>
-	          <!--<configFile>air-config.xml</configFile>-->
+	          <target>air</target>
+	          <!--<target>ipa-app-store</target>-->
 	          <sourceFile>Main.mxml</sourceFile>
 	          <libDirectory>libs</libDirectory>
 	          <descriptorFile>src/Main-app.xml</descriptorFile>
+	          <!--<provisioningProfile>komodododo.mobileprovision</provisioningProfile>-->
 	          <keystore>
 	            <keystore>keystore.p12</keystore>
 	            <storepass>storepass</storepass>
