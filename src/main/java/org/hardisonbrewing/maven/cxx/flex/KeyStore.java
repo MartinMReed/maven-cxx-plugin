@@ -14,24 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf;
+package org.hardisonbrewing.maven.cxx.flex;
 
-public class SwfService {
+public class KeyStore {
 
-    public static final String[] NON_RESOURCE_EXTS = new String[] { "**/*.as", "**/*.mxml" };
-
-    public static final boolean isAirTarget( String target ) {
-
-        return "air".equals( target );
-    }
-
-    public static final boolean isIosTarget( String target ) {
-
-        return target.startsWith( "ipa-" );
-    }
-
-    public static final boolean isAndroidTarget( String target ) {
-
-        return target.startsWith( "apk" );
-    }
+    public String keystore;
+    public String storepass;
+    public String keypass;
+    public String alias;
 }

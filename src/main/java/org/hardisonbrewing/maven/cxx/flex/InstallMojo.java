@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf;
+package org.hardisonbrewing.maven.cxx.flex;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * @goal swf-install
+ * @goal flex-install
  * @phase install
  */
 public final class InstallMojo extends org.hardisonbrewing.maven.cxx.generic.InstallMojo {

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf;
+package org.hardisonbrewing.maven.cxx.flex;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -30,7 +30,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
- * @goal swf-airi-compile
+ * @goal flex-airi-compile
  * @phase compile
  */
 public class AiriCompileMojo extends JoJoMojoImpl {
