@@ -42,16 +42,6 @@ Continuous Integration: [Bamboo Status](http://hardisonbrewing.org:8083/browse/C
 ## Specify the packaging
 The `<packaging/>` in your `pom.xml` must be set to package classifier for the type of tool you're project should build for. See supported tools and package types below:
 
-<style type="text/css">
-table, th, td { border: 1px solid rgb(225,225,225); }
-table { border-collapse:collapse; }
-td, th { padding:5px; }
-th {
-  background-color:rgb(245,245,245);
-  color:black;
-}
-</style>
-
 <table>
 <thead><th>Packaging</th><th>Target</th></thead>
 <tr><td>a</td><td>ar</td></tr>
