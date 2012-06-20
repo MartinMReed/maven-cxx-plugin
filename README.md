@@ -63,7 +63,7 @@ th {
 <tr><td>qnx</td><td>BlackBerry 10, Makefile</td></tr>
 <tr><td>arduino</td><td>Arduino</td></tr>
 <tr><td>xcode</td><td>xcodebuild</td></tr>
-<tr><td>swf</td><td>Adobe Air/Flex</td></tr>
+<tr><td>flex</td><td>Adobe Air/Flex</td></tr>
 </table>
 
 ## Configuring the plugin
@@ -88,7 +88,7 @@ provisioningProfile<br/>
 codesignCertificate<br/>
 targetIncludes<br/>
 targetExcludes</td></tr>
-<tr><td>swf</td><td>configFile (i.e. air-config.xml)<br/>
+<tr><td>flex</td><td>configFile (i.e. air-config.xml)<br/>
 sourceFile (i.e. src/Main.mxml)<br/>
 libDirectory (Directory containing SWC libs)<br/>
 descriptorFile (Application descriptor XML)<br/>
@@ -120,7 +120,7 @@ avr.bin<br/>
 avrdude.config.path<br/>
 serial.port</td></tr>
 <tr><td>xcode</td><td/></tr>
-<tr><td>swf</td><td>adobe.flex.home</td></tr>
+<tr><td>flex</td><td>adobe.flex.home</td></tr>
 </table>
 
 # Sample: C++ Library POM
@@ -248,7 +248,7 @@ serial.port</td></tr>
 	  <artifactId>komodododo</artifactId>
 	  <version>0.0.1-SNAPSHOT</version>
 	  <name>${project.artifactId}</name>
-	  <packaging>swf</packaging>
+	  <packaging>flex</packaging>
 	  <properties>
 	    <adobe.flex.home>/tools/adobe/flex_sdk_4.5</adobe.flex.home>
 	  </properties>
