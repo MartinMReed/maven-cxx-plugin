@@ -42,34 +42,31 @@ public class ValidateMojo extends JoJoMojoImpl {
      */
     private KeyStore keystore;
 
+    /**
+     * @parameter
+     */
+    private String target;
+
+    /**
+     * @parameter
+     */
+    private String provisioningProfile;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.ADOBE_FLEX_HOME, true );
 
-        if ( descriptorFile == null || descriptorFile.length() == 0 ) {
-            getLog().error( "<descriptorFile/> must be set!" );
-            throw new IllegalArgumentException();
-        }
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "target", target, true );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "descriptorFile", descriptorFile, true );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "sourceFile", sourceFile, true );
 
-        if ( sourceFile == null || sourceFile.length() == 0 ) {
-            getLog().error( "<sourceFile/> must be set!" );
-            throw new IllegalArgumentException();
-        }
-
-        if ( keystore == null ) {
-            getLog().error( "<keystore/> must be set!" );
-            throw new IllegalArgumentException();
-        }
-
-        if ( keystore.keystore == null ) {
-            getLog().error( "<keystore><keystore/></keystore> must be set!" );
-            throw new IllegalArgumentException();
-        }
-
-        if ( keystore.storepass == null ) {
-            getLog().error( "<keystore><storepass/></keystore> must be set!" );
-            throw new IllegalArgumentException();
-        }
+        boolean iosTarget = SwfService.isIosTarget( target );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "provisioningProfile", provisioningProfile, iosTarget );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "keystore", keystore, true );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keystore><keystore/></keystore>", keystore.keystore, true );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keystore><storepass/></keystore>", keystore.storepass, true );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keystore><alias/></keystore>", keystore.alias, false );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keystore><keypass/></keystore>", keystore.keypass, false );
     }
 }

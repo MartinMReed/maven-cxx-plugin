@@ -30,15 +30,15 @@ import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
 
 /**
- * @goal mxml-swf-process-resources
- * @phase process-resources
+ * @goal swf-swc-compile
+ * @phase compile
  */
-public class ProcessResourcesMojo extends JoJoMojoImpl {
+public class SwcCompileMojo extends JoJoMojoImpl {
 
     /**
      * @parameter
      */
-    private String configFile;
+    private String target;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -59,8 +59,8 @@ public class ProcessResourcesMojo extends JoJoMojoImpl {
         configPath.append( File.separator );
         configPath.append( "frameworks" );
         configPath.append( File.separator );
-        if ( configFile != null && configFile.length() > 0 ) {
-            configPath.append( configFile );
+        if ( SwfService.isIosTarget( target ) || SwfService.isAndroidTarget( target ) ) {
+            configPath.append( "airmobile-config.xml" );
         }
         else {
             configPath.append( "air-config.xml" );

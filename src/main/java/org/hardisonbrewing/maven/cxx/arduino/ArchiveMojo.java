@@ -34,7 +34,7 @@ import org.wayoda.ang.utils.FileUtils;
 
 /**
  * @goal arduino-archive
- * @phase archive
+ * @phase compile
  */
 public final class ArchiveMojo extends JoJoMojoImpl {
 
@@ -50,30 +50,8 @@ public final class ArchiveMojo extends JoJoMojoImpl {
      */
     public String targetDevice;
 
-    private void prepareCommands() {
-
-        String binPrefix = ProjectService.getProperty( "avr.bin" );
-        if ( binPrefix != null && !binPrefix.endsWith( File.separator ) ) {
-            binPrefix += File.separator;
-        }
-
-        archCmd = new ArrayList<String>();
-        archCmd.add( binPrefix + "avr-ar" );
-        archCmd.add( "rcs" );
-    }
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-
-        if ( targetDevice == null ) {
-            getLog().error( "<targetDevice /> must be set." );
-            throw new IllegalArgumentException();
-        }
-
-        if ( sketchbook == null ) {
-            getLog().error( "<sketchbook /> must be set." );
-            throw new IllegalArgumentException();
-        }
 
         prepareCommands();
 
@@ -91,6 +69,18 @@ public final class ArchiveMojo extends JoJoMojoImpl {
             getLog().error( "<sketchbook=\"" + sketchbook + "\"/> is not a valid Sketch-Directory or does not contain valid Sketch files" );
             throw new IllegalStateException();
         }
+    }
+
+    private void prepareCommands() {
+
+        String binPrefix = ProjectService.getProperty( "avr.bin" );
+        if ( binPrefix != null && !binPrefix.endsWith( File.separator ) ) {
+            binPrefix += File.separator;
+        }
+
+        archCmd = new ArrayList<String>();
+        archCmd.add( binPrefix + "avr-ar" );
+        archCmd.add( "rcs" );
     }
 
     private void archiveSketch( Sketch sketch, Target target ) {

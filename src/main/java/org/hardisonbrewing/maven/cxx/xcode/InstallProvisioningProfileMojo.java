@@ -27,7 +27,7 @@ import org.hardisonbrewing.maven.core.PropertiesService;
 
 /**
  * @goal xcode-install-provisioning-profile
- * @phase xcode-install-provisioning-profile
+ * @phase generate-resources
  */
 public class InstallProvisioningProfileMojo extends JoJoMojoImpl {
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,18 +27,17 @@ import org.hardisonbrewing.maven.cxx.generic.GenerateSourcesMojo;
 
 /**
  * @goal swf-generate-resources
- * @phase swf-generate-resources
+ * @phase generate-resources
  */
 public class GenerateResourcesMojo extends JoJoMojoImpl {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        String generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
         String generatedSourcesDirectoryPath = TargetDirectoryService.getGeneratedSourcesDirectoryPath();
+        String generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
 
-        String[] sourceTypeExcludes = new String[] { "**/*.as", "**/*.mxml" };
-        for (File file : FileUtils.listFilesRecursive( new File( generatedSourcesDirectoryPath ), null, sourceTypeExcludes )) {
+        for (File file : FileUtils.listFilesRecursive( new File( generatedSourcesDirectoryPath ), null, SwfService.NON_RESOURCE_EXTS )) {
             GenerateSourcesMojo.copyFile( file.getPath(), generatedSourcesDirectoryPath, generatedResourcesDirectory );
         }
     }

@@ -30,7 +30,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
- * @goal mxml-swf-compile
+ * @goal swf-compile
  * @phase compile
  */
 public class SwfCompileMojo extends JoJoMojoImpl {
@@ -48,15 +48,15 @@ public class SwfCompileMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    private String configFile;
+    private String target;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         String swfFilename = getSourceName();
-
         getLog().info( "Building " + swfFilename + ".swf..." );
 
+        // http://livedocs.adobe.com/flex/3/html/help.html?content=compilers_14.html
         List<String> cmd = new LinkedList<String>();
         cmd.add( "mxmlc" );
 
@@ -80,8 +80,8 @@ public class SwfCompileMojo extends JoJoMojoImpl {
         configPath.append( File.separator );
         configPath.append( "frameworks" );
         configPath.append( File.separator );
-        if ( configFile != null && configFile.length() > 0 ) {
-            configPath.append( configFile );
+        if ( SwfService.isIosTarget( target ) || SwfService.isAndroidTarget( target ) ) {
+            configPath.append( "airmobile-config.xml" );
         }
         else {
             configPath.append( "air-config.xml" );

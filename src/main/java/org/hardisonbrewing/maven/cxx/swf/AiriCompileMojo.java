@@ -30,7 +30,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
- * @goal airi-swf-compile
+ * @goal swf-airi-compile
  * @phase compile
  */
 public class AiriCompileMojo extends JoJoMojoImpl {
@@ -49,6 +49,13 @@ public class AiriCompileMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         String artifactId = getProject().getArtifactId();
+        getLog().info( "Building " + artifactId + ".airi..." );
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "adt" );
+
+        cmd.add( "-prepare" );
+
         String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
 
         StringBuffer airiFilePath = new StringBuffer();
@@ -56,14 +63,6 @@ public class AiriCompileMojo extends JoJoMojoImpl {
         airiFilePath.append( File.separator );
         airiFilePath.append( artifactId );
         airiFilePath.append( ".airi" );
-
-        getLog().info( "Building " + airiFilePath.toString() + ".airi..." );
-
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "adt" );
-
-        cmd.add( "-prepare" );
-
         cmd.add( airiFilePath.toString() );
 
         StringBuffer descriptorFilePath = new StringBuffer();

@@ -33,7 +33,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
  * @goal xcode-convert-pbxproj
- * @phase xcode-convert-pbxproj
+ * @phase initialize
  */
 public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 

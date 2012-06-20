@@ -391,11 +391,11 @@
 							<process-sources>org.hardisonbrewing:maven-cxx-plugin:process-sources</process-sources>
 							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:generate-resources,
 								org.hardisonbrewing:maven-cxx-plugin:swf-generate-resources</generate-resources>
-							<process-resources>org.hardisonbrewing:maven-cxx-plugin:process-resources,
-								org.hardisonbrewing:maven-cxx-plugin:mxml-swf-process-resources</process-resources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:mxml-swf-compile,
-								org.hardisonbrewing:maven-cxx-plugin:airi-swf-compile,
-								org.hardisonbrewing:maven-cxx-plugin:air-swf-compile</compile>
+							<process-resources>org.hardisonbrewing:maven-cxx-plugin:process-resources</process-resources>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:swf-swc-compile,
+								org.hardisonbrewing:maven-cxx-plugin:swf-compile,
+								org.hardisonbrewing:maven-cxx-plugin:swf-airi-compile,
+								org.hardisonbrewing:maven-cxx-plugin:swf-air-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:swf-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
 							<install>org.hardisonbrewing:maven-cxx-plugin:swf-install</install>
