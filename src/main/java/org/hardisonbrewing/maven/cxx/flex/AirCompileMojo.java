@@ -53,8 +53,19 @@ public class AirCompileMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
+        String targetExt;
+        if ( FlexService.isIosTarget( target ) ) {
+            targetExt = FlexService.IOS_TARGET_EXT;
+        }
+        else if ( FlexService.isAndroidTarget( target ) ) {
+            targetExt = FlexService.ANDROID_TARGET_EXT;
+        }
+        else {
+            targetExt = FlexService.AIR_TARGET_EXT;
+        }
+
         String artifactId = getProject().getArtifactId();
-        getLog().info( "Building " + artifactId + ".air..." );
+        getLog().info( "Building " + artifactId + "." + targetExt + "..." );
 
         // ADT packaging: http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html
         List<String> cmd = new LinkedList<String>();
@@ -91,15 +102,7 @@ public class AirCompileMojo extends JoJoMojoImpl {
         airFilePath.append( File.separator );
         airFilePath.append( artifactId );
         airFilePath.append( "." );
-        if ( FlexService.isIosTarget( target ) ) {
-            airFilePath.append( FlexService.IOS_TARGET_EXT );
-        }
-        else if ( FlexService.isAndroidTarget( target ) ) {
-            airFilePath.append( FlexService.ANDROID_TARGET_EXT );
-        }
-        else {
-            airFilePath.append( FlexService.AIR_TARGET_EXT );
-        }
+        airFilePath.append( targetExt );
         cmd.add( airFilePath.toString() );
 
         StringBuffer airiFilePath = new StringBuffer();
