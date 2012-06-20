@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf;
+package org.hardisonbrewing.maven.cxx.flex;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -22,7 +22,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
- * @goal swf-validate
+ * @goal flex-validate
  * @phase validate
  */
 public class ValidateMojo extends JoJoMojoImpl {
@@ -61,7 +61,7 @@ public class ValidateMojo extends JoJoMojoImpl {
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "descriptorFile", descriptorFile, true );
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "sourceFile", sourceFile, true );
 
-        boolean iosTarget = SwfService.isIosTarget( target );
+        boolean iosTarget = FlexService.isIosTarget( target );
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "provisioningProfile", provisioningProfile, iosTarget );
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "keystore", keystore, true );
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keystore><keystore/></keystore>", keystore.keystore, true );

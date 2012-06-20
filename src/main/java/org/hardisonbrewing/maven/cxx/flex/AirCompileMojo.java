@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf;
+package org.hardisonbrewing.maven.cxx.flex;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -30,7 +30,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
- * @goal swf-air-compile
+ * @goal flex-air-compile
  * @phase compile
  */
 public class AirCompileMojo extends JoJoMojoImpl {
@@ -62,8 +62,8 @@ public class AirCompileMojo extends JoJoMojoImpl {
 
         cmd.add( "-package" );
 
-        boolean iosTarget = SwfService.isIosTarget( target );
-        boolean androidTarget = SwfService.isAndroidTarget( target );
+        boolean iosTarget = FlexService.isIosTarget( target );
+        boolean androidTarget = FlexService.isAndroidTarget( target );
 
         // signing comes before target for non-mobile
         // http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html
@@ -81,12 +81,7 @@ public class AirCompileMojo extends JoJoMojoImpl {
         }
 
         if ( iosTarget ) {
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( ProjectService.getBaseDirPath() );
-            stringBuffer.append( File.separator );
-            stringBuffer.append( provisioningProfile );
-            cmd.add( "-provisioning-profile" );
-            cmd.add( stringBuffer.toString() );
+            addProvisioning( cmd );
         }
 
         String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
@@ -95,7 +90,16 @@ public class AirCompileMojo extends JoJoMojoImpl {
         airFilePath.append( targetDirectoryPath );
         airFilePath.append( File.separator );
         airFilePath.append( artifactId );
-        //airFilePath.append( ".air" );
+        airFilePath.append( "." );
+        if ( FlexService.isIosTarget( target ) ) {
+            airFilePath.append( FlexService.IOS_TARGET_EXT );
+        }
+        else if ( FlexService.isAndroidTarget( target ) ) {
+            airFilePath.append( FlexService.ANDROID_TARGET_EXT );
+        }
+        else {
+            airFilePath.append( FlexService.AIR_TARGET_EXT );
+        }
         cmd.add( airFilePath.toString() );
 
         StringBuffer airiFilePath = new StringBuffer();
@@ -110,6 +114,16 @@ public class AirCompileMojo extends JoJoMojoImpl {
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
         execute( commandLine );
+    }
+
+    private void addProvisioning( List<String> cmd ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( ProjectService.getBaseDirPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( provisioningProfile );
+        cmd.add( "-provisioning-profile" );
+        cmd.add( stringBuffer.toString() );
     }
 
     private void addKeyStoreSigning( List<String> cmd ) {

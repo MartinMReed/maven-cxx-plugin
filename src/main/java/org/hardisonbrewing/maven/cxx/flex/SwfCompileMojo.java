@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf;
+package org.hardisonbrewing.maven.cxx.flex;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -30,7 +30,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
- * @goal swf-compile
+ * @goal flex-compile
  * @phase compile
  */
 public class SwfCompileMojo extends JoJoMojoImpl {
@@ -80,7 +80,7 @@ public class SwfCompileMojo extends JoJoMojoImpl {
         configPath.append( File.separator );
         configPath.append( "frameworks" );
         configPath.append( File.separator );
-        if ( SwfService.isIosTarget( target ) || SwfService.isAndroidTarget( target ) ) {
+        if ( FlexService.isIosTarget( target ) || FlexService.isAndroidTarget( target ) ) {
             configPath.append( "airmobile-config.xml" );
         }
         else {

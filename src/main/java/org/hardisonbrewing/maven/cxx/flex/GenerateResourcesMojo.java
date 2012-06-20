@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.swf;
+package org.hardisonbrewing.maven.cxx.flex;
 
 import java.io.File;
 
@@ -26,7 +26,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.generic.GenerateSourcesMojo;
 
 /**
- * @goal swf-generate-resources
+ * @goal flex-generate-resources
  * @phase generate-resources
  */
 public class GenerateResourcesMojo extends JoJoMojoImpl {
@@ -37,7 +37,7 @@ public class GenerateResourcesMojo extends JoJoMojoImpl {
         String generatedSourcesDirectoryPath = TargetDirectoryService.getGeneratedSourcesDirectoryPath();
         String generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
 
-        for (File file : FileUtils.listFilesRecursive( new File( generatedSourcesDirectoryPath ), null, SwfService.NON_RESOURCE_EXTS )) {
+        for (File file : FileUtils.listFilesRecursive( new File( generatedSourcesDirectoryPath ), null, FlexService.NON_RESOURCE_EXTS )) {
             GenerateSourcesMojo.copyFile( file.getPath(), generatedSourcesDirectoryPath, generatedResourcesDirectory );
         }
     }
