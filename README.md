@@ -92,7 +92,7 @@ targetExcludes</td></tr>
 sourceFile (i.e. src/Main.mxml)<br/>
 libDirectory (Directory containing SWC libs)<br/>
 descriptorFile (Application descriptor XML)<br/>
-provisioningProfile (iOS Provisioning Profile)<br/>
+provisioningProfile (iOS provisioning profile)<br/>
 keystore<br/>
 keystore/keystore<br/>
 keystore/storepass<br/>
