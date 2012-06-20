@@ -48,6 +48,27 @@ public final class PostCompileMojo extends JoJoMojoImpl {
      */
     public String targetDevice;
 
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+        prepareCommands();
+
+        ArduinoBuildEnvironment arduinoBuildEnvironment = ArduinoBuildEnvironment.getInstance();
+        Target target = arduinoBuildEnvironment.getDefaultTargetList().getTarget( targetDevice );
+        if ( target == null ) {
+            getLog().error( "Unknown target '" + targetDevice + "'" );
+            throw new IllegalArgumentException();
+        }
+
+        try {
+            postCompileSketch( new Sketch( new File( sketchbook ) ), target );
+        }
+        catch (FileNotFoundException fnfe) {
+            getLog().error( "<sketchbook=\"" + sketchbook + "\"/> is not a valid Sketch-Directory or does not contain valid Sketch files" );
+            throw new IllegalStateException();
+        }
+    }
+
     private void prepareCommands() {
 
         String binPrefix = ProjectService.getProperty( "avr.bin" );
@@ -72,37 +93,6 @@ public final class PostCompileMojo extends JoJoMojoImpl {
         hexCmd.add( "ihex" );
         hexCmd.add( "-R" );
         hexCmd.add( ".eeprom" );
-    }
-
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-
-        if ( targetDevice == null ) {
-            getLog().error( "<targetDevice /> must be set." );
-            throw new IllegalArgumentException();
-        }
-
-        if ( sketchbook == null ) {
-            getLog().error( "<sketchbook /> must be set." );
-            throw new IllegalArgumentException();
-        }
-
-        prepareCommands();
-
-        ArduinoBuildEnvironment arduinoBuildEnvironment = ArduinoBuildEnvironment.getInstance();
-        Target target = arduinoBuildEnvironment.getDefaultTargetList().getTarget( targetDevice );
-        if ( target == null ) {
-            getLog().error( "Unknown target '" + targetDevice + "'" );
-            throw new IllegalArgumentException();
-        }
-
-        try {
-            postCompileSketch( new Sketch( new File( sketchbook ) ), target );
-        }
-        catch (FileNotFoundException fnfe) {
-            getLog().error( "<sketchbook=\"" + sketchbook + "\"/> is not a valid Sketch-Directory or does not contain valid Sketch files" );
-            throw new IllegalStateException();
-        }
     }
 
     private void postCompileSketch( Sketch sketch, Target target ) {

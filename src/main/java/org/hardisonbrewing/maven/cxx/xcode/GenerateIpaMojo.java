@@ -27,7 +27,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
  * @goal xcode-generate-ipa
- * @phase xcode-generate-ipa
+ * @phase prepare-package
  */
 public final class GenerateIpaMojo extends JoJoMojoImpl {
 

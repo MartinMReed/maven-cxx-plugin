@@ -28,7 +28,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
  * @goal xcode-install-codesign-certificate
- * @phase xcode-install-codesign-certificate
+ * @phase generate-resources
  */
 public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
 

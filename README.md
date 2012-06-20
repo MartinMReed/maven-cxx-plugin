@@ -11,12 +11,12 @@ To pull the latest version of the plugin you will need to update your [remote re
 		<repository>
 			<id>hardisonbrewing-releases</id>
 			<name>hardisonbrewing-releases</name>
-			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases/</url>
+			<url>http://repo.hardisonbrewing.org/content/repositories/releases/</url>
 		</repository>
 		<repository>
 			<id>hardisonbrewing-snapshots</id>
 			<name>hardisonbrewing-snapshots</name>
-			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots/</url>
+			<url>http://repo.hardisonbrewing.org/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
 
@@ -26,12 +26,12 @@ To download this plugin without building it manually, you can add the following 
 		<pluginRepository>
 			<id>hardisonbrewing-releases</id>
 			<name>hardisonbrewing-releases</name>
-			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases/</url>
+			<url>http://repo.hardisonbrewing.org/content/repositories/releases/</url>
 		</pluginRepository>
 		<pluginRepository>
 			<id>hardisonbrewing-snapshots</id>
 			<name>hardisonbrewing-snapshots</name>
-			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/snapshots/</url>
+			<url>http://repo.hardisonbrewing.org/content/repositories/snapshots/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -92,6 +92,7 @@ targetExcludes</td></tr>
 sourceFile (i.e. src/Main.mxml)<br/>
 libDirectory (Directory containing SWC libs)<br/>
 descriptorFile (Application descriptor XML)<br/>
+target (air, apk, ipa-app-store, <a href="http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html">etc</a>)<br/>
 keystore<br/>
 keystore/keystore<br/>
 keystore/storepass<br/>

@@ -49,31 +49,8 @@ public final class LinkMojo extends JoJoMojoImpl {
      */
     public String targetDevice;
 
-    private void prepareCommands() {
-
-        String binPrefix = ProjectService.getProperty( "avr.bin" );
-        if ( binPrefix != null && !binPrefix.endsWith( File.separator ) ) {
-            binPrefix += File.separator;
-        }
-
-        lCmd = new ArrayList<String>();
-        lCmd.add( binPrefix + "avr-gcc" );
-        lCmd.add( "-Os" );
-        lCmd.add( "-Wl,--gc-sections" );
-    }
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-
-        if ( targetDevice == null ) {
-            getLog().error( "<targetDevice /> must be set." );
-            throw new IllegalArgumentException();
-        }
-
-        if ( sketchbook == null ) {
-            getLog().error( "<sketchbook /> must be set." );
-            throw new IllegalArgumentException();
-        }
 
         prepareCommands();
 
@@ -91,6 +68,19 @@ public final class LinkMojo extends JoJoMojoImpl {
             getLog().error( "<sketchbook=\"" + sketchbook + "\"/> is not a valid Sketch-Directory or does not contain valid Sketch files" );
             throw new IllegalStateException();
         }
+    }
+
+    private void prepareCommands() {
+
+        String binPrefix = ProjectService.getProperty( "avr.bin" );
+        if ( binPrefix != null && !binPrefix.endsWith( File.separator ) ) {
+            binPrefix += File.separator;
+        }
+
+        lCmd = new ArrayList<String>();
+        lCmd.add( binPrefix + "avr-gcc" );
+        lCmd.add( "-Os" );
+        lCmd.add( "-Wl,--gc-sections" );
     }
 
     private void linkSketch( Sketch sketch, Target target ) {

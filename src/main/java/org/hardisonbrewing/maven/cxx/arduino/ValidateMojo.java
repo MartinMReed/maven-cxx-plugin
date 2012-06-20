@@ -29,6 +29,16 @@ import org.hardisonbrewing.maven.core.ProjectService;
  */
 public final class ValidateMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String sketchbook;
+
+    /**
+     * @parameter
+     */
+    public String targetDevice;
+
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -39,5 +49,8 @@ public final class ValidateMojo extends JoJoMojoImpl {
             getLog().error( "Property `arduino.home` must be a valid directory." );
             throw new IllegalArgumentException();
         }
+
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "sketchbook", sketchbook, true );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "targetDevice", targetDevice, true );
     }
 }

@@ -26,7 +26,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
  * @goal xcode-convert-plist
- * @phase xcode-convert-plist
+ * @phase compile
  */
 public final class ConvertPlistMojo extends JoJoMojoImpl {
 

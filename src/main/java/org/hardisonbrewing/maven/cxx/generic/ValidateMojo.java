@@ -96,4 +96,39 @@ public final class ValidateMojo extends JoJoMojoImpl {
             JoJoMojo.getMojo().getLog().warn( "Property `" + key + "` is not set." );
         }
     }
+
+    public static final void checkConfigurationExists( String key, Object value, boolean force ) {
+
+        if ( key.indexOf( '<' ) == -1 ) {
+            key = "<" + key + "/>";
+        }
+
+        StringBuffer checkingMessage = new StringBuffer();
+        checkingMessage.append( "Checking configuration " );
+        checkingMessage.append( key );
+        if ( !force ) {
+            checkingMessage.append( " (optional)" );
+        }
+        checkingMessage.append( "..." );
+        JoJoMojo.getMojo().getLog().info( checkingMessage );
+
+        if ( value != null ) {
+            if ( value instanceof String ) {
+                String str = (String) value;
+                if ( str.length() > 0 ) {
+                    return;
+                }
+            }
+            else {
+                return;
+            }
+        }
+        if ( force ) {
+            JoJoMojo.getMojo().getLog().error( "Configuration " + key + " must be set!" );
+            throw new IllegalStateException();
+        }
+        else {
+            JoJoMojo.getMojo().getLog().warn( "Configuration " + key + " is not set." );
+        }
+    }
 }

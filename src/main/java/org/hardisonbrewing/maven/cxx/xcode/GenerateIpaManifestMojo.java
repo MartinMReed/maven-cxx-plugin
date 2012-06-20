@@ -31,7 +31,7 @@ import org.hardisonbrewing.maven.core.TemplateService;
 
 /**
  * @goal xcode-ipa-manifest
- * @phase xcode-ipa-manifest
+ * @phase compile
  */
 public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 

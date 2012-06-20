@@ -22,7 +22,7 @@ import org.hardisonbrewing.maven.cxx.generic.GenerateSourcesMojo;
 
 /**
  * @goal bar-generate-resources
- * @phase bar-generate-resources
+ * @phase generate-resources
  */
 public class GenerateResourcesMojo extends org.hardisonbrewing.maven.cxx.generic.GenerateResourcesMojo {
 

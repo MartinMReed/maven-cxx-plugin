@@ -45,16 +45,6 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if ( targetDevice == null ) {
-            getLog().error( "<targetDevice /> must be set." );
-            throw new IllegalArgumentException();
-        }
-
-        if ( sketchbook == null ) {
-            getLog().error( "<sketchbook /> must be set." );
-            throw new IllegalArgumentException();
-        }
-
         ArduinoBuildEnvironment arduinoBuildEnvironment = ArduinoBuildEnvironment.getInstance();
         Target target = arduinoBuildEnvironment.getDefaultTargetList().getTarget( targetDevice );
         if ( target == null ) {

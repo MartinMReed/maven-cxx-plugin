@@ -30,7 +30,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
- * @goal air-swf-compile
+ * @goal swf-air-compile
  * @phase compile
  */
 public class AirCompileMojo extends JoJoMojoImpl {
@@ -38,27 +38,83 @@ public class AirCompileMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
+    private String target;
+
+    /**
+     * @parameter
+     */
     private KeyStore keystore;
+
+    /**
+     * @parameter
+     */
+    private String provisioningProfile;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         String artifactId = getProject().getArtifactId();
+        getLog().info( "Building " + artifactId + ".air..." );
+
+        // ADT packaging: http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "adt" );
+
+        cmd.add( "-package" );
+
+        boolean iosTarget = SwfService.isIosTarget( target );
+        boolean androidTarget = SwfService.isAndroidTarget( target );
+
+        // signing comes before target for non-mobile
+        // http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html
+        if ( !iosTarget && !androidTarget ) {
+            addKeyStoreSigning( cmd );
+        }
+
+        cmd.add( "-target" );
+        cmd.add( target );
+
+        // signing comes after target for mobile
+        // http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html
+        if ( iosTarget || androidTarget ) {
+            addKeyStoreSigning( cmd );
+        }
+
+        if ( iosTarget ) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( ProjectService.getBaseDirPath() );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( provisioningProfile );
+            cmd.add( "-provisioning-profile" );
+            cmd.add( stringBuffer.toString() );
+        }
+
         String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
 
         StringBuffer airFilePath = new StringBuffer();
         airFilePath.append( targetDirectoryPath );
         airFilePath.append( File.separator );
         airFilePath.append( artifactId );
-        airFilePath.append( ".air" );
+        //airFilePath.append( ".air" );
+        cmd.add( airFilePath.toString() );
 
-        getLog().info( "Building " + airFilePath.toString() + ".air..." );
+        StringBuffer airiFilePath = new StringBuffer();
+        airiFilePath.append( targetDirectoryPath );
+        airiFilePath.append( File.separator );
+        airiFilePath.append( artifactId );
+        airiFilePath.append( ".airi" );
+        cmd.add( airiFilePath.toString() );
 
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "adt" );
+        String sdkHome = PropertiesService.getProperty( PropertiesService.ADOBE_FLEX_HOME );
 
-        cmd.add( "-package" );
+        Commandline commandLine = buildCommandline( cmd );
+        CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
+        execute( commandLine );
+    }
 
+    private void addKeyStoreSigning( List<String> cmd ) {
+
+        // ADT signing: http://help.adobe.com/en_US/air/build/WS5b3ccc516d4fbf351e63e3d118666ade46-7f72.html
         cmd.add( "-storetype" );
         cmd.add( "pkcs12" );
 
@@ -81,23 +137,5 @@ public class AirCompileMojo extends JoJoMojoImpl {
             cmd.add( "-keypass" );
             cmd.add( keystore.keypass );
         }
-
-        cmd.add( "-target" );
-        cmd.add( "air" );
-
-        cmd.add( airFilePath.toString() );
-
-        StringBuffer airiFilePath = new StringBuffer();
-        airiFilePath.append( targetDirectoryPath );
-        airiFilePath.append( File.separator );
-        airiFilePath.append( artifactId );
-        airiFilePath.append( ".airi" );
-        cmd.add( airiFilePath.toString() );
-
-        String sdkHome = PropertiesService.getProperty( PropertiesService.ADOBE_FLEX_HOME );
-
-        Commandline commandLine = buildCommandline( cmd );
-        CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
-        execute( commandLine );
     }
 }

@@ -51,40 +51,10 @@ public final class DeployMojo extends JoJoMojoImpl {
      */
     private String baudrate;
 
-    private void prepareCommands() {
-
-        String binPrefix = ProjectService.getProperty( "avr.bin" );
-        if ( binPrefix != null && !binPrefix.endsWith( File.separator ) ) {
-            binPrefix += File.separator;
-        }
-
-        baseCmd = new ArrayList<String>();
-        baseCmd.add( binPrefix + "avrdude" );
-
-        String confPath = ProjectService.getProperty( "avrdude.config.path" );
-        if ( confPath != null ) {
-            baseCmd.add( "-C" );
-            baseCmd.add( confPath );
-        }
-    }
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if ( targetDevice == null ) {
-            getLog().error( "<targetDevice /> must be set." );
-            throw new IllegalArgumentException();
-        }
-
-        if ( sketchbook == null ) {
-            getLog().error( "<sketchbook /> must be set." );
-            throw new IllegalArgumentException();
-        }
-
-        if ( ProjectService.getProperty( "serial.port" ) == null ) {
-            getLog().error( "Property `serial.port` must be set." );
-            throw new IllegalArgumentException();
-        }
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( "serial.port", true );
 
         prepareCommands();
 
@@ -101,6 +71,23 @@ public final class DeployMojo extends JoJoMojoImpl {
         catch (FileNotFoundException fnfe) {
             getLog().error( "<sketchbook=\"" + sketchbook + "\"/> is not a valid Sketch-Directory or does not contain valid Sketch files" );
             throw new IllegalStateException();
+        }
+    }
+
+    private void prepareCommands() {
+
+        String binPrefix = ProjectService.getProperty( "avr.bin" );
+        if ( binPrefix != null && !binPrefix.endsWith( File.separator ) ) {
+            binPrefix += File.separator;
+        }
+
+        baseCmd = new ArrayList<String>();
+        baseCmd.add( binPrefix + "avrdude" );
+
+        String confPath = ProjectService.getProperty( "avrdude.config.path" );
+        if ( confPath != null ) {
+            baseCmd.add( "-C" );
+            baseCmd.add( confPath );
         }
     }
 
