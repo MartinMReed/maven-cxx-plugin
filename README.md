@@ -88,11 +88,11 @@ provisioningProfile<br/>
 codesignCertificate<br/>
 targetIncludes<br/>
 targetExcludes</td></tr>
-<tr><td>flex</td><td>configFile (i.e. air-config.xml)<br/>
+<tr><td>flex</td><td>target (air, apk, ipa-app-store, <a href="http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html">etc</a>)<br/>
 sourceFile (i.e. src/Main.mxml)<br/>
 libDirectory (Directory containing SWC libs)<br/>
 descriptorFile (Application descriptor XML)<br/>
-target (air, apk, ipa-app-store, <a href="http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html">etc</a>)<br/>
+provisioningProfile (iOS Provisioning Profile)<br/>
 keystore<br/>
 keystore/keystore<br/>
 keystore/storepass<br/>
