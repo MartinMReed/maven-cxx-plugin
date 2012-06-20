@@ -3,8 +3,6 @@
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="target/generated-sources/xjc/xcode"/>
 	<classpathentry kind="src" path="target/generated-sources/xjc/eclipse"/>
-	<classpathentry kind="src" path="target/generated-sources/xjc/flex"/>
-	<classpathentry kind="src" path="target/generated-sources/xjc/air"/>
 	<classpathentry kind="src" path="target/generated-sources/xjc/bar"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry kind="var" path="M2_REPO/javax/xml/bind/jaxb-api/2.2.4/jaxb-api-2.2.4.jar"/>
