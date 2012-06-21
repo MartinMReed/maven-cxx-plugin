@@ -121,12 +121,18 @@ public class AirCompileMojo extends JoJoMojoImpl {
 
     private void addProvisioning( List<String> cmd ) {
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( ProjectService.getBaseDirPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( provisioningProfile );
+        String provisioningProfilePath = provisioningProfile;
+
+        if ( !provisioningProfile.startsWith( File.separator ) ) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( ProjectService.getBaseDirPath() );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( provisioningProfile );
+            provisioningProfilePath = stringBuffer.toString();
+        }
+
         cmd.add( "-provisioning-profile" );
-        cmd.add( stringBuffer.toString() );
+        cmd.add( provisioningProfilePath );
     }
 
     private void addKeyStoreSigning( List<String> cmd ) {
