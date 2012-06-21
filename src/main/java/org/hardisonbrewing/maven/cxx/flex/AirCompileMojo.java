@@ -122,15 +122,13 @@ public class AirCompileMojo extends JoJoMojoImpl {
     private void addProvisioning( List<String> cmd ) {
 
         String provisioningProfilePath = provisioningProfile;
-
-        if ( !provisioningProfile.startsWith( File.separator ) ) {
+        if ( !provisioningProfilePath.startsWith( File.separator ) ) {
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append( ProjectService.getBaseDirPath() );
             stringBuffer.append( File.separator );
             stringBuffer.append( provisioningProfile );
             provisioningProfilePath = stringBuffer.toString();
         }
-
         cmd.add( "-provisioning-profile" );
         cmd.add( provisioningProfilePath );
     }
@@ -141,12 +139,16 @@ public class AirCompileMojo extends JoJoMojoImpl {
         cmd.add( "-storetype" );
         cmd.add( "pkcs12" );
 
-        StringBuffer keystorePath = new StringBuffer();
-        keystorePath.append( ProjectService.getBaseDirPath() );
-        keystorePath.append( File.separator );
-        keystorePath.append( keystore.keystore );
+        String keystorePath = keystore.keystore;
+        if ( !keystorePath.startsWith( File.separator ) ) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( ProjectService.getBaseDirPath() );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( keystore.keystore );
+            keystorePath = stringBuffer.toString();
+        }
         cmd.add( "-keystore" );
-        cmd.add( keystorePath.toString() );
+        cmd.add( keystorePath );
 
         cmd.add( "-storepass" );
         cmd.add( keystore.storepass );
