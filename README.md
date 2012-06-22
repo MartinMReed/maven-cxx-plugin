@@ -1,5 +1,5 @@
 # Usage
-Maven-CXX-Plugin is a Maven plugin with support for gcc, g++, ar, Arduino, xcode and BlackBerry 10.
+A [Maven](http://maven.apache.org/download.html) plugin with support for gcc, g++, ar, arduino, xcode, Adobe Air/Flex, BlackBerry PlayBook and BB10. The license is LGPL v3.
 
 # Build or Download
 To build this you need to use [Maven](http://maven.apache.org/download.html) with the [hbc-maven-core](https://github.com/hardisonbrewing/hbc-maven-core) project. Alternatively you can pull the latest version of hbc-maven-core from [http://repo.hardisonbrewing.org](http://repo.hardisonbrewing.org) (see repository settings below).
