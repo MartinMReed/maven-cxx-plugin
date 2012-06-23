@@ -16,18 +16,22 @@
  */
 package org.hardisonbrewing.maven.cxx.flex;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
+import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
-import org.hardisonbrewing.maven.cxx.bar.TargetDirectoryService;
 
 /**
  * @goal flex-swc-compile
@@ -44,8 +48,28 @@ public class SwcCompileMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         String artifactId = getProject().getArtifactId();
+
+        String resourceConfigName = artifactId + "-swc-config.xml";
+
+        StringBuffer resourceConfigPathBuffer = new StringBuffer();
+        resourceConfigPathBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
+        resourceConfigPathBuffer.append( File.separator );
+        resourceConfigPathBuffer.append( resourceConfigName );
+        String resourceConfigPath = resourceConfigPathBuffer.toString();
+
+        getLog().info( "Building " + resourceConfigName + "..." );
+
+        try {
+            writeResourceConfigFile( resourceConfigPath );
+        }
+        catch (IOException e) {
+            getLog().error( "Unable to write SWC config file: " + resourceConfigPath );
+            throw new IllegalStateException( e );
+        }
+
         getLog().info( "Building " + artifactId + ".swc..." );
 
+        // compc options: http://www.docsultant.com/site2/articles/flex_cmd.html
         List<String> cmd = new LinkedList<String>();
         cmd.add( "compc" );
 
@@ -68,16 +92,47 @@ public class SwcCompileMojo extends JoJoMojoImpl {
         cmd.add( "-load-config" );
         cmd.add( configPath.toString() );
 
-        String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
-        String generatedResourcesDirectoryPath = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
-        for (File file : TargetDirectoryService.getResourceFiles()) {
-            cmd.add( "-include-file" );
-            cmd.add( FileUtils.getCanonicalPath( file.getPath(), generatedResourcesDirectoryPath ) );
-            cmd.add( FileUtils.getCanonicalPath( file.getPath(), targetDirectoryPath ) );
-        }
+        cmd.add( "-load-config" );
+        cmd.add( resourceConfigPath );
 
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
         execute( commandLine );
+    }
+
+    private void writeResourceConfigFile( String configFilePath ) throws IOException {
+
+        File configFile = new File( configFilePath );
+
+        if ( configFile.exists() ) {
+            configFile.delete();
+        }
+
+        configFile.createNewFile();
+
+        DataOutputStream outputStream = null;
+
+        try {
+
+            outputStream = new DataOutputStream( new FileOutputStream( configFile ) );
+
+            // config xml: http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf69084-7ac6.html
+            outputStream.writeChars( "<?xml version=\"1.0\"?>\n<flex-config>\n" );
+
+            String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
+            String generatedResourcesDirectoryPath = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
+            for (File file : TargetDirectoryService.getResourceFiles()) {
+                outputStream.writeChars( "<include-file><name>" );
+                outputStream.writeChars( FileUtils.getCanonicalPath( file.getPath(), generatedResourcesDirectoryPath ) );
+                outputStream.writeChars( "</name><path>" );
+                outputStream.writeChars( FileUtils.getCanonicalPath( file.getPath(), targetDirectoryPath ) );
+                outputStream.writeChars( "</path></include-file>\n" );
+            }
+
+            outputStream.writeChars( "</flex-config>" );
+        }
+        finally {
+            IOUtil.close( outputStream );
+        }
     }
 }
