@@ -29,6 +29,7 @@ import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
@@ -43,6 +44,10 @@ public class SwcCompileMojo extends JoJoMojoImpl {
      * @parameter
      */
     private String target;
+    /**
+     * @parameter
+     */
+    private String config;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -79,16 +84,26 @@ public class SwcCompileMojo extends JoJoMojoImpl {
         String sdkHome = PropertiesService.getProperty( PropertiesService.ADOBE_FLEX_HOME );
 
         StringBuffer configPath = new StringBuffer();
-        configPath.append( sdkHome );
-        configPath.append( File.separator );
-        configPath.append( "frameworks" );
-        configPath.append( File.separator );
-        if ( FlexService.isIosTarget( target ) || FlexService.isAndroidTarget( target ) ) {
-            configPath.append( "airmobile-config.xml" );
+
+        if ( config != null && config != "" ) {
+
+            configPath.append( ProjectService.getBaseDirPath() );
+            configPath.append( File.separator );
+            configPath.append( config );
         }
         else {
-            configPath.append( "air-config.xml" );
+            configPath.append( sdkHome );
+            configPath.append( File.separator );
+            configPath.append( "frameworks" );
+            configPath.append( File.separator );
+            if ( FlexService.isIosTarget( target ) || FlexService.isAndroidTarget( target ) ) {
+                configPath.append( "airmobile-config.xml" );
+            }
+            else {
+                configPath.append( "air-config.xml" );
+            }
         }
+
         cmd.add( "-load-config" );
         cmd.add( configPath.toString() );
 
