@@ -39,12 +39,6 @@ public class ProcessResourcesMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         String artifactId = getProject().getArtifactId();
-
-        if ( !shouldExecute() ) {
-            getLog().info( artifactId + ".swc is up-to-date, not rebuilding!" );
-            return;
-        }
-
         getLog().info( "Building " + artifactId + ".swc..." );
 
         List<String> cmd = new LinkedList<String>();
@@ -75,44 +69,5 @@ public class ProcessResourcesMojo extends JoJoMojoImpl {
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
         execute( commandLine );
-    }
-
-    protected final boolean shouldExecute() {
-
-        String swcFileName = getProject().getArtifactId() + ".swc";
-
-        if ( PropertiesService.propertiesHaveChanged() ) {
-            getLog().info( "Properties have changed, rebuilding " + swcFileName + "..." );
-            return true;
-        }
-
-        StringBuffer outputPath = new StringBuffer();
-        outputPath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        outputPath.append( File.separator );
-        outputPath.append( swcFileName );
-
-        File outputFile = new File( outputPath.toString() );
-        if ( outputFile.exists() ) {
-            if ( outputFile.lastModified() >= getLatestFileDate() ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private final long getLatestFileDate() {
-
-        long lastModified = 0;
-        for (String filePath : TargetDirectoryService.getResourceFilePaths()) {
-            lastModified = Math.max( lastModified, getLatestFileDate( filePath ) );
-        }
-        return lastModified;
-    }
-
-    private final long getLatestFileDate( String filePath ) {
-
-        File sourceFile = new File( filePath );
-        return FileUtils.lastModified( sourceFile, false );
     }
 }

@@ -25,9 +25,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
-import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
  * @goal flex-airi-compile
@@ -79,10 +77,8 @@ public class AiriCompileMojo extends JoJoMojoImpl {
         cmd.add( targetDirectoryPath );
         cmd.add( getSourceName() + ".swf" );
 
-        String sdkHome = PropertiesService.getProperty( PropertiesService.ADOBE_FLEX_HOME );
-
         Commandline commandLine = buildCommandline( cmd );
-        CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
+        CommandLineService.addFlexEnvVars( commandLine );
         execute( commandLine );
     }
 
