@@ -1,0 +1,3 @@
+qde and qnx packages need to be merged
+bar and flex need to be merged
+flex should parse the .actionScriptProperties file and reduce the configurations in the pom
