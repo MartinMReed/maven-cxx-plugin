@@ -19,7 +19,6 @@ package org.hardisonbrewing.maven.cxx.flex;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
  * @goal flex-validate

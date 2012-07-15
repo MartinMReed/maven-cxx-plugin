@@ -25,9 +25,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.bar.PropertiesService;
 
 /**
  * @goal flex-compile
@@ -49,6 +47,11 @@ public class SwfCompileMojo extends JoJoMojoImpl {
      * @parameter
      */
     private String target;
+
+    /**
+     * @parameter
+     */
+    private String config;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -73,21 +76,7 @@ public class SwfCompileMojo extends JoJoMojoImpl {
         actionScriptPath.append( sourceFile );
         cmd.add( actionScriptPath.toString() );
 
-        String sdkHome = PropertiesService.getProperty( PropertiesService.ADOBE_FLEX_HOME );
-
-        StringBuffer configPath = new StringBuffer();
-        configPath.append( sdkHome );
-        configPath.append( File.separator );
-        configPath.append( "frameworks" );
-        configPath.append( File.separator );
-        if ( FlexService.isIosTarget( target ) || FlexService.isAndroidTarget( target ) ) {
-            configPath.append( "airmobile-config.xml" );
-        }
-        else {
-            configPath.append( "air-config.xml" );
-        }
-        cmd.add( "-load-config" );
-        cmd.add( configPath.toString() );
+        FlexService.addConfig( cmd, config, target );
 
         String artifactId = getProject().getArtifactId();
         cmd.add( "-include-libraries+=" + artifactId + ".swc" );
@@ -101,7 +90,7 @@ public class SwfCompileMojo extends JoJoMojoImpl {
         }
 
         Commandline commandLine = buildCommandline( cmd );
-        CommandLineService.appendEnvVar( commandLine, "PATH", sdkHome + File.separator + "bin" );
+        CommandLineService.addFlexEnvVars( commandLine );
         execute( commandLine );
     }
 

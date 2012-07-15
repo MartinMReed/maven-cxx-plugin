@@ -39,12 +39,6 @@ public class BarCompileMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         String artifactId = getProject().getArtifactId();
-
-        if ( !shouldExecute() ) {
-            getLog().info( artifactId + ".bar is up-to-date, not rebuilding!" );
-            return;
-        }
-
         getLog().info( "Building " + artifactId + ".bar..." );
 
         List<String> cmd = new LinkedList<String>();
@@ -74,48 +68,5 @@ public class BarCompileMojo extends JoJoMojoImpl {
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.addTabletEnvVars( commandLine );
         execute( commandLine );
-    }
-
-    private final boolean shouldExecute() {
-
-        String barFileName = getProject().getArtifactId() + ".bar";
-
-        if ( PropertiesService.propertiesHaveChanged() ) {
-            getLog().info( "Properties have changed, rebuilding " + barFileName + "..." );
-            return true;
-        }
-
-        StringBuffer outputPath = new StringBuffer();
-        outputPath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        outputPath.append( File.separator );
-        outputPath.append( barFileName );
-
-        File outputFile = new File( outputPath.toString() );
-        if ( outputFile.exists() ) {
-            if ( outputFile.lastModified() >= getLatestFileDate() ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private final long getLatestFileDate() {
-
-        String artifactId = getProject().getArtifactId();
-        long artifactXml = getLatestFileDate( artifactId + ".xml" );
-        long artifactSwf = getLatestFileDate( artifactId + ".swf" );
-        return Math.max( artifactXml, artifactSwf );
-    }
-
-    private final long getLatestFileDate( String filename ) {
-
-        StringBuffer sourcePath = new StringBuffer();
-        sourcePath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        sourcePath.append( File.separator );
-        sourcePath.append( filename );
-
-        File sourceFile = new File( sourcePath.toString() );
-        return sourceFile.lastModified();
     }
 }

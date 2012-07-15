@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,15 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.bar;
+package org.hardisonbrewing.maven.cxx.flex;
 
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
     public static final String ADOBE_FLEX_HOME = "adobe.flex.home";
-    public static final String BLACKBERRY_WEBWORKS_TABLET_HOME = "blackberry.webworks.tablet.home";
-    public static final String BLACKBERRY_TABLET_HOME = "blackberry.tablet.home";
-    public static final String BLACKBERRY_TABLET_DEVICE_IP = "blackberry.tablet.device.ip";
-    public static final String BLACKBERRY_TABLET_DEVICE_PASSWORD = "blackberry.tablet.device.password";
     public static final String DEBUG = "debug";
 
     protected PropertiesService() {
