@@ -55,9 +55,9 @@ public final class CompileMojo extends JoJoMojoImpl {
 
         String targetBuildDirPath = getTargetBuildPath( target );
 
-        cmd.add( "SYMROOT=$(PROJECT_DIR)" + targetBuildDirPath );
+        cmd.add( "SYMROOT=$(PROJECT_DIR)" + File.separator + targetBuildDirPath );
 
-        cmd.add( "BUILD_DIR=$(PROJECT_DIR)" + targetBuildDirPath );
+        cmd.add( "BUILD_DIR=$(PROJECT_DIR)" + File.separator + targetBuildDirPath );
 
         String codeSignIdentity = PropertiesService.getXCodeProperty( XCodeService.CODE_SIGN_IDENTITY );
         if ( codeSignIdentity != null ) {
@@ -66,6 +66,7 @@ public final class CompileMojo extends JoJoMojoImpl {
 
         StringBuffer objroot = new StringBuffer();
         objroot.append( "OBJROOT=$(PROJECT_DIR)" );
+        objroot.append( File.separator );
         objroot.append( targetBuildDirPath );
         objroot.append( File.separator );
         objroot.append( "OBJROOT" );
