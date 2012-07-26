@@ -16,6 +16,11 @@
  */
 package org.hardisonbrewing.maven.cxx.flex;
 
+import java.io.File;
+import java.util.List;
+
+import org.hardisonbrewing.maven.core.ProjectService;
+
 public class FlexService {
 
     public static final String[] NON_RESOURCE_EXTS = new String[] { "**/*.as", "**/*.mxml" };
@@ -37,5 +42,37 @@ public class FlexService {
     public static final boolean isAndroidTarget( String target ) {
 
         return target.startsWith( ANDROID_TARGET_EXT );
+    }
+
+    public static void addConfig( List<String> cmd, String config, String target ) {
+
+        String configPath = config;
+
+        if ( configPath == null || configPath.length() == 0 ) {
+
+            String sdkHome = PropertiesService.getProperty( PropertiesService.ADOBE_FLEX_HOME );
+
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( sdkHome );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( "frameworks" );
+            stringBuffer.append( File.separator );
+            if ( FlexService.isIosTarget( target ) || FlexService.isAndroidTarget( target ) ) {
+                stringBuffer.append( "airmobile-config.xml" );
+            }
+            else {
+                stringBuffer.append( "air-config.xml" );
+            }
+            configPath = stringBuffer.toString();
+        }
+        else if ( !configPath.startsWith( File.separator ) ) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( ProjectService.getBaseDirPath() );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( configPath );
+            configPath = stringBuffer.toString();
+        }
+        cmd.add( "-load-config" );
+        cmd.add( configPath );
     }
 }

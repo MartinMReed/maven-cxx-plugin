@@ -16,57 +16,17 @@
  */
 package org.hardisonbrewing.maven.cxx.bar;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
-    public static final String ADOBE_FLEX_HOME;
-    public static final String BLACKBERRY_WEBWORKS_TABLET_HOME;
-    public static final String BLACKBERRY_TABLET_HOME;
-    public static final String BLACKBERRY_TABLET_DEVICE_IP;
-    public static final String BLACKBERRY_TABLET_DEVICE_PASSWORD;
-    public static final String DEBUG;
-
-    private static final String[] properties;
-
-    static {
-
-        List<String> keys = new LinkedList<String>();
-        keys.add( ADOBE_FLEX_HOME = "adobe.flex.home" );
-        keys.add( BLACKBERRY_WEBWORKS_TABLET_HOME = "blackberry.webworks.tablet.home" );
-        keys.add( BLACKBERRY_TABLET_HOME = "blackberry.tablet.home" );
-        keys.add( BLACKBERRY_TABLET_DEVICE_IP = "blackberry.tablet.device.ip" );
-        keys.add( BLACKBERRY_TABLET_DEVICE_PASSWORD = "blackberry.tablet.device.password" );
-        keys.add( DEBUG = "debug" );
-
-        properties = new String[keys.size()];
-        keys.toArray( properties );
-    }
+    public static final String ADOBE_FLEX_HOME = "adobe.flex.home";
+    public static final String BLACKBERRY_WEBWORKS_TABLET_HOME = "blackberry.webworks.tablet.home";
+    public static final String BLACKBERRY_TABLET_HOME = "blackberry.tablet.home";
+    public static final String BLACKBERRY_TABLET_DEVICE_IP = "blackberry.tablet.device.ip";
+    public static final String BLACKBERRY_TABLET_DEVICE_PASSWORD = "blackberry.tablet.device.password";
+    public static final String DEBUG = "debug";
 
     protected PropertiesService() {
 
         // do nothing
-    }
-
-    public static final boolean propertiesHaveChanged() {
-
-        if ( pluginVersionsHaveChanged() ) {
-            return true;
-        }
-
-        Properties properties = loadBuildDifferenceProperties();
-        if ( properties == null ) {
-            return false;
-        }
-
-        for (String key : PropertiesService.properties) {
-            if ( "true".equalsIgnoreCase( (String) properties.get( key ) ) ) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

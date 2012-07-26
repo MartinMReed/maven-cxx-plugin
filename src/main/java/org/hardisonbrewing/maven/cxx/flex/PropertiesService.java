@@ -26,6 +26,9 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
+    public static final String ADOBE_FLEX_HOME = "adobe.flex.home";
+    public static final String DEBUG = "debug";
+
     private static Properties properties;
 
     protected PropertiesService() {
