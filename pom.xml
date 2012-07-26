@@ -4,7 +4,7 @@
 	<groupId>org.hardisonbrewing</groupId>
 	<artifactId>maven-cxx-plugin</artifactId>
 	<!-- forked from 1.1.17 -->
-	<version>1.1.17.1.metova</version>
+	<version>1.1.17.2.metova-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>${project.artifactId}</name>
 	<build>
@@ -109,13 +109,13 @@
 		</dependency>
 	</dependencies>
 	<distributionManagement>
-<!-- 		<repository> -->
-<!-- 			<id>metova-licensed-snapshots</id> -->
-<!-- 			<url>http://repo.metova.com/nexus/content/repositories/licensed-snapshots</url> -->
-<!-- 		</repository> -->
 		<repository>
-			<id>hardisonbrewing-releases</id>
-			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url>
+			<id>metova-licensed-snapshots</id>
+			<url>http://repo.metova.com/nexus/content/repositories/licensed-snapshots</url>
 		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>hardisonbrewing-releases</id> -->
+<!-- 			<url>http://repo.hardisonbrewing.org/nexus/content/repositories/releases</url> -->
+<!-- 		</repository> -->
 	</distributionManagement>
 </project>
