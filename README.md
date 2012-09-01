@@ -73,7 +73,7 @@ frameworks</td></tr>
 <tr><td>arduino</td><td>sketchbook<br/>
 targetDevice<br/>
 sources</td></tr>
-<tr><td>xcode</td><td>configuration<br/>
+<tr><td>xcode</td><td>configuration (Debug/Release/etc)<br/>
 provisioningProfile<br/>
 codesignCertificate<br/>
 targetIncludes<br/>
