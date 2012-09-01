@@ -77,7 +77,7 @@ sources</td></tr>
 provisioningProfile<br/>
 codesignCertificate<br/>
 targetIncludes<br/>
-targetExcludes</td></tr>
+targetExcludes (Usually test targets)</td></tr>
 <tr><td>flex</td><td>target (air, apk, ipa-app-store, <a href="http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html">etc</a>)<br/>
 sourceFile (i.e. src/Main.mxml)<br/>
 libDirectory (Directory containing SWC libs)<br/>
