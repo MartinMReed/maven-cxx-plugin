@@ -235,6 +235,59 @@
 		</component>
 		
 		<!--
+			CDT (Eclipse CDT Project, BlackBerry QNX)
+		-->
+		<component>
+			<role-hint>cdt</role-hint>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+			<configuration>
+				<lifecycles>
+					<lifecycle>
+						<id>clean</id>
+						<phases>
+							<pre-clean>org.hardisonbrewing:maven-cxx-plugin:cdt-pre-clean</pre-clean>
+							<clean>org.apache.maven.plugins:maven-clean-plugin:clean,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-managed-clean,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-makefile-clean</clean>
+						</phases>
+					</lifecycle>
+					<lifecycle>
+						<id>default</id>
+						<phases>
+							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-validate,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-validate</validate>
+							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-initialize,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-initialize,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-initialize</initialize>
+							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-makefile-compile,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-compile,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-assemble,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-link,
+								org.hardisonbrewing:maven-cxx-plugin:qnx-bar-compile</compile>
+							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:cdt-prepare-package</prepare-package>
+							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
+							<install>org.hardisonbrewing:maven-cxx-plugin:o-install</install>
+						</phases>
+					</lifecycle>
+				</lifecycles>
+			</configuration>
+		</component>
+		<component>
+			<role-hint>cdt</role-hint>
+			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+			<implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
+			<configuration>
+				<extension>jar</extension>
+				<packaging>cdt</packaging>
+				<type>cdt</type>
+			</configuration>
+		</component>
+		
+		<!--
 			FLEX (ADOBE AIR)
 		-->
 		<component>
@@ -317,58 +370,6 @@
 				<extension>jar</extension>
 				<packaging>o</packaging>
 				<type>o</type>
-			</configuration>
-		</component>
-		
-		<!--
-			.QDE (CDT Eclipse Project, BlackBerry QNX)
-		-->
-		<component>
-			<role-hint>qde</role-hint>
-			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
-			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
-			<configuration>
-				<lifecycles>
-					<lifecycle>
-						<id>clean</id>
-						<phases>
-							<pre-clean>org.hardisonbrewing:maven-cxx-plugin:qde-pre-clean</pre-clean>
-							<clean>org.apache.maven.plugins:maven-clean-plugin:clean,
-								org.hardisonbrewing:maven-cxx-plugin:qde-makefile-clean,
-								org.hardisonbrewing:maven-cxx-plugin:qde-managed-clean</clean>
-						</phases>
-					</lifecycle>
-					<lifecycle>
-						<id>default</id>
-						<phases>
-							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
-								org.hardisonbrewing:maven-cxx-plugin:qde-validate,
-								org.hardisonbrewing:maven-cxx-plugin:qde-managed-validate</validate>
-							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
-								org.hardisonbrewing:maven-cxx-plugin:qde-initialize,
-								org.hardisonbrewing:maven-cxx-plugin:qde-managed-initialize</initialize>
-							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:qde-makefile-compile,
-								org.hardisonbrewing:maven-cxx-plugin:qde-managed-compile,
-								org.hardisonbrewing:maven-cxx-plugin:qde-managed-assemble,
-								org.hardisonbrewing:maven-cxx-plugin:qde-managed-link,
-								org.hardisonbrewing:maven-cxx-plugin:qnx-bar-compile</compile>
-							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:qde-prepare-package</prepare-package>
-							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
-							<install>org.hardisonbrewing:maven-cxx-plugin:o-install</install>
-						</phases>
-					</lifecycle>
-				</lifecycles>
-			</configuration>
-		</component>
-		<component>
-			<role-hint>qde</role-hint>
-			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-			<implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
-			<configuration>
-				<extension>jar</extension>
-				<packaging>qde</packaging>
-				<type>qde</type>
 			</configuration>
 		</component>
 		

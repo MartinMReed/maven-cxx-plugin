@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,24 +20,26 @@ import java.io.File;
 import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
-import org.hardisonbrewing.maven.cxx.qde.CProjectService;
-import org.hardisonbrewing.maven.cxx.qde.PropertiesService;
 
 public final class QnxService {
 
     public static final String PACKAGING_QNX = "qnx";
     public static final String PACKAGING_QDE = "qde";
 
+    private static final String HOST_PREFIX = "host_";
+
     public static final String QNX_USR_SEARCH;
 
     static {
-        StringBuffer qnxUsrSearch = new StringBuffer();
-        qnxUsrSearch.append( "**" );
-        qnxUsrSearch.append( File.separator );
-        qnxUsrSearch.append( "usr" );
-        QNX_USR_SEARCH = qnxUsrSearch.toString();
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( HOST_PREFIX );
+        stringBuffer.append( "*" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "**" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "usr" );
+        QNX_USR_SEARCH = stringBuffer.toString();
     }
 
     public static String getQnxTargetDirPath() {
@@ -106,6 +108,29 @@ public final class QnxService {
         return properties.getProperty( "DIR" );
     }
 
+    public static String getQnxDirPath() {
+
+        File qnxHostDir = PropertiesService.getPropertyAsFile( PropertiesService.ENV_QNX_HOST );
+        if ( qnxHostDir != null && qnxHostDir.exists() ) {
+
+            File qnxDir = qnxHostDir;
+            while (qnxDir != null && !qnxDir.getName().startsWith( HOST_PREFIX )) {
+                qnxDir = qnxDir.getParentFile();
+            }
+
+            if ( qnxDir != null ) {
+                return qnxDir.getParent();
+            }
+        }
+
+        return PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME );
+    }
+
+    public static File getQnxDir() {
+
+        return new File( getQnxDirPath() );
+    }
+
     public static String getQnxHostUsrDirPath() {
 
         File qnxHostDir = PropertiesService.getPropertyAsFile( PropertiesService.ENV_QNX_HOST );
@@ -117,30 +142,16 @@ public final class QnxService {
             return stringBuffer.toString();
         }
 
-        StringBuffer qnxHostBaseDirPath = new StringBuffer();
-        qnxHostBaseDirPath.append( PropertiesService.getProperty( PropertiesService.BLACKBERRY_NDK_HOME ) );
-        qnxHostBaseDirPath.append( File.separator );
-        qnxHostBaseDirPath.append( "host" );
-
-        File qnxHostBaseDir = new File( qnxHostBaseDirPath.toString() );
+        File qnxDir = PropertiesService.getPropertyAsFile( PropertiesService.BLACKBERRY_NDK_HOME );
 
         String[] includes = new String[] { QNX_USR_SEARCH };
-        String[] files = FileUtils.listDirectoryPathsRecursive( qnxHostBaseDir, includes, null );
+        String[] files = FileUtils.listDirectoryPathsRecursive( qnxDir, includes, null );
 
         if ( files.length > 0 ) {
             return files[0];
         }
 
         return null;
-    }
-
-    public static boolean isMakefileBuilder( String target ) {
-
-        if ( CProjectService.getCProject() != null ) {
-            return CProjectService.isMakefileBuilder( target );
-        }
-
-        return PACKAGING_QNX.equals( JoJoMojo.getMojo().getProject().getPackaging() );
     }
 
     public static boolean hasMakefile() {

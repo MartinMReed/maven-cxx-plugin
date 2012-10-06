@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde.managed;
+package org.hardisonbrewing.maven.cxx.cdt.qcc.managed;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 
@@ -26,12 +26,14 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.core.model.Source;
+import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 import org.hardisonbrewing.maven.cxx.cdt.CdtService;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain.Builder;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
-import org.hardisonbrewing.maven.cxx.qde.CProjectService;
 
 /**
- * @goal qde-managed-initialize
+ * @goal cdt-qcc-managed-initialize
  * @phase initialize
  */
 public final class InitializeMojo extends JoJoMojoImpl {
@@ -44,7 +46,17 @@ public final class InitializeMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        if ( CProjectService.isMakefileBuilder( target ) ) {
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+
+        if ( !QccToolChain.matches( configuration ) ) {
+            getLog().info( "Not a QCC project... skipping" );
+            return;
+        }
+
+        QccToolChain toolChain = (QccToolChain) CdtService.getToolChain( configuration );
+        Builder builder = toolChain.getBuilder();
+
+        if ( builder.isMakefile() ) {
             getLog().info( "Not a managed project... skipping" );
             return;
         }
@@ -53,7 +65,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
         List<String> excludes = new ArrayList<String>();
         loadSources( includes, excludes );
 
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
         loadSourcePaths( configuration, includes, excludes );
     }
 

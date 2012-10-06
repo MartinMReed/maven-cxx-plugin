@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde.managed;
+package org.hardisonbrewing.maven.cxx.cdt.qcc.managed;
 
-import generated.org.eclipse.cdt.ToolChain;
-import generated.org.eclipse.cdt.ToolChain.Tool;
+import generated.org.eclipse.cdt.StorageModule.Configuration;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,11 +28,14 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.qde.CProjectService;
+import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
+import org.hardisonbrewing.maven.cxx.cdt.CdtService;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain.Builder;
 import org.hardisonbrewing.maven.cxx.qnx.CommandLineService;
 
 /**
- * @goal qde-managed-assemble
+ * @goal cdt-qcc-managed-assemble
  * @phase compile
  */
 public class AssembleMojo extends JoJoMojoImpl {
@@ -46,7 +48,17 @@ public class AssembleMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if ( CProjectService.isMakefileBuilder( target ) ) {
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+
+        if ( !QccToolChain.matches( configuration ) ) {
+            getLog().info( "Not a QCC project... skipping" );
+            return;
+        }
+
+        QccToolChain toolChain = (QccToolChain) CdtService.getToolChain( configuration );
+        Builder builder = toolChain.getBuilder();
+
+        if ( builder.isMakefile() ) {
             getLog().info( "Not a managed project... skipping" );
             return;
         }
@@ -58,16 +70,16 @@ public class AssembleMojo extends JoJoMojoImpl {
             return;
         }
 
-        ToolChain toolChain = CProjectService.getToolChain( target );
-        Tool tool = CProjectService.getTool( toolChain, CProjectService.QCC_TOOL_ASSEMBLER );
+        QccToolChain.Options options = toolChain.getOptions();
+        QccToolChain.Tool.Assembler assembler = toolChain.getTools().getAssembler();
 
-        String compilerPlatform = CProjectService.getCompilerPlatform( toolChain );
-        boolean useDebug = CProjectService.isDebug( tool );
-        boolean useSecurity = CProjectService.useSecurity( tool );
-        boolean usePie = CProjectService.usePie( tool );
-        int optLevel = CProjectService.getOptLevel( tool );
-        boolean useProfile = CProjectService.useProfile( tool );
-        boolean useCodeCoverage = CProjectService.useCodeCoverage( tool );
+        String compilerPlatform = options.getCompilerPlatform();
+        boolean useDebug = assembler.isDebug();
+        boolean useSecurity = assembler.useSecurity();
+        boolean usePie = assembler.usePie();
+        int optLevel = assembler.getOptLevel();
+        boolean useProfile = assembler.useProfile();
+        boolean useCodeCoverage = assembler.useCodeCoverage();
 
         for (String source : sources) {
 

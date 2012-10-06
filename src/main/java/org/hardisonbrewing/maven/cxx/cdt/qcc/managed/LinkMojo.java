@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,11 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde.managed;
+package org.hardisonbrewing.maven.cxx.cdt.qcc.managed;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
-import generated.org.eclipse.cdt.ToolChain;
-import generated.org.eclipse.cdt.ToolChain.Tool;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,12 +29,15 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.cxx.SourceFiles;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
-import org.hardisonbrewing.maven.cxx.qde.CProjectService;
-import org.hardisonbrewing.maven.cxx.qde.PropertiesService;
+import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
+import org.hardisonbrewing.maven.cxx.cdt.CdtService;
+import org.hardisonbrewing.maven.cxx.cdt.PropertiesService;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain.Builder;
 import org.hardisonbrewing.maven.cxx.qnx.CommandLineService;
 
 /**
- * @goal qde-managed-link
+ * @goal cdt-qcc-managed-link
  * @phase compile
  */
 public final class LinkMojo extends JoJoMojoImpl {
@@ -49,7 +50,17 @@ public final class LinkMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if ( CProjectService.isMakefileBuilder( target ) ) {
+        Configuration configuration = CProjectService.getBuildConfiguration( target );
+
+        if ( !QccToolChain.matches( configuration ) ) {
+            getLog().info( "Not a QCC project... skipping" );
+            return;
+        }
+
+        QccToolChain toolChain = (QccToolChain) CdtService.getToolChain( configuration );
+        Builder builder = toolChain.getBuilder();
+
+        if ( builder.isMakefile() ) {
             getLog().info( "Not a managed project... skipping" );
             return;
         }
@@ -61,14 +72,14 @@ public final class LinkMojo extends JoJoMojoImpl {
             return;
         }
 
-        ToolChain toolChain = CProjectService.getToolChain( target );
-        Tool tool = CProjectService.getTool( toolChain, CProjectService.QCC_TOOL_LINKER );
+        QccToolChain.Options options = toolChain.getOptions();
+        QccToolChain.Tool.Linker linker = toolChain.getTools().getLinker();
+        QccToolChain.Options.Linker linkerOptions = linker.getOptions();
 
-        Configuration configuration = CProjectService.getBuildConfiguration( target );
         boolean staticLib = CProjectService.isStaticLib( configuration );
         boolean application = CProjectService.isApplication( configuration );
 
-        String buildFilePath = CProjectService.getBuildFilePath( target );
+        String buildFilePath = CProjectService.getBuildFilePath( configuration );
         FileUtils.ensureParentExists( buildFilePath );
 
         List<String> cmd = new LinkedList<String>();
@@ -90,7 +101,7 @@ public final class LinkMojo extends JoJoMojoImpl {
 
         if ( application ) {
 
-            String[] libIncludes = CProjectService.getLinkerLibraryPaths( toolChain );
+            String[] libIncludes = linkerOptions.getLibraryPaths();
             if ( libIncludes != null ) {
                 for (String include : libIncludes) {
                     include = PropertiesService.populateTemplateVariables( include, "${", "}" );
@@ -98,7 +109,7 @@ public final class LinkMojo extends JoJoMojoImpl {
                 }
             }
 
-            String[] libs = CProjectService.getLinkerLibraries( toolChain );
+            String[] libs = linkerOptions.getLibraries();
             if ( libs != null ) {
                 for (String lib : libs) {
                     cmd.add( "-l" + lib );
@@ -106,9 +117,9 @@ public final class LinkMojo extends JoJoMojoImpl {
             }
         }
 
-        cmd.add( "-V" + CProjectService.getCompilerPlatform( toolChain ) );
+        cmd.add( "-V" + options.getCompilerPlatform() );
 
-        if ( CProjectService.isDebug( tool ) ) {
+        if ( linker.isDebug() ) {
             cmd.add( "-g" );
         }
 
@@ -117,17 +128,17 @@ public final class LinkMojo extends JoJoMojoImpl {
             cmd.add( "-Wl,-z,relro" );
             cmd.add( "-Wl,-z,now" );
 
-            if ( CProjectService.useCodeCoverage( tool ) ) {
+            if ( linker.useCodeCoverage() ) {
                 cmd.add( "-ftest-coverage" );
                 cmd.add( "-fprofile-arcs" );
                 cmd.add( "-p" );
             }
 
-            if ( CProjectService.useProfile( tool ) ) {
+            if ( linker.useProfile() ) {
                 cmd.add( "-lprofilingS" );
             }
 
-            if ( CProjectService.usePie( tool ) ) {
+            if ( linker.usePie() ) {
                 cmd.add( "-pie" );
             }
         }
