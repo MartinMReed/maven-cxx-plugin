@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,22 +14,41 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde;
+package org.hardisonbrewing.maven.cxx.cdt.toolchain;
 
-import java.io.File;
 
-import org.hardisonbrewing.maven.cxx.qnx.QnxService;
+public interface ToolChain {
 
-public final class QdeService {
+    public String getId();
 
-    public static final String getEclipseDirPath() {
+    public String getName();
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( QnxService.getQnxHostUsrDirPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( "qde" );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( "eclipse" );
-        return stringBuffer.toString();
+    public Object getTools();
+
+    public Options getOptions();
+
+    public Builder getBuilder();
+
+    public static interface Tool {
+
+        public String getId();
+
+        public Options getOptions();
+    }
+
+    public static interface Options {
+
+        public String getId();
+    }
+
+    public static interface Builder {
+
+        public String getId();
+
+        public String getName();
+
+        public String getBuildPath();
+
+        public boolean isMakefile();
     }
 }

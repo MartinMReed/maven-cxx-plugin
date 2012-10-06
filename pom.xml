@@ -53,7 +53,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<schemaDirectory>src/main/resources/eclipse</schemaDirectory>
+							<schemaDirectory>src/main/resources/cdt</schemaDirectory>
 							<generateDirectory>target/generated-sources/xjc/eclipse</generateDirectory>
 							<generatePackage>generated.org.eclipse.cdt</generatePackage>
 							<schemaIncludes>

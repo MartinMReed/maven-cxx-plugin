@@ -49,7 +49,7 @@ The `<packaging/>` in your `pom.xml` must be set to package classifier for the t
 <tr><td>as.bar</td><td>BlackBerry 10, ActionScript main file</td></tr>
 <tr><td>mxml.bar</td><td>BlackBerry 10, MXML main file</td></tr>
 <tr><td>js.bar</td><td>BlackBerry 10, WebWorks</td></tr>
-<tr><td>qde</td><td>BlackBerry 10, QDE managed</td></tr>
+<tr><td>cdt</td><td>Eclipse CDT, BlackBerry 10 QDE</td></tr>
 <tr><td>qnx</td><td>BlackBerry 10, Makefile</td></tr>
 <tr><td>arduino</td><td>Arduino</td></tr>
 <tr><td>xcode</td><td>xcodebuild</td></tr>
@@ -68,7 +68,7 @@ sources<br/>
 libs<br/>
 frameworks</td></tr>
 <tr><td>*.bar</td><td/></tr>
-<tr><td>qde</td><td>target</td></tr>
+<tr><td>cdt</td><td>target (Release, Release-Device, etc)</td></tr>
 <tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>
 <tr><td>arduino</td><td>sketchbook<br/>
 targetDevice<br/>
@@ -103,7 +103,7 @@ blackberry.tablet.home<br/>
 blackberry.tablet.device.ip<br/>
 blackberry.tablet.device.password<br/>
 debug</td></tr>
-<tr><td>qde</td><td/></tr>
+<tr><td>cdt</td><td/></tr>
 <tr><td>qnx</td><td/></tr>
 <tr><td>arduino</td><td>arduino.home<br/>
 avr.bin<br/>

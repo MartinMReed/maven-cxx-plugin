@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,6 +16,8 @@
  */
 package org.hardisonbrewing.maven.cxx.cdt;
 
+import generated.net.rim.bar.Asset;
+import generated.net.rim.bar.BarDescriptor;
 import generated.org.eclipse.cdt.Cproject;
 import generated.org.eclipse.cdt.Entry;
 import generated.org.eclipse.cdt.ListOptionValue;
@@ -41,6 +43,8 @@ import javax.xml.bind.JAXBException;
 import org.hardisonbrewing.jaxb.JAXB;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
+import org.hardisonbrewing.maven.cxx.qnx.BarDescriptorService;
 
 public class CProjectService {
 
@@ -65,6 +69,76 @@ public class CProjectService {
     private static final String VALUE_WORKSPACE_PATH = "VALUE_WORKSPACE_PATH";
     private static final String RESOLVED = "RESOLVED";
 
+    private static Cproject cproject;
+
+    public static File getCProjectFile() {
+
+        return new File( getCProjectFilePath() );
+    }
+
+    public static String getCProjectFilePath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( ProjectService.getBaseDirPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( CPROJECT_FILENAME );
+        return stringBuffer.toString();
+    }
+
+    public static String getProjectName() {
+
+        return getProjectName( getCProject() );
+    }
+
+    public static String getBuildPath( Configuration configuration, Builder builder ) {
+
+        String buildPath = builder.getBuildPath();
+
+        if ( PropertiesService.isWorkspaceValue( buildPath ) ) {
+            buildPath = PropertiesService.getWorkspacePath( configuration, buildPath );
+        }
+
+        return buildPath;
+    }
+
+    public static String getBuildFilePath( Configuration configuration ) {
+
+        ToolChain toolChain = getToolChain( configuration );
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getBuildPath( configuration, toolChain.getBuilder() ) );
+        stringBuffer.append( File.separator );
+
+        if ( isStaticLib( configuration ) ) {
+            stringBuffer.append( "lib" );
+            stringBuffer.append( getProjectName() );
+            stringBuffer.append( "." );
+            stringBuffer.append( configuration.getArtifactExtension() );
+        }
+        else if ( QccToolChain.matches( configuration ) ) {
+            BarDescriptor barDescriptor = BarDescriptorService.getBarDescriptor();
+            Asset entryPoint = BarDescriptorService.getEntryPoint( barDescriptor, configuration.getName() );
+            stringBuffer.append( entryPoint.getValue() );
+        }
+        else {
+            stringBuffer.append( getProjectName() );
+            stringBuffer.append( "." );
+            stringBuffer.append( configuration.getArtifactExtension() );
+        }
+
+        return stringBuffer.toString();
+    }
+
+    public static Configuration[] getBuildConfigurations() {
+
+        return getBuildConfigurations( getCProject(), MODULE_SETTINGS );
+    }
+
+    public static Configuration getBuildConfiguration( String name ) {
+
+        return getBuildConfiguration( getCProject(), MODULE_SETTINGS, name );
+    }
+
     public static boolean isApplication( Configuration configuration ) {
 
         return BUILD_ARTIFACT_TYPE_EXE.equals( configuration.getBuildArtefactType() );
@@ -75,29 +149,13 @@ public class CProjectService {
         return BUILD_ARTIFACT_TYPE_STATIC_LIB.equals( configuration.getBuildArtefactType() );
     }
 
-    public static Cproject readCProject( File file ) {
-
-        if ( !file.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate CPROJECT file: " + file );
-            throw new IllegalStateException();
-        }
-
-        try {
-            return JAXB.unmarshal( file, Cproject.class );
-        }
-        catch (JAXBException e) {
-            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal CPROJECT file: " + file );
-            throw new IllegalStateException( e );
-        }
-    }
-
     public static boolean isMakefileBuilder( Builder builder ) {
 
         Boolean managedBuildOn = builder.isManagedBuildOn();
         return ( managedBuildOn == null || !managedBuildOn ) && BUILDER_DEFAULT.equals( builder.getSuperClass() );
     }
 
-    public static List<Cconfiguration> getCconfigurations( Cproject cproject, String module ) {
+    private static List<Cconfiguration> getCconfigurations( Cproject cproject, String module ) {
 
         for (StorageModule storageModule : cproject.getStorageModule()) {
             if ( module.equals( storageModule.getModuleId() ) ) {
@@ -117,7 +175,7 @@ public class CProjectService {
         return project.getName();
     }
 
-    public static Project getProject( Cproject cproject ) {
+    private static Project getProject( Cproject cproject ) {
 
         StorageModule storageModule = getStorageModule( cproject, CDT_BUILD_SYSTEM );
         if ( storageModule == null ) {
@@ -126,7 +184,7 @@ public class CProjectService {
         return storageModule.getProject();
     }
 
-    public static StorageModule getStorageModule( Cproject cproject, String id ) {
+    private static StorageModule getStorageModule( Cproject cproject, String id ) {
 
         for (StorageModule storageModule : cproject.getStorageModule()) {
             if ( id.equals( storageModule.getModuleId() ) ) {
@@ -137,12 +195,12 @@ public class CProjectService {
         return null;
     }
 
-    public static Configuration getBuildConfiguration( Cconfiguration cconfiguration ) {
+    private static Configuration getBuildConfiguration( Cconfiguration cconfiguration ) {
 
         return getConfiguration( cconfiguration, CDT_BUILD_SYSTEM );
     }
 
-    public static Configuration getConfiguration( Cconfiguration cconfiguration, String id ) {
+    private static Configuration getConfiguration( Cconfiguration cconfiguration, String id ) {
 
         for (StorageModule storageModule : cconfiguration.getStorageModule()) {
             if ( id.equals( storageModule.getModuleId() ) ) {
@@ -151,26 +209,6 @@ public class CProjectService {
         }
 
         return null;
-    }
-
-    public static String getSourcePath( Entry entry ) {
-
-        if ( !SOURCE_KIND_PATH.equals( entry.getKind() ) ) {
-            return null;
-        }
-
-        String[] flags = getFlags( entry );
-        Arrays.sort( flags, 0, flags.length );
-
-        StringBuffer stringBuffer = new StringBuffer();
-
-        if ( Arrays.binarySearch( flags, VALUE_WORKSPACE_PATH ) >= 0 ) {
-            stringBuffer.append( ProjectService.getBaseDirPath() );
-            stringBuffer.append( File.separator );
-        }
-
-        stringBuffer.append( entry.getName() );
-        return stringBuffer.toString();
     }
 
     public static String[] getSourcePaths( Configuration configuration ) {
@@ -198,7 +236,27 @@ public class CProjectService {
         return _sourcePaths;
     }
 
-    public static String[] getFlags( Entry entry ) {
+    private static String getSourcePath( Entry entry ) {
+
+        if ( !SOURCE_KIND_PATH.equals( entry.getKind() ) ) {
+            return null;
+        }
+
+        String[] flags = getFlags( entry );
+        Arrays.sort( flags, 0, flags.length );
+
+        StringBuffer stringBuffer = new StringBuffer();
+
+        if ( Arrays.binarySearch( flags, VALUE_WORKSPACE_PATH ) >= 0 ) {
+            stringBuffer.append( ProjectService.getBaseDirPath() );
+            stringBuffer.append( File.separator );
+        }
+
+        stringBuffer.append( entry.getName() );
+        return stringBuffer.toString();
+    }
+
+    private static String[] getFlags( Entry entry ) {
 
         String flags = entry.getFlags();
         if ( flags == null || flags.length() == 0 ) {
@@ -222,10 +280,20 @@ public class CProjectService {
                 return tool;
             }
         }
-        return null;
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( "Unsupported tool[" );
+        stringBuffer.append( superClass );
+        stringBuffer.append( "]. Available options are:" );
+        for (Tool tool : toolChain.getTool()) {
+            stringBuffer.append( "\n  " );
+            stringBuffer.append( tool.getSuperClass() );
+        }
+        JoJoMojo.getMojo().getLog().error( stringBuffer.toString() );
+        throw new UnsupportedOperationException();
     }
 
-    public static Option getToolOption( Tool tool, String superClass ) {
+    private static Option getToolOption( Tool tool, String superClass ) {
 
         for (Option option : tool.getOption()) {
             if ( superClass.equals( option.getSuperClass() ) ) {
@@ -253,7 +321,7 @@ public class CProjectService {
         return getOptionValues( option );
     }
 
-    public static Option getToolChainOption( ToolChain toolChain, String superClass ) {
+    private static Option getToolChainOption( ToolChain toolChain, String superClass ) {
 
         for (Option option : toolChain.getOption()) {
             if ( superClass.equals( option.getSuperClass() ) ) {
@@ -272,7 +340,7 @@ public class CProjectService {
         return option.getValue();
     }
 
-    public static String[] getOptionValues( Option option ) {
+    private static String[] getOptionValues( Option option ) {
 
         List<ListOptionValue> listOptionValues = option.getListOptionValue();
         String[] values = new String[listOptionValues.size()];
@@ -285,7 +353,7 @@ public class CProjectService {
         return values;
     }
 
-    public static Configuration[] getBuildConfigurations( Cproject cproject, String module ) {
+    private static Configuration[] getBuildConfigurations( Cproject cproject, String module ) {
 
         List<Configuration> configurations = new ArrayList<Configuration>();
 
@@ -299,7 +367,7 @@ public class CProjectService {
         return _configurations;
     }
 
-    public static Configuration getBuildConfiguration( Cproject cproject, String module, String name ) {
+    private static Configuration getBuildConfiguration( Cproject cproject, String module, String name ) {
 
         for (Cconfiguration cconfiguration : getCconfigurations( cproject, module )) {
             Configuration configuration = getBuildConfiguration( cconfiguration );
@@ -308,7 +376,17 @@ public class CProjectService {
             }
         }
 
-        return null;
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( "Unsupported configuration[" );
+        stringBuffer.append( name );
+        stringBuffer.append( "]. Available options are:" );
+        for (Cconfiguration cconfiguration : getCconfigurations( cproject, module )) {
+            Configuration configuration = getBuildConfiguration( cconfiguration );
+            stringBuffer.append( "\n  " );
+            stringBuffer.append( configuration.getName() );
+        }
+        JoJoMojo.getMojo().getLog().error( stringBuffer.toString() );
+        throw new UnsupportedOperationException();
     }
 
     public static Properties getBuildProperties( Configuration configuration ) {
@@ -321,5 +399,38 @@ public class CProjectService {
             properties.put( property[0], property[1] );
         }
         return properties;
+    }
+
+    public static Cproject getCProject() {
+
+        return cproject;
+    }
+
+    public static void loadCProject() {
+
+        File cprojectFile = getCProjectFile();
+
+        if ( !cprojectFile.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate .cproject file: " + cproject );
+            throw new IllegalStateException();
+        }
+
+        cproject = readCProject( cprojectFile );
+    }
+
+    public static Cproject readCProject( File file ) {
+
+        if ( !file.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate CPROJECT file: " + file );
+            throw new IllegalStateException();
+        }
+
+        try {
+            return JAXB.unmarshal( file, Cproject.class );
+        }
+        catch (JAXBException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal CPROJECT file: " + file );
+            throw new IllegalStateException( e );
+        }
     }
 }

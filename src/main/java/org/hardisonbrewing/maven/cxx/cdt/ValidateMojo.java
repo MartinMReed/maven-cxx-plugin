@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde;
+package org.hardisonbrewing.maven.cxx.cdt;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 
@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
- * @goal qde-validate
+ * @goal cdt-validate
  * @phase validate
  */
 public final class ValidateMojo extends JoJoMojoImpl {
@@ -35,6 +35,14 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
+
+        if ( target == null || target.length() == 0 ) {
+
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( "The pom.xml must specify a `target`." );
+            getLog().error( stringBuffer.toString() );
+            throw new IllegalStateException();
+        }
 
         CProjectService.loadCProject();
 

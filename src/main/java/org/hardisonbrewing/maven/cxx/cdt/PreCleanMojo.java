@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,34 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde;
-
-import generated.org.eclipse.cdt.ToolChain;
+package org.hardisonbrewing.maven.cxx.cdt;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.hardisonbrewing.maven.cxx.cdt.CdtService;
+import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
- * @goal qde-initialize
- * @phase initialize
+ * @goal cdt-pre-clean
+ * @phase pre-clean
  */
-public final class InitializeMojo extends org.hardisonbrewing.maven.cxx.qnx.InitializeMojo {
-
-    /**
-     * @parameter
-     */
-    public String target;
+public final class PreCleanMojo extends JoJoMojoImpl {
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        CdtService.setEclipseDirPath( QdeService.getEclipseDirPath() );
-        CdtService.loadCdtCoreFileExtensions();
-
-        ToolChain toolChain = CProjectService.getToolChain( target );
-        PropertiesService.putProperty( "CPUVARDIR", CProjectService.getPlatform( toolChain ) );
-
-        super.execute();
+        CProjectService.loadCProject();
     }
 }
