@@ -16,14 +16,11 @@
  */
 package org.hardisonbrewing.maven.cxx.cdt.toolchain;
 
-
 public interface ToolChain {
 
     public String getId();
 
     public String getName();
-
-    public Object getTools();
 
     public Options getOptions();
 
@@ -32,8 +29,6 @@ public interface ToolChain {
     public static interface Tool {
 
         public String getId();
-
-        public Options getOptions();
     }
 
     public static interface Options {

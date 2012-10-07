@@ -73,8 +73,7 @@ public class CompileMojo extends JoJoMojoImpl {
         }
 
         QccToolChain.Options options = toolChain.getOptions();
-        QccToolChain.Tool.Compiler compiler = toolChain.getTools().getCompiler();
-        QccToolChain.Options.Compiler compilerOptions = compiler.getOptions();
+        QccToolChain.Compiler compiler = toolChain.getCompiler();
 
         String compilerPlatform = options.getCompilerPlatform();
         boolean usePie = compiler.usePie();
@@ -83,8 +82,8 @@ public class CompileMojo extends JoJoMojoImpl {
         int optLevel = compiler.getOptLevel();
         boolean useProfile = compiler.useProfile();
         boolean useCodeCoverage = compiler.useCodeCoverage();
-        String[] includes = compilerOptions.getIncludePaths();
-        String[] defines = compilerOptions.getDefines();
+        String[] includes = compiler.getIncludePaths();
+        String[] defines = compiler.getDefines();
 
         for (String source : sources) {
 
