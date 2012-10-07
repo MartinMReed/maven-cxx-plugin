@@ -28,6 +28,7 @@ import java.util.List;
 import org.codehaus.plexus.util.IOUtil;
 import org.hardisonbrewing.jaxb.JAXB;
 import org.hardisonbrewing.maven.core.JoJoMojo;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.GnuToolChain;
 import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
 import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain;
 
@@ -118,6 +119,9 @@ public class CdtService {
 
         if ( QccToolChain.matches( configuration ) ) {
             return new QccToolChain( configuration );
+        }
+        else if ( GnuToolChain.matches( configuration ) ) {
+            return new GnuToolChain( configuration );
         }
 
         JoJoMojo.getMojo().getLog().error( "Unsupported toolchain[" + id + "]" );

@@ -71,7 +71,7 @@ public class AssembleMojo extends JoJoMojoImpl {
         }
 
         QccToolChain.Options options = toolChain.getOptions();
-        QccToolChain.Tool.Assembler assembler = toolChain.getTools().getAssembler();
+        QccToolChain.Assembler assembler = toolChain.getAssembler();
 
         String compilerPlatform = options.getCompilerPlatform();
         boolean useDebug = assembler.isDebug();

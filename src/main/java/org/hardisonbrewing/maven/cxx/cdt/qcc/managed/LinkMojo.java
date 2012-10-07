@@ -73,8 +73,7 @@ public final class LinkMojo extends JoJoMojoImpl {
         }
 
         QccToolChain.Options options = toolChain.getOptions();
-        QccToolChain.Tool.Linker linker = toolChain.getTools().getLinker();
-        QccToolChain.Options.Linker linkerOptions = linker.getOptions();
+        QccToolChain.Linker linker = toolChain.getLinker();
 
         boolean staticLib = CProjectService.isStaticLib( configuration );
         boolean application = CProjectService.isApplication( configuration );
@@ -101,7 +100,7 @@ public final class LinkMojo extends JoJoMojoImpl {
 
         if ( application ) {
 
-            String[] libIncludes = linkerOptions.getLibraryPaths();
+            String[] libIncludes = linker.getLibraryPaths();
             if ( libIncludes != null ) {
                 for (String include : libIncludes) {
                     include = PropertiesService.populateTemplateVariables( include, "${", "}" );
@@ -109,7 +108,7 @@ public final class LinkMojo extends JoJoMojoImpl {
                 }
             }
 
-            String[] libs = linkerOptions.getLibraries();
+            String[] libs = linker.getLibraries();
             if ( libs != null ) {
                 for (String lib : libs) {
                     cmd.add( "-l" + lib );

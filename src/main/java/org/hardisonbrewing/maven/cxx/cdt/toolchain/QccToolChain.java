@@ -28,9 +28,13 @@ public final class QccToolChain implements ToolChain {
 
     public static final String ID = "com.qnx.qcc";
 
-    private final Tools tools;
     private final Options options;
     private final Builder builder;
+
+    private final Compiler compiler;
+    private final Assembler assembler;
+    private final Linker linker;
+    private final Archiver archiver;
 
     private final Configuration configuration;
     private final generated.org.eclipse.cdt.ToolChain toolChain;
@@ -42,32 +46,18 @@ public final class QccToolChain implements ToolChain {
         this.configuration = configuration;
         toolChain = CProjectService.getToolChain( configuration );
 
-        tools = new Tools( this );
         options = new Options( this );
         builder = new Builder( this );
+
+        compiler = new Compiler( this );
+        assembler = new Assembler( this );
+        linker = new Linker( this );
+        archiver = new Archiver( this );
     }
 
     public static boolean matches( Configuration configuration ) {
 
         return configuration.getId().startsWith( ID );
-    }
-
-    @Override
-    public Tools getTools() {
-
-        return tools;
-    }
-
-    @Override
-    public Options getOptions() {
-
-        return options;
-    }
-
-    @Override
-    public String getName() {
-
-        return toolChain.getName();
     }
 
     @Override
@@ -77,19 +67,51 @@ public final class QccToolChain implements ToolChain {
     }
 
     @Override
+    public String getName() {
+
+        return toolChain.getName();
+    }
+
+    @Override
+    public Options getOptions() {
+
+        return options;
+    }
+
+    @Override
     public Builder getBuilder() {
 
         return builder;
     }
 
+    public Compiler getCompiler() {
+
+        return compiler;
+    }
+
+    public Assembler getAssembler() {
+
+        return assembler;
+    }
+
+    public Linker getLinker() {
+
+        return linker;
+    }
+
+    public Archiver getArchiver() {
+
+        return archiver;
+    }
+
     public static final class Builder implements ToolChain.Builder {
 
-        private final QccToolChain toolChain;
+        private final Configuration configuration;
         private final generated.org.eclipse.cdt.ToolChain.Builder builder;
 
         private Builder(QccToolChain toolChain) {
 
-            this.toolChain = toolChain;
+            configuration = toolChain.configuration;
             builder = toolChain.toolChain.getBuilder();
         }
 
@@ -102,13 +124,13 @@ public final class QccToolChain implements ToolChain {
         @Override
         public String getName() {
 
-            return null;
+            return builder.getName();
         }
 
         @Override
         public String getBuildPath() {
 
-            return CProjectService.getBuildPath( toolChain.configuration, builder );
+            return CProjectService.getBuildPath( configuration, builder );
         }
 
         @Override
@@ -118,63 +140,32 @@ public final class QccToolChain implements ToolChain {
         }
     }
 
-    public static final class Tools {
+    private static abstract class Tool implements ToolChain.Tool {
 
-        public static final String ID = QccToolChain.ID + ".tool";
+        private static final String ID = QccToolChain.ID + ".tool";
 
-        private final Tool.Compiler compiler;
-        private final Tool.Assembler assembler;
-        private final Tool.Linker linker;
-        private final Tool.Archiver archiver;
-
-        private Tools(QccToolChain toolChain) {
-
-            compiler = new Tool.Compiler( toolChain );
-            assembler = new Tool.Assembler( toolChain );
-            linker = new Tool.Linker( toolChain );
-            archiver = new Tool.Archiver( toolChain );
-        }
-
-        public Tool.Compiler getCompiler() {
-
-            return compiler;
-        }
-
-        public Tool.Assembler getAssembler() {
-
-            return assembler;
-        }
-
-        public Tool.Linker getLinker() {
-
-            return linker;
-        }
-
-        public Tool.Archiver getArchiver() {
-
-            return archiver;
-        }
-    }
-
-    public static abstract class Tool implements ToolChain.Tool {
-
-        public static final String ID = QccToolChain.ID + ".tool";
-
-        protected final generated.org.eclipse.cdt.ToolChain.Tool tool;
+        private final generated.org.eclipse.cdt.ToolChain.Tool tool;
 
         protected Tool(QccToolChain toolChain) {
 
             tool = CProjectService.getTool( toolChain.toolChain, getId() );
         }
 
+        protected abstract String getOptionsId();
+
         protected String getToolOptionValue( String superClass ) {
 
             return CProjectService.getToolOptionValue( tool, superClass );
         }
 
+        protected String[] getToolOptionValues( String superClass ) {
+
+            return CProjectService.getToolOptionValues( tool, superClass );
+        }
+
         public int getOptLevel() {
 
-            String superClass = getOptions().getId();
+            String superClass = getOptionsId();
             String optLevel = superClass + ".optlevel";
             String value = getToolOptionValue( optLevel );
 
@@ -194,159 +185,171 @@ public final class QccToolChain implements ToolChain {
 
         public boolean isDebug() {
 
-            String superClass = getOptions().getId();
+            String superClass = getOptionsId();
             String value = getToolOptionValue( superClass + ".debug" );
             return Boolean.parseBoolean( value );
         }
 
         public boolean useCodeCoverage() {
 
-            String superClass = getOptions().getId();
+            String superClass = getOptionsId();
             String value = getToolOptionValue( superClass + ".coverage" );
             return Boolean.parseBoolean( value );
         }
 
         public boolean useProfile() {
 
-            String superClass = getOptions().getId();
+            String superClass = getOptionsId();
             String value = getToolOptionValue( superClass + ".profile2" );
             return Boolean.parseBoolean( value );
         }
 
         public boolean usePie() {
 
-            String superClass = getOptions().getId();
+            String superClass = getOptionsId();
             String value = getToolOptionValue( superClass + ".pie" );
             return Boolean.parseBoolean( value );
         }
 
         public boolean useSecurity() {
 
-            String superClass = getOptions().getId();
+            String superClass = getOptionsId();
             String value = getToolOptionValue( superClass + ".security" );
             return Boolean.parseBoolean( value );
         }
+    }
 
-        public static final class Compiler extends Tool {
+    public static final class Compiler extends Tool {
 
-            public static final String ID = Tool.ID + ".compiler";
+        private static final String ID = Tool.ID + ".compiler";
+        private static final String OPTIONS = Options.ID + ".compiler";
 
-            private final Options.Compiler options;
+        private Compiler(QccToolChain toolChain) {
 
-            private Compiler(QccToolChain toolChain) {
-
-                super( toolChain );
-
-                options = new Options.Compiler( toolChain );
-            }
-
-            public String getId() {
-
-                return ID;
-            }
-
-            @Override
-            public Options.Compiler getOptions() {
-
-                return options;
-            }
-
-            public boolean isDebug() {
-
-                // superClass for compiler debug is different... probably a typo
-                String superClass = Options.ID + ".compile";
-                String value = getToolOptionValue( superClass + ".debug" );
-                return Boolean.parseBoolean( value );
-            }
+            super( toolChain );
         }
 
-        public static final class Assembler extends Tool {
+        @Override
+        public String getId() {
 
-            public static final String ID = Tool.ID + ".assembler";
-
-            private final Options.Assembler options;
-
-            private Assembler(QccToolChain toolChain) {
-
-                super( toolChain );
-
-                options = new Options.Assembler();
-            }
-
-            public String getId() {
-
-                return ID;
-            }
-
-            @Override
-            public Options.Assembler getOptions() {
-
-                return options;
-            }
+            return ID;
         }
 
-        public static final class Linker extends Tool {
+        @Override
+        protected String getOptionsId() {
 
-            public static final String ID = Tool.ID + ".linker";
-
-            private final Options.Linker options;
-
-            private Linker(QccToolChain toolChain) {
-
-                super( toolChain );
-
-                options = new Options.Linker( toolChain );
-            }
-
-            public String getId() {
-
-                return ID;
-            }
-
-            @Override
-            public Options.Linker getOptions() {
-
-                return options;
-            }
+            return OPTIONS;
         }
 
-        public static final class Archiver extends Tool {
+        public boolean isDebug() {
 
-            public static final String ID = Tool.ID + ".archiver";
+            // superClass for compiler debug is different... probably a typo
+            String superClass = OPTIONS + ".compile";
+            String value = getToolOptionValue( superClass + ".debug" );
+            return Boolean.parseBoolean( value );
+        }
 
-            private final Options.Archiver options;
+        public String[] getIncludePaths() {
 
-            private Archiver(QccToolChain toolChain) {
+            return getToolOptionValues( OPTIONS + ".includePath" );
+        }
 
-                super( toolChain );
+        public String[] getDefines() {
 
-                options = new Options.Archiver();
-            }
+            return getToolOptionValues( OPTIONS + ".defines" );
+        }
+    }
 
-            public String getId() {
+    public static final class Assembler extends Tool {
 
-                return ID;
-            }
+        private static final String ID = Tool.ID + ".assembler";
+        private static final String OPTIONS = Options.ID + ".assembler";
 
-            @Override
-            public Options.Archiver getOptions() {
+        private Assembler(QccToolChain toolChain) {
 
-                return options;
-            }
+            super( toolChain );
+        }
+
+        @Override
+        public String getId() {
+
+            return ID;
+        }
+
+        @Override
+        protected String getOptionsId() {
+
+            return OPTIONS;
+        }
+    }
+
+    public static final class Linker extends Tool {
+
+        private static final String ID = Tool.ID + ".linker";
+        private static final String OPTIONS = Options.ID + ".linker";
+
+        private Linker(QccToolChain toolChain) {
+
+            super( toolChain );
+        }
+
+        @Override
+        public String getId() {
+
+            return ID;
+        }
+
+        @Override
+        protected String getOptionsId() {
+
+            return OPTIONS;
+        }
+
+        public String[] getLibraries() {
+
+            return getToolOptionValues( OPTIONS + ".libraries" );
+        }
+
+        public String[] getLibraryPaths() {
+
+            return getToolOptionValues( OPTIONS + ".libraryPaths" );
+        }
+    }
+
+    public static final class Archiver extends Tool {
+
+        private static final String ID = Tool.ID + ".archiver";
+        private static final String OPTIONS = Options.ID + ".archiver";
+
+        private Archiver(QccToolChain toolChain) {
+
+            super( toolChain );
+        }
+
+        @Override
+        public String getId() {
+
+            return ID;
+        }
+
+        @Override
+        protected String getOptionsId() {
+
+            return OPTIONS;
         }
     }
 
     public static final class Options implements ToolChain.Options {
 
-        public static final String ID = QccToolChain.ID + ".option";
-        public static final String CPU = ID + ".cpu";
-        public static final String GEN_CPU = ID + ".gen.cpu";
+        private static final String ID = QccToolChain.ID + ".option";
+        private static final String CPU = ID + ".cpu";
+        private static final String GEN_CPU = ID + ".gen.cpu";
 
-        private final QccToolChain toolChain;
+        private final generated.org.eclipse.cdt.ToolChain toolChain;
 
         private Options(QccToolChain toolChain) {
 
-            this.toolChain = toolChain;
+            this.toolChain = toolChain.toolChain;
         }
 
         @Override
@@ -357,7 +360,6 @@ public final class QccToolChain implements ToolChain {
 
         public String getPlatform() {
 
-            generated.org.eclipse.cdt.ToolChain toolChain = this.toolChain.toolChain;
             String value = CProjectService.getToolChainOptionValue( toolChain, Options.CPU );
             return value.substring( Options.GEN_CPU.length() + 1 );
         }
@@ -447,106 +449,6 @@ public final class QccToolChain implements ToolChain {
             String[] _result = new String[result.size()];
             result.toArray( _result );
             return _result;
-        }
-
-        public static final class Compiler implements ToolChain.Options {
-
-            public static final String ID = Options.ID + ".compiler";
-            public static final String DEFINES = ID + ".defines";
-            public static final String INCLUDE_PATHS = ID + ".includePath";
-
-            private final QccToolChain toolChain;
-
-            private Compiler(QccToolChain toolChain) {
-
-                this.toolChain = toolChain;
-            }
-
-            @Override
-            public String getId() {
-
-                return ID;
-            }
-
-            public String[] getIncludePaths() {
-
-                generated.org.eclipse.cdt.ToolChain toolChain = this.toolChain.toolChain;
-                generated.org.eclipse.cdt.ToolChain.Tool tool = CProjectService.getTool( toolChain, Tool.Compiler.ID );
-                return CProjectService.getToolOptionValues( tool, INCLUDE_PATHS );
-            }
-
-            public String[] getDefines() {
-
-                generated.org.eclipse.cdt.ToolChain toolChain = this.toolChain.toolChain;
-                generated.org.eclipse.cdt.ToolChain.Tool tool = CProjectService.getTool( toolChain, Tool.Compiler.ID );
-                return CProjectService.getToolOptionValues( tool, DEFINES );
-            }
-        }
-
-        public static final class Assembler implements ToolChain.Options {
-
-            public static final String ID = Options.ID + ".assembler";
-
-            private Assembler() {
-
-                // hide constructor
-            }
-
-            @Override
-            public String getId() {
-
-                return ID;
-            }
-        }
-
-        public static final class Linker implements ToolChain.Options {
-
-            public static final String ID = Options.ID + ".linker";
-            public static final String LIBRARIES = ID + ".libraries";
-            public static final String LIBRARY_PATHS = ID + ".libraryPaths";
-
-            private final QccToolChain toolChain;
-
-            private Linker(QccToolChain toolChain) {
-
-                this.toolChain = toolChain;
-            }
-
-            @Override
-            public String getId() {
-
-                return ID;
-            }
-
-            public String[] getLibraries() {
-
-                generated.org.eclipse.cdt.ToolChain toolChain = this.toolChain.toolChain;
-                generated.org.eclipse.cdt.ToolChain.Tool tool = CProjectService.getTool( toolChain, Tool.Linker.ID );
-                return CProjectService.getToolOptionValues( tool, LIBRARIES );
-            }
-
-            public String[] getLibraryPaths() {
-
-                generated.org.eclipse.cdt.ToolChain toolChain = this.toolChain.toolChain;
-                generated.org.eclipse.cdt.ToolChain.Tool tool = CProjectService.getTool( toolChain, Tool.Linker.ID );
-                return CProjectService.getToolOptionValues( tool, LIBRARY_PATHS );
-            }
-        }
-
-        public static final class Archiver implements ToolChain.Options {
-
-            public static final String ID = Options.ID + ".archiver";
-
-            private Archiver() {
-
-                // hide constructor
-            }
-
-            @Override
-            public String getId() {
-
-                return ID;
-            }
         }
     }
 }
