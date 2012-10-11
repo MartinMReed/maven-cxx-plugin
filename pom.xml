@@ -58,6 +58,9 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
+							<args>
+								<arg>-nv</arg><!-- this disable strict schema validation -->
+							</args>
 							<schemaDirectory>src/main/resources/eclipse</schemaDirectory>
 							<generateDirectory>target/generated-sources/xjc/eclipse</generateDirectory>
 							<generatePackage>generated.org.eclipse.cdt</generatePackage>
