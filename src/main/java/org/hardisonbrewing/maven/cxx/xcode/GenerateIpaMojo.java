@@ -84,7 +84,10 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
 		String codesignAllocateLocation = getCodesignAllocateVariable();
 		if (codesignAllocateLocation == null || codesignAllocateLocation.length() == 0) {
 		
-			codesignAllocateLocation = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate";
+			/*
+			 * Force to the new Mountain Lion / Xcode 4.5 location
+			 */
+			codesignAllocateLocation = "/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate";
 		}
 
         Commandline commandLine = buildCommandline( cmd );
