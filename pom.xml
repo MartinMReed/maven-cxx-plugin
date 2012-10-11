@@ -61,6 +61,7 @@
 							<schemaDirectory>src/main/resources/eclipse</schemaDirectory>
 							<generateDirectory>target/generated-sources/xjc/eclipse</generateDirectory>
 							<generatePackage>generated.org.eclipse.cdt</generatePackage>
+							<nv>true</nv>
 							<schemaIncludes>
 								<schemaInclude>cproject.xsd</schemaInclude>
 								<schemaInclude>plugin.xsd</schemaInclude>
