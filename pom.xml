@@ -71,7 +71,6 @@
 							</schemaIncludes>
 						</configuration>
 					</execution>
-					-->
 					<execution>
 						<id>generate-bar-xsd</id>
 						<goals>
@@ -86,6 +85,7 @@
 							</schemaIncludes>
 						</configuration>
 					</execution>
+					-->
 				</executions>
 			</plugin>
 		</plugins>
