@@ -88,7 +88,7 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
 		}
 
         Commandline commandLine = buildCommandline( cmd );
-        commandLine.addEnvironment( "CODESIGN_ALLOCATE", "/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate" );
+        commandLine.addEnvironment( "CODESIGN_ALLOCATE", codesignAllocateLocation );
         execute( commandLine );
     }
 
