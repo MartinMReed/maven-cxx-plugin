@@ -23,6 +23,7 @@ import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 public final class GnuToolChain implements ToolChain {
 
     public static final String ID = "cdt.managedbuild.config.gnu";
+    public static final String ID_OSX = "cdt.managedbuild.config.macosx";
 
     private final Options options;
     private final Builder builder;
@@ -57,7 +58,10 @@ public final class GnuToolChain implements ToolChain {
 
     public static boolean matches( Configuration configuration ) {
 
-        return configuration.getId().startsWith( ID );
+        if ( configuration.getId().startsWith( ID ) ) {
+            return true;
+        }
+        return configuration.getId().startsWith( ID_OSX );
     }
 
     @Override
@@ -164,6 +168,36 @@ public final class GnuToolChain implements ToolChain {
         }
 
         protected abstract String getOptionsId();
+
+        protected String getToolOptionValue( String superClass ) {
+
+            return CProjectService.getToolOptionValue( tool, superClass );
+        }
+
+        protected String[] getToolOptionValues( String superClass ) {
+
+            return CProjectService.getToolOptionValues( tool, superClass );
+        }
+
+        public int getOptLevel() {
+
+            String superClass = getOptionsId();
+            String optLevel = superClass + ".optlevel";
+            String value = getToolOptionValue( optLevel );
+
+            if ( value == null ) {
+                return -1;
+            }
+
+            value = value.substring( ( optLevel + "." ).length() );
+
+            try {
+                return Integer.parseInt( value );
+            }
+            catch (NumberFormatException e) {
+                return -1;
+            }
+        }
     }
 
     public static class CCompiler extends Tool {
@@ -186,6 +220,16 @@ public final class GnuToolChain implements ToolChain {
         protected String getOptionsId() {
 
             return OPTIONS;
+        }
+
+        public String[] getIncludePaths() {
+
+            return getToolOptionValues( OPTIONS + ".includePath" );
+        }
+
+        public String[] getDefines() {
+
+            return getToolOptionValues( OPTIONS + ".defines" );
         }
     }
 
@@ -283,7 +327,7 @@ public final class GnuToolChain implements ToolChain {
 
     public static final class Archiver extends Tool {
 
-        private static final String ID = Tool.ID + ".archiver";
+        private static final String ID = Tool.ID + ".archiver.base";
         private static final String OPTIONS = Options.ID + ".archiver";
 
         private Archiver(GnuToolChain toolChain) {

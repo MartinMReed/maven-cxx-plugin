@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.cdt.qcc.managed;
+package org.hardisonbrewing.maven.cxx.cdt.managed;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
 
@@ -28,12 +28,12 @@ import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.core.model.Source;
 import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 import org.hardisonbrewing.maven.cxx.cdt.CdtService;
-import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain;
 import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain.Builder;
 import org.hardisonbrewing.maven.cxx.component.BuildConfiguration;
 
 /**
- * @goal cdt-qcc-managed-initialize
+ * @goal cdt-managed-initialize
  * @phase initialize
  */
 public final class InitializeMojo extends JoJoMojoImpl {
@@ -47,13 +47,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
         Configuration configuration = CProjectService.getBuildConfiguration( target );
-
-        if ( !QccToolChain.matches( configuration ) ) {
-            getLog().info( "Not a QCC project... skipping" );
-            return;
-        }
-
-        QccToolChain toolChain = (QccToolChain) CdtService.getToolChain( configuration );
+        ToolChain toolChain = CdtService.getToolChain( configuration );
         Builder builder = toolChain.getBuilder();
 
         if ( builder.isMakefile() ) {
@@ -63,12 +57,11 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         List<String> includes = new ArrayList<String>();
         List<String> excludes = new ArrayList<String>();
-        loadSources( includes, excludes );
-
-        loadSourcePaths( configuration, includes, excludes );
+        findExtensions( includes, excludes );
+        loadSources( configuration, includes, excludes );
     }
 
-    private void loadSources( List<String> includes, List<String> excludes ) {
+    private void findExtensions( List<String> includes, List<String> excludes ) {
 
         String[] sourceExtensions = CdtService.getSourceExtensions();
         if ( sourceExtensions != null ) {
@@ -91,7 +84,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
         }
     }
 
-    private final void loadSourcePaths( Configuration configuration, List<String> includes, List<String> excludes ) {
+    private final void loadSources( Configuration configuration, List<String> includes, List<String> excludes ) {
 
         String[] sourcePaths = CProjectService.getSourcePaths( configuration );
         if ( sourcePaths == null ) {

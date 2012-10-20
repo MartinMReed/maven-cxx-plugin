@@ -260,10 +260,11 @@
 								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-validate</validate>
 							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
 								org.hardisonbrewing:maven-cxx-plugin:cdt-initialize,
-								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-initialize,
-								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-initialize</initialize>
+								org.hardisonbrewing:maven-cxx-plugin:cdt-managed-initialize,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-makefile-compile,
+							<compile>org.hardisonbrewing:maven-cxx-plugin:cdt-gnu-managed-compile,
+								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-makefile-compile,
 								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-compile,
 								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-assemble,
 								org.hardisonbrewing:maven-cxx-plugin:cdt-qcc-managed-link,
