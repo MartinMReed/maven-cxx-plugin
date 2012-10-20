@@ -48,7 +48,7 @@ public final class InitializeMojo extends org.hardisonbrewing.maven.cxx.cdt.Init
 
         super.execute();
 
-        QccToolChain toolChain = (QccToolChain) CdtService.getToolChain( configuration );
+        QccToolChain toolChain = CdtService.getToolChain( configuration );
         QccToolChain.Options options = toolChain.getOptions();
         PropertiesService.putProperty( "CPUVARDIR", options.getPlatform() );
     }

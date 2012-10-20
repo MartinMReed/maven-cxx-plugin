@@ -30,7 +30,6 @@ import org.hardisonbrewing.jaxb.JAXB;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.cxx.cdt.toolchain.GnuToolChain;
 import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
-import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain;
 
 public class CdtService {
 
@@ -113,18 +112,18 @@ public class CdtService {
         }
     }
 
-    public static ToolChain getToolChain( Configuration configuration ) {
-
-        String id = configuration.getId();
+    @SuppressWarnings( "unchecked" )
+    public static <T> T getToolChain( Configuration configuration ) {
 
         if ( QccToolChain.matches( configuration ) ) {
-            return new QccToolChain( configuration );
+            return (T) new QccToolChain( configuration );
         }
         else if ( GnuToolChain.matches( configuration ) ) {
-            return new GnuToolChain( configuration );
+            return (T) new GnuToolChain( configuration );
         }
 
-        JoJoMojo.getMojo().getLog().error( "Unsupported toolchain[" + id + "]" );
+        String id = configuration.getId();
+        JoJoMojo.getMojo().getLog().error( "Unsupported toolChain[" + id + "]" );
         throw new UnsupportedOperationException();
     }
 

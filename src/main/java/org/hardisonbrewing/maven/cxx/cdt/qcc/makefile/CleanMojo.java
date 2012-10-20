@@ -46,7 +46,7 @@ public final class CleanMojo extends org.hardisonbrewing.maven.cxx.qnx.CleanMojo
             return;
         }
 
-        QccToolChain toolChain = (QccToolChain) CdtService.getToolChain( configuration );
+        QccToolChain toolChain = CdtService.getToolChain( configuration );
         Builder builder = toolChain.getBuilder();
 
         if ( !builder.isMakefile() ) {
