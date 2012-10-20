@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -94,7 +94,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         cmd.add( SED_SERIAL_NUMBER );
 
         StringStreamConsumer streamConsumer = new StringStreamConsumer();
-        execute( cmd, streamConsumer, streamConsumer );
+        execute( cmd, streamConsumer, null );
 
         return streamConsumer.getOutput().trim();
     }
@@ -111,7 +111,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         cmd.add( SED_IDENTITY );
 
         StringStreamConsumer streamConsumer = new StringStreamConsumer();
-        execute( cmd, streamConsumer, streamConsumer );
+        execute( cmd, streamConsumer, null );
 
         return streamConsumer.getOutput().trim();
     }
@@ -127,7 +127,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         cmd.add( SED_SERIAL_NUMBER.replace( "Serial Number", serialNumber ) );
 
         StringStreamConsumer streamConsumer = new StringStreamConsumer();
-        execute( cmd, streamConsumer, streamConsumer );
+        execute( cmd, streamConsumer, null );
 
         return serialNumber.equals( streamConsumer.getOutput().trim() );
     }

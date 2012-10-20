@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,14 +22,21 @@ import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
 import org.codehaus.plexus.util.cli.Commandline;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.core.cli.CommandLineService;
 
 /**
  * @goal xcode-generate-ipa
  * @phase prepare-package
  */
 public final class GenerateIpaMojo extends JoJoMojoImpl {
+
+    private static final String CODESIGN_ALLOCATE = "CODESIGN_ALLOCATE";
+    private static final String CODESIGN_ALLOCATE_XCODE_4_3 = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate";
+    private static final String CODESIGN_ALLOCATE_XCODE_4_5 = "/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate";
 
     /**
      * @parameter
@@ -81,8 +88,41 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         }
 
         Commandline commandLine = buildCommandline( cmd );
-        commandLine.addEnvironment( "CODESIGN_ALLOCATE", "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate" );
+        if ( CommandLineService.getEnvVar( commandLine, CODESIGN_ALLOCATE ) == null ) {
+            commandLine.addEnvironment( CODESIGN_ALLOCATE, getCodesignAllocate() );
+        }
         execute( commandLine );
+    }
+
+    private String getCodesignAllocate() {
+
+        String codesignAllocation = whichCodesignAllocate();
+        if ( codesignAllocation != null && codesignAllocation.length() > 0 ) {
+            return codesignAllocation;
+        }
+
+        if ( FileUtils.exists( CODESIGN_ALLOCATE_XCODE_4_5 ) ) {
+            return CODESIGN_ALLOCATE_XCODE_4_5;
+        }
+
+        if ( FileUtils.exists( CODESIGN_ALLOCATE_XCODE_4_3 ) ) {
+            return CODESIGN_ALLOCATE_XCODE_4_3;
+        }
+
+        getLog().error( "Unable to locate `codesign_allocate`. Try adding it to your env var PATH or set CODESIGN_ALLOCATE to point to it." );
+        throw new IllegalStateException();
+    }
+
+    private String whichCodesignAllocate() {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "which" );
+        cmd.add( "codesign_allocate" );
+
+        StringStreamConsumer streamConsumer = new StringStreamConsumer();
+        execute( cmd, streamConsumer, null );
+
+        return streamConsumer.getOutput().trim();
     }
 
     private String getAppFilePath( String target ) {
