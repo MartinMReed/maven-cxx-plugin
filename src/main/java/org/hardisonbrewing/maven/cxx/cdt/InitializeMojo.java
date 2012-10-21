@@ -18,18 +18,17 @@ package org.hardisonbrewing.maven.cxx.cdt;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
  * @goal cdt-initialize
  * @phase initialize
  */
-public class InitializeMojo extends org.hardisonbrewing.maven.cxx.qnx.InitializeMojo {
+public class InitializeMojo extends JoJoMojoImpl {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         CdtService.loadCdtCoreFileExtensions();
-
-        super.execute();
     }
 }
