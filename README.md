@@ -38,6 +38,7 @@ To download this plugin without building it manually, you can add the following 
 Continuous Integration: [Bamboo Status](http://hardisonbrewing.org:8083/browse/CXX)
 
 # Setting up your pom.xml
+Packages that are <del>struck out</del> have been disabled, but are still present in the source code.
 
 ## Specify the packaging
 The `<packaging/>` in your `pom.xml` must be set to package classifier for the type of tool you're project should build for. See supported tools and package types below:
@@ -55,8 +56,6 @@ The `<packaging/>` in your `pom.xml` must be set to package classifier for the t
 <tr><td>xcode</td><td>xcodebuild</td></tr>
 <tr><td>flex</td><td>Adobe Air/Flex</td></tr>
 </table>
-
-* Packages that are <del>struck out</del> have been disabled, but are still present in the source code.
 
 ## Configuring the plugin
 Under the plugin `<configuration/>` you may be able to specify additional settings depending on the selected packaging:
