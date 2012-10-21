@@ -29,7 +29,7 @@ import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
  * @goal cdt-qcc-initialize
  * @phase initialize
  */
-public final class InitializeMojo extends org.hardisonbrewing.maven.cxx.cdt.InitializeMojo {
+public final class InitializeMojo extends org.hardisonbrewing.maven.cxx.qnx.InitializeMojo {
 
     /**
      * @parameter

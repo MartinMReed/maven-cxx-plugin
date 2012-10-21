@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
@@ -34,7 +33,6 @@ import org.hardisonbrewing.maven.cxx.cdt.CdtService;
 import org.hardisonbrewing.maven.cxx.cdt.PropertiesService;
 import org.hardisonbrewing.maven.cxx.cdt.toolchain.GnuToolChain;
 import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain.Builder;
-import org.hardisonbrewing.maven.cxx.qnx.CommandLineService;
 
 /**
  * @goal cdt-gnu-managed-compile
@@ -92,7 +90,7 @@ public class CompileMojo extends JoJoMojoImpl {
 
         for (String source : sources) {
 
-            GnuToolChain.CCompiler compiler = toolChain.getCCompiler();
+            GnuToolChain.CppCompiler compiler = toolChain.getCppCompiler();
 
             int optLevel = compiler.getOptLevel();
             String[] includes = compiler.getIncludePaths();
@@ -112,7 +110,9 @@ public class CompileMojo extends JoJoMojoImpl {
 
             if ( includes != null ) {
                 for (String include : includes) {
-                    include = PropertiesService.populateTemplateVariables( include, "${", "}" );
+                    if ( PropertiesService.isWorkspaceValue( include ) ) {
+                        include = PropertiesService.getWorkspacePath( configuration, include );
+                    }
                     cmd.add( "-I" + include );
                 }
             }
@@ -127,9 +127,7 @@ public class CompileMojo extends JoJoMojoImpl {
                 }
             }
 
-            Commandline commandLine = buildCommandline( cmd );
-            CommandLineService.addQnxEnvVars( commandLine );
-            execute( commandLine );
+            execute( cmd );
         }
     }
 }

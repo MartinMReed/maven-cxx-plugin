@@ -35,6 +35,7 @@ import generated.org.eclipse.cdt.ToolChain.Tool;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -309,7 +310,7 @@ public class CProjectService {
         if ( option == null ) {
             return null;
         }
-        return option.getValue();
+        return trimOptionValue( option.getValue() );
     }
 
     public static String[] getToolOptionValues( Tool tool, String superClass ) {
@@ -337,20 +338,45 @@ public class CProjectService {
         if ( option == null ) {
             return null;
         }
-        return option.getValue();
+        return trimOptionValue( option.getValue() );
+    }
+
+    private static String trimOptionValue( String value ) {
+
+        if ( value.startsWith( "\"" ) ) {
+            if ( value.length() == 1 ) {
+                return null;
+            }
+            value = value.substring( 1 );
+        }
+
+        if ( value.endsWith( "\"" ) ) {
+            if ( value.length() == 1 ) {
+                return null;
+            }
+            value = value.substring( 0, value.length() - 1 );
+        }
+
+        return value;
     }
 
     private static String[] getOptionValues( Option option ) {
 
         List<ListOptionValue> listOptionValues = option.getListOptionValue();
-        String[] values = new String[listOptionValues.size()];
+        List<String> values = new LinkedList<String>();
 
-        for (int i = 0; i < values.length; i++) {
+        for (int i = 0; i < listOptionValues.size(); i++) {
+
             ListOptionValue listOptionValue = listOptionValues.get( i );
-            values[i] = listOptionValue.getValue();
+            String value = trimOptionValue( listOptionValue.getValue() );
+            if ( value != null && value.length() > 0 ) {
+                values.add( value );
+            }
         }
 
-        return values;
+        String[] _values = new String[values.size()];
+        values.toArray( _values );
+        return _values;
     }
 
     private static Configuration[] getBuildConfigurations( Cproject cproject, String module ) {

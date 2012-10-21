@@ -167,8 +167,6 @@ public final class GnuToolChain implements ToolChain {
             tool = CProjectService.getTool( toolChain.toolChain, getId() );
         }
 
-        protected abstract String getOptionsId();
-
         protected String getToolOptionValue( String superClass ) {
 
             return CProjectService.getToolOptionValue( tool, superClass );
@@ -178,7 +176,41 @@ public final class GnuToolChain implements ToolChain {
 
             return CProjectService.getToolOptionValues( tool, superClass );
         }
+    }
 
+    public static class CCompiler extends Tool {
+
+        private static final String ID = Tool.ID + ".c.compiler.base";
+        private static final String OPTIONS = "gnu.c.compiler.option";
+
+        private CCompiler(GnuToolChain toolChain) {
+
+            super( toolChain );
+        }
+
+        @Override
+        public String getId() {
+
+            return ID;
+        }
+
+        protected String getOptionsId() {
+
+            return OPTIONS;
+        }
+
+        public String[] getIncludePaths() {
+
+            return getToolOptionValues( getOptionsId() + ".include.paths" );
+        }
+
+        public String[] getDefines() {
+
+            return getToolOptionValues( getOptionsId() + ".defines" );
+        }
+
+        // could not find option super classes for non-compiler
+        // moving this here for now
         public int getOptLevel() {
 
             String superClass = getOptionsId();
@@ -200,43 +232,10 @@ public final class GnuToolChain implements ToolChain {
         }
     }
 
-    public static class CCompiler extends Tool {
-
-        private static final String ID = Tool.ID + ".c.compiler.base";
-        private static final String OPTIONS = Options.ID + ".compiler";
-
-        private CCompiler(GnuToolChain toolChain) {
-
-            super( toolChain );
-        }
-
-        @Override
-        public String getId() {
-
-            return ID;
-        }
-
-        @Override
-        protected String getOptionsId() {
-
-            return OPTIONS;
-        }
-
-        public String[] getIncludePaths() {
-
-            return getToolOptionValues( OPTIONS + ".includePath" );
-        }
-
-        public String[] getDefines() {
-
-            return getToolOptionValues( OPTIONS + ".defines" );
-        }
-    }
-
     public static final class CppCompiler extends CCompiler {
 
         private static final String ID = Tool.ID + ".cpp.compiler.base";
-        private static final String OPTIONS = Options.ID + ".compiler";
+        private static final String OPTIONS = "gnu.cpp.compiler.option";
 
         private CppCompiler(GnuToolChain toolChain) {
 
@@ -259,7 +258,6 @@ public final class GnuToolChain implements ToolChain {
     public static final class Assembler extends Tool {
 
         private static final String ID = Tool.ID + ".assembler.base";
-        private static final String OPTIONS = Options.ID + ".assembler";
 
         private Assembler(GnuToolChain toolChain) {
 
@@ -271,18 +269,11 @@ public final class GnuToolChain implements ToolChain {
 
             return ID;
         }
-
-        @Override
-        protected String getOptionsId() {
-
-            return OPTIONS;
-        }
     }
 
-    public static final class CLinker extends Tool {
+    public static class CLinker extends Tool {
 
         private static final String ID = Tool.ID + ".c.linker.base";
-        private static final String OPTIONS = Options.ID + ".linker";
 
         private CLinker(GnuToolChain toolChain) {
 
@@ -294,18 +285,11 @@ public final class GnuToolChain implements ToolChain {
 
             return ID;
         }
-
-        @Override
-        protected String getOptionsId() {
-
-            return OPTIONS;
-        }
     }
 
-    public static final class CppLinker extends Tool {
+    public static final class CppLinker extends CLinker {
 
         private static final String ID = Tool.ID + ".cpp.linker.base";
-        private static final String OPTIONS = Options.ID + ".linker";
 
         private CppLinker(GnuToolChain toolChain) {
 
@@ -317,18 +301,11 @@ public final class GnuToolChain implements ToolChain {
 
             return ID;
         }
-
-        @Override
-        protected String getOptionsId() {
-
-            return OPTIONS;
-        }
     }
 
     public static final class Archiver extends Tool {
 
         private static final String ID = Tool.ID + ".archiver.base";
-        private static final String OPTIONS = Options.ID + ".archiver";
 
         private Archiver(GnuToolChain toolChain) {
 
@@ -340,17 +317,9 @@ public final class GnuToolChain implements ToolChain {
 
             return ID;
         }
-
-        @Override
-        protected String getOptionsId() {
-
-            return OPTIONS;
-        }
     }
 
     public static final class Options implements ToolChain.Options {
-
-        private static final String ID = GnuToolChain.ID + ".option";
 
         private final GnuToolChain toolChain;
 
