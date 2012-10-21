@@ -46,12 +46,12 @@ The `<packaging/>` in your `pom.xml` must be set to package classifier for the t
 <thead><th>Packaging</th><th>Target</th></thead>
 <tr><td>a</td><td>ar</td></tr>
 <tr><td>o</td><td>gcc/g++</td></tr>
-<tr><td><strike>as.bar</strike></td><td><strike>BlackBerry 10, ActionScript main file</strike></td></tr>
-<tr><td><strike>mxml.bar</strike></td><td><strike>BlackBerry 10, MXML main file</strike></td></tr>
-<tr><td><strike>js.bar</strike></td><td><strike>BlackBerry 10, WebWorks</strike></td></tr>
+<tr><td><del>as.bar</del></td><td><del>BlackBerry 10, ActionScript main file</del></td></tr>
+<tr><td><del>mxml.bar</del></td><td><del>BlackBerry 10, MXML main file</del></td></tr>
+<tr><td><del>js.bar</del></td><td><del>BlackBerry 10, WebWorks</del></td></tr>
 <tr><td>cdt</td><td>Eclipse CDT, BlackBerry 10 QDE</td></tr>
 <tr><td>qnx</td><td>BlackBerry 10, Makefile</td></tr>
-<tr><td><strike>arduino</strike></td><td><strike>Arduino</strike></td></tr>
+<tr><td><del>arduino</del></td><td><del>Arduino</del></td></tr>
 <tr><td>xcode</td><td>xcodebuild</td></tr>
 <tr><td>flex</td><td>Adobe Air/Flex</td></tr>
 </table>
@@ -67,12 +67,12 @@ sources</td></tr>
 sources<br/>
 libs<br/>
 frameworks</td></tr>
-<tr><td><strike>*.bar</strike></td><td/></tr>
+<tr><td><del>*.bar</del></td><td/></tr>
 <tr><td>cdt</td><td>target (Release, Release-Device, etc)</td></tr>
 <tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>
-<tr><td><strike>arduino</strike></td><td><strike>sketchbook<br/>
+<tr><td><del>arduino</del></td><td><del>sketchbook<br/>
 targetDevice<br/>
-sources</strike></td></tr>
+sources</del></td></tr>
 <tr><td>xcode</td><td>configuration (Debug/Release/etc)<br/>
 provisioningProfile<br/>
 codesignCertificate<br/>
@@ -97,18 +97,18 @@ Usable through the `settings.xml`, `pom.xml` or commandline with a `-Dkey=value`
 <thead><th>Packaging</th><th>Properties</th></thead>
 <tr><td>a</td><td/></tr>
 <tr><td>o</td><td/></tr>
-<tr><td><strike>*.bar</strike></td><td><strike>adobe.flex.home<br/>
+<tr><td><del>*.bar</del></td><td><del>adobe.flex.home<br/>
 blackberry.webworks.tablet.home<br/>
 blackberry.tablet.home<br/>
 blackberry.tablet.device.ip<br/>
 blackberry.tablet.device.password<br/>
-debug</strike></td></tr>
+debug</del></td></tr>
 <tr><td>cdt</td><td/></tr>
 <tr><td>qnx</td><td/></tr>
-<tr><td><strike>arduino</strike></td><td><strike>arduino.home<br/>
+<tr><td><del>arduino</del></td><td><del>arduino.home<br/>
 avr.bin<br/>
 avrdude.config.path<br/>
-serial.port</strike></td></tr>
+serial.port</del></td></tr>
 <tr><td>xcode</td><td/></tr>
 <tr><td>flex</td><td>adobe.flex.home</td></tr>
 </table>
