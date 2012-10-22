@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
@@ -93,6 +94,9 @@ public class CompileMojo extends JoJoMojoImpl {
             GnuToolChain.CppCompiler compiler = toolChain.getCppCompiler();
 
             int optLevel = compiler.getOptLevel();
+            int debugLevel = compiler.getDebugLevel();
+            boolean verbose = compiler.getVerbose();
+            String otherOptions = compiler.getOtherOptions();
             String[] includes = compiler.getIncludePaths();
             String[] defines = compiler.getDefines();
 
@@ -117,8 +121,20 @@ public class CompileMojo extends JoJoMojoImpl {
                 }
             }
 
-            if ( optLevel != -1 ) {
+            if ( optLevel > 0 ) {
                 cmd.add( "-O" + optLevel );
+            }
+
+            if ( debugLevel > 0 ) {
+                cmd.add( "-g" + debugLevel );
+            }
+
+            if ( verbose ) {
+                cmd.add( "-v" );
+            }
+
+            if ( otherOptions != null && otherOptions.length() > 0 ) {
+                cmd.add( otherOptions );
             }
 
             if ( defines != null ) {
@@ -127,7 +143,9 @@ public class CompileMojo extends JoJoMojoImpl {
                 }
             }
 
-            execute( cmd );
+            Commandline commandLine = buildCommandline( cmd );
+            commandLine.getShell().setQuotedArgumentsEnabled( false );
+            execute( commandLine );
         }
     }
 }

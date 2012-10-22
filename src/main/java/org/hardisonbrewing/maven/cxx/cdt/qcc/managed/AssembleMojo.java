@@ -96,7 +96,7 @@ public class AssembleMojo extends JoJoMojoImpl {
 
             cmd.add( "-V" + compilerPlatform );
 
-            if ( optLevel != -1 ) {
+            if ( optLevel > -1 ) {
                 cmd.add( "-O" + optLevel );
             }
 
