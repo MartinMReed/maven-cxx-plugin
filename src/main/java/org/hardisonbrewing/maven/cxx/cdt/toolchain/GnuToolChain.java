@@ -176,6 +176,8 @@ public final class GnuToolChain implements ToolChain {
 
             return CProjectService.getToolOptionValues( tool, superClass );
         }
+
+        protected abstract String getOptionsId();
     }
 
     public static class CCompiler extends Tool {
@@ -194,6 +196,7 @@ public final class GnuToolChain implements ToolChain {
             return ID;
         }
 
+        @Override
         protected String getOptionsId() {
 
             return OPTIONS;
@@ -209,19 +212,72 @@ public final class GnuToolChain implements ToolChain {
             return getToolOptionValues( getOptionsId() + ".defines" );
         }
 
-        // could not find option super classes for non-compiler
-        // moving this here for now
+        public boolean getVerbose() {
+
+            String value = getToolOptionValue( getOptionsId() + ".other.verbose" );
+            return Boolean.parseBoolean( value );
+        }
+
+        public String getOtherOptions() {
+
+            return getToolOptionValue( getOptionsId() + ".other.other" );
+        }
+
         public int getOptLevel() {
 
-            String superClass = getOptionsId();
-            String optLevel = superClass + ".optlevel";
+            String optLevel = getOptionsId() + ".optimization.level";
             String value = getToolOptionValue( optLevel );
 
-            if ( value == null ) {
+            if ( value == null || value.length() == 0 ) {
                 return -1;
             }
 
-            value = value.substring( ( optLevel + "." ).length() );
+            value = value.substring( "gnu.cpp.compiler.optimization.level.".length() );
+
+            if ( "none".equals( value ) ) {
+                return 0;
+            }
+            else if ( "optimize".equals( value ) ) {
+                return 1;
+            }
+            else if ( "more".equals( value ) ) {
+                return 2;
+            }
+            else if ( "max".equals( value ) ) {
+                return 3;
+            }
+
+            try {
+                return Integer.parseInt( value );
+            }
+            catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+
+        public int getDebugLevel() {
+
+            String debugLevel = getOptionsId() + ".debugging.level";
+            String value = getToolOptionValue( debugLevel );
+
+            if ( value == null || value.length() == 0 ) {
+                return -1;
+            }
+
+            value = value.substring( "gnu.cpp.compiler.debugging.level.".length() );
+
+            if ( "none".equals( value ) ) {
+                return 0;
+            }
+            else if ( "minimal".equals( value ) ) {
+                return 1;
+            }
+            else if ( "default".equals( value ) ) {
+                return 2;
+            }
+            else if ( "max".equals( value ) ) {
+                return 3;
+            }
 
             try {
                 return Integer.parseInt( value );
@@ -258,6 +314,7 @@ public final class GnuToolChain implements ToolChain {
     public static final class Assembler extends Tool {
 
         private static final String ID = Tool.ID + ".assembler.base";
+        private static final String OPTIONS = "gnu.both.asm.option";
 
         private Assembler(GnuToolChain toolChain) {
 
@@ -269,11 +326,24 @@ public final class GnuToolChain implements ToolChain {
 
             return ID;
         }
+
+        @Override
+        protected String getOptionsId() {
+
+            return OPTIONS;
+        }
+
+        public boolean getNoWarn() {
+
+            String value = getToolOptionValue( OPTIONS + ".warnings.nowarn" );
+            return Boolean.parseBoolean( value );
+        }
     }
 
     public static class CLinker extends Tool {
 
         private static final String ID = Tool.ID + ".c.linker.base";
+        private static final String OPTIONS = "gnu.c.link.option";
 
         private CLinker(GnuToolChain toolChain) {
 
@@ -285,11 +355,24 @@ public final class GnuToolChain implements ToolChain {
 
             return ID;
         }
+
+        @Override
+        protected String getOptionsId() {
+
+            return OPTIONS;
+        }
+
+        public boolean getStrip() {
+
+            String value = getToolOptionValue( OPTIONS + ".debugging.level" );
+            return Boolean.parseBoolean( value );
+        }
     }
 
     public static final class CppLinker extends CLinker {
 
         private static final String ID = Tool.ID + ".cpp.linker.base";
+        private static final String OPTIONS = "gnu.cpp.link.option";
 
         private CppLinker(GnuToolChain toolChain) {
 
@@ -300,6 +383,12 @@ public final class GnuToolChain implements ToolChain {
         public String getId() {
 
             return ID;
+        }
+
+        @Override
+        protected String getOptionsId() {
+
+            return OPTIONS;
         }
     }
 
@@ -316,6 +405,12 @@ public final class GnuToolChain implements ToolChain {
         public String getId() {
 
             return ID;
+        }
+
+        @Override
+        protected String getOptionsId() {
+
+            return null;
         }
     }
 
