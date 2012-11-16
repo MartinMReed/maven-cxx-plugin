@@ -75,6 +75,7 @@ frameworks</td></tr>
 targetDevice<br/>
 sources</del></td></tr>
 <tr><td>xcode</td><td>configuration (Debug/Release/etc)<br/>
+scheme<br/>
 provisioningProfile<br/>
 codesignCertificate<br/>
 targetIncludes<br/>
