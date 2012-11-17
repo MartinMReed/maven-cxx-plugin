@@ -17,11 +17,13 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.cxx.PropertiesService;
 
 /**
  * @goal xcode-validate
@@ -43,31 +45,58 @@ public final class ValidateMojo extends JoJoMojoImpl {
      * @parameter
      */
     public String scheme;
+    /**
+     * @parameter
+     */
+    public Keychain keychain;
+    /**
+     * @parameter
+     */
+    public String provisioningProfile;
+
+    /**
+     * @parameter
+     */
+    public String configuration;
+
+    /**
+     * @parameter
+     */
+    public String codesignCertificate;
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
+        validateOS();
+
         File workspace = XCodeService.loadWorkspace();
-
         if ( workspace != null ) {
-
-            if ( scheme == null ) {
-                JoJoMojo.getMojo().getLog().error( "Invalid workspace configuration! The pom.xml must specify a `scheme`." );
-                throw new IllegalStateException();
-            }
-
-            if ( targetIncludes != null || targetExcludes != null ) {
-                if ( targetIncludes.length > 0 || targetExcludes.length > 0 ) {
-                    JoJoMojo.getMojo().getLog().error( "Invalid workspace configuration! The pom.xml must not specify any targets in `targetIncludes` or `targetExcludes`." );
-                    throw new IllegalStateException();
-                }
-            }
-
-            XCodeService.loadSchemes();
-            validateScheme( scheme );
-
-            return;
+            validateWorkspace();
         }
+        else {
+            validateProject();
+        }
+
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "provisioningProfile", provisioningProfile, false );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "configuration", configuration, false );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "codesignCertificate", codesignCertificate, false );
+
+        String keychainPassword = keychain == null ? null : keychain.password;
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "keychain", keychain, false );
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keychain><password/></keychain>", keychainPassword, false );
+    }
+
+    private void validateOS() {
+
+        Properties properties = PropertiesService.getProperties();
+        String osName = properties.getProperty( "os.name" );
+        if ( !"Mac OS X".equals( osName ) ) {
+            getLog().error( "Unsupported OS: " + osName );
+            throw new IllegalStateException();
+        }
+    }
+
+    private void validateProject() {
 
         File project = XCodeService.loadProject();
 
@@ -82,6 +111,21 @@ public final class ValidateMojo extends JoJoMojoImpl {
                 throw new IllegalStateException();
             }
         }
+    }
+
+    private void validateWorkspace() {
+
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "scheme", scheme, true );
+
+        if ( targetIncludes != null || targetExcludes != null ) {
+            if ( targetIncludes.length > 0 || targetExcludes.length > 0 ) {
+                JoJoMojo.getMojo().getLog().error( "Invalid workspace configuration! The pom.xml must not specify any targets in `targetIncludes` or `targetExcludes`." );
+                throw new IllegalStateException();
+            }
+        }
+
+        XCodeService.loadSchemes();
+        validateScheme( scheme );
     }
 
     private void validateScheme( String scheme ) {

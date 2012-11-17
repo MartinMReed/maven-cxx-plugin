@@ -76,10 +76,13 @@ targetDevice<br/>
 sources</del></td></tr>
 <tr><td>xcode</td><td>configuration (Debug/Release/etc)<br/>
 scheme<br/>
+targetIncludes<br/>
+targetExcludes (Usually test targets)<br/>
 provisioningProfile<br/>
 codesignCertificate<br/>
-targetIncludes<br/>
-targetExcludes (Usually test targets)</td></tr>
+keychain<br/>
+keychain/keychain<br/>
+keychain/password</td></tr>
 <tr><td>flex</td><td>target (air, apk, ipa-app-store, <a href="http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html">etc</a>)<br/>
 sourceFile (i.e. src/Main.mxml)<br/>
 libDirectory (Directory containing SWC libs)<br/>
@@ -221,6 +224,10 @@ serial.port</del></td></tr>
 	        <configuration>
 	          <provisioningProfile>Komodododo_AdHoc.mobileprovision</provisioningProfile>
 	          <codesignCertificate>developer_identity.cer</codesignCertificate>
+	          <keychain>
+	            <keychain>/tools/keychains/ios.keychain</keychain>
+	            <password>password</password>
+	          </keychain>
 	          <targetExcludes>
 	            <targetExclude>KomodododoTests</targetExclude>
 	          </targetExcludes>
