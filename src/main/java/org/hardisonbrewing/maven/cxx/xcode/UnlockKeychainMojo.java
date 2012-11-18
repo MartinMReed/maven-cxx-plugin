@@ -41,18 +41,8 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
             return;
         }
 
-        listKeychains();
         defaultKeychain( keychain );
         unlockKeychain( keychain );
-    }
-
-    private void listKeychains() {
-
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "security" );
-        cmd.add( "-v" );
-        cmd.add( "list-keychains" );
-        execute( cmd );
     }
 
     private void defaultKeychain( Keychain keychain ) {
@@ -63,7 +53,6 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "security" );
-        cmd.add( "-v" );
         cmd.add( "default-keychain" );
         cmd.add( "-s" );
         cmd.add( keychain.keychain );
@@ -74,7 +63,6 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "security" );
-        cmd.add( "-v" );
         cmd.add( "unlock-keychain" );
         cmd.add( "-p" );
         cmd.add( keychain.password );

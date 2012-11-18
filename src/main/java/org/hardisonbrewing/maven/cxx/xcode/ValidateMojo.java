@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.PropertiesService;
@@ -84,6 +85,49 @@ public final class ValidateMojo extends JoJoMojoImpl {
         String keychainPassword = keychain == null ? null : keychain.password;
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "keychain", keychain, false );
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keychain><password/></keychain>", keychainPassword, false );
+
+        if ( keychain != null ) {
+            validateKeychain( keychain );
+        }
+    }
+
+    private void validateKeychain( Keychain _keychain ) {
+
+        String keychain = _keychain.keychain;
+
+        if ( keychain.startsWith( File.separator ) ) {
+            getLog().info( "Searching for keychain `" + keychain + "`..." );
+            if ( FileUtils.exists( keychain ) ) {
+                return;
+            }
+        }
+        else {
+
+            StringBuffer pathBuffer = new StringBuffer();
+            pathBuffer.append( File.separator );
+            pathBuffer.append( "Library" );
+            pathBuffer.append( File.separator );
+            pathBuffer.append( "Keychains" );
+            pathBuffer.append( File.separator );
+            pathBuffer.append( keychain );
+            String path = pathBuffer.toString();
+
+            Properties properties = PropertiesService.getProperties();
+            String userPath = properties.getProperty( "user.home" ) + path;
+
+            getLog().info( "Searching for keychain `" + keychain + "` at `" + userPath + "`..." );
+            if ( FileUtils.exists( userPath ) ) {
+                return;
+            }
+
+            getLog().info( "Searching for keychain `" + keychain + "` at `" + path + "`..." );
+            if ( FileUtils.exists( path ) ) {
+                return;
+            }
+        }
+
+        getLog().error( "Unable to locate keychain `" + keychain + "`." );
+        throw new IllegalStateException();
     }
 
     private void validateOS() {
