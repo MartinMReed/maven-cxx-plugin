@@ -40,11 +40,12 @@ public final class ConvertPlistMojo extends JoJoMojoImpl {
 
     private void execute( String target ) {
 
-        String embeddedInfoPlistPath = XCodeService.getEmbeddedInfoPlistPath( target );
+        String plistPath = XCodeService.getEmbeddedInfoPlistPath( target );
+        File plistFile = new File( plistPath );
 
-        File embeddedInfoPlist = new File( embeddedInfoPlistPath );
-        if ( !embeddedInfoPlist.exists() ) {
-            return;
+        if ( !plistFile.exists() ) {
+            getLog().error( "Unable to locate embedded " + InfoPlistService.INFO_PLIST + ": " + plistFile );
+            throw new IllegalStateException();
         }
 
         List<String> cmd = new LinkedList<String>();
@@ -53,7 +54,7 @@ public final class ConvertPlistMojo extends JoJoMojoImpl {
         cmd.add( "xml1" );
         cmd.add( "-o" );
         cmd.add( XCodeService.getConvertedInfoPlistPath( target ) );
-        cmd.add( embeddedInfoPlistPath );
+        cmd.add( plistPath );
         execute( cmd );
     }
 }

@@ -205,11 +205,6 @@ public final class XCodeService {
         return null;
     }
 
-    public static final File getConvertedInfoPlist( String target ) {
-
-        return new File( getConvertedInfoPlistPath( target ) );
-    }
-
     public static final String getConvertedInfoPlistPath( String target ) {
 
         StringBuffer plistPath = new StringBuffer();
