@@ -63,19 +63,8 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
         // http://developer.apple.com/library/ios/#featuredarticles/FA_Wireless_Enterprise_App_Distribution/Introduction/Introduction.html
 
-        StringBuffer destPath = new StringBuffer();
-        destPath.append( TargetDirectoryService.getTempPackagePath( target ) );
-        destPath.append( File.separator );
-        destPath.append( "manifest.vm" );
-        File dest = new File( destPath.toString() );
-
-        if ( !dest.getParentFile().exists() ) {
-            dest.getParentFile().mkdirs();
-        }
-
-        getLog().info( "Generating " + destPath + "..." );
-
-        Plist plist = XCodeService.readInfoPlist( XCodeService.getConvertedInfoPlist( target ) );
+        String plistPath = XCodeService.getConvertedInfoPlistPath( target );
+        Plist plist = XCodeService.readInfoPlist( new File( plistPath ) );
 
         StringBuffer ipaFilePath = new StringBuffer();
         ipaFilePath.append( target );
@@ -121,6 +110,18 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
             velocityContext.put( DOWNLOAD_ICON_URL, iconUrlValue );
             velocityContext.put( ITUNES_ICON_URL, iconUrlValue );
         }
+
+        StringBuffer destPath = new StringBuffer();
+        destPath.append( TargetDirectoryService.getTempPackagePath( target ) );
+        destPath.append( File.separator );
+        destPath.append( "manifest.vm" );
+        File dest = new File( destPath.toString() );
+
+        if ( !dest.getParentFile().exists() ) {
+            dest.getParentFile().mkdirs();
+        }
+
+        getLog().info( "Generating " + destPath + "..." );
 
         Template template = TemplateService.getTemplateFromClasspath( "/xcode/ipaManifest.vm" );
 

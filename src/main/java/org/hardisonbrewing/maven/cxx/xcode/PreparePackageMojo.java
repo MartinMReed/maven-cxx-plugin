@@ -54,7 +54,9 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private void copyIconFile( String target ) {
 
-        Plist plist = XCodeService.readInfoPlist( XCodeService.getConvertedInfoPlist( target ) );
+        String plistPath = XCodeService.getConvertedInfoPlistPath( target );
+        Plist plist = XCodeService.readInfoPlist( new File( plistPath ) );
+
         if ( plist == null ) {
             return;
         }
