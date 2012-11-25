@@ -19,6 +19,7 @@ package org.hardisonbrewing.maven.cxx.xcode;
 import generated.plist.Plist;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -139,7 +140,9 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private final void prepareTargetFile( String target, File src, String filename ) {
 
-        if ( XCodeService.getTargets().size() > 1 ) {
+        List<String> targets = XCodeService.getTargets();
+
+        if ( targets.size() > 1 ) {
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append( target );
             stringBuffer.append( File.separator );

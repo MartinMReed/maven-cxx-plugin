@@ -50,11 +50,6 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
      */
     public String[] targetExcludes;
 
-    /**
-     * @parameter
-     */
-    public String scheme;
-
     private final Hashtable<String, String> groupIndex = new Hashtable<String, String>();
     private final Hashtable<String, String> fileIndex = new Hashtable<String, String>();
     private final Hashtable<String, Dict> keyIndex = new Hashtable<String, Dict>();
@@ -168,9 +163,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
         List<String> targets = getTargets( dict );
 
-        if ( scheme == null ) {
-            XCodeService.setTargets( targets );
-        }
+        XCodeService.setTargets( targets );
 
         String _targets = "";
         for (String target : targets) {
