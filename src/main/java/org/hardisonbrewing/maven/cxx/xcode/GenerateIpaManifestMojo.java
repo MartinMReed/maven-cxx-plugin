@@ -50,7 +50,11 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
         if ( !XCodeService.isApplicationType( target ) ) {
             StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( "No targets found of type `" );
+            stringBuffer.append( "Target[" );
+            stringBuffer.append( target );
+            stringBuffer.append( "], type[" );
+            stringBuffer.append( XCodeService.getProductType( target ) );
+            stringBuffer.append( "] does not match `" );
             stringBuffer.append( XCodeService.PRODUCT_TYPE_APPLICATION );
             stringBuffer.append( "`...skipping" );
             getLog().info( stringBuffer.toString() );

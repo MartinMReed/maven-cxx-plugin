@@ -17,8 +17,6 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -59,7 +57,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
         if ( scheme != null ) {
 
             initWorkspace();
-            initScheme( scheme );
+            XCodeService.setScheme( scheme );
             initWorkspaceProject( scheme );
 
             Properties properties = PropertiesService.getXCodeProperties();
@@ -83,15 +81,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
         if ( codesignCertificate != null ) {
             CodesignCertificateService.assertCodesignCertificate( codesignCertificate );
         }
-    }
-
-    private void initScheme( String scheme ) {
-
-        XCodeService.setScheme( scheme );
-
-        List<String> targets = new ArrayList<String>();
-        targets.add( scheme );
-        XCodeService.setTargets( targets );
     }
 
     private void initWorkspace() {

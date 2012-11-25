@@ -17,6 +17,7 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
+import java.util.List;
 
 public class TargetDirectoryService extends org.hardisonbrewing.maven.core.TargetDirectoryService {
 
@@ -45,7 +46,8 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
 
     public static final String getTempPackagePath( String target ) {
 
-        if ( XCodeService.getTargets().size() <= 1 ) {
+        List<String> targets = XCodeService.getTargets();
+        if ( targets.size() <= 1 ) {
             return getTempPackagePath();
         }
 

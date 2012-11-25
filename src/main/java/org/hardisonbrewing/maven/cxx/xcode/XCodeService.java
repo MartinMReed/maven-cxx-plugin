@@ -64,10 +64,14 @@ public final class XCodeService {
         // do nothing
     }
 
+    public static String getProductType( String target ) {
+
+        return PropertiesService.getXCodeProperty( target, PROP_PRODUCT_TYPE );
+    }
+
     public static boolean isApplicationType( String target ) {
 
-        String productType = PropertiesService.getXCodeProperty( target, PROP_PRODUCT_TYPE );
-        return PRODUCT_TYPE_APPLICATION.equals( productType );
+        return PRODUCT_TYPE_APPLICATION.equals( getProductType( target ) );
     }
 
     public static final File loadWorkspace() {

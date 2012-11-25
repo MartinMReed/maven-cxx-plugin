@@ -33,11 +33,21 @@ import org.hardisonbrewing.maven.core.cli.CommandLineService;
  */
 public final class CompileMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String scheme;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        for (String target : XCodeService.getTargets()) {
-            execute( target );
+        if ( scheme != null ) {
+            execute( scheme );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
         }
     }
 
