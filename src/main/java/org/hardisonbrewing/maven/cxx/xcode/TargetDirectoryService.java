@@ -17,7 +17,6 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
-import java.util.List;
 
 public class TargetDirectoryService extends org.hardisonbrewing.maven.core.TargetDirectoryService {
 
@@ -37,22 +36,31 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
 
     public static final String getTargetBuildDirPath( String target ) {
 
+        String scheme = XCodeService.getScheme();
+
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTargetDirectoryPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( target );
+        if (scheme != null) {
+            stringBuffer.append( File.separator );
+            stringBuffer.append( scheme );
+        }
+        else {
+            stringBuffer.append( File.separator );
+            stringBuffer.append( target );
+        }
         return stringBuffer.toString();
     }
 
     public static final String getTempPackagePath( String target ) {
 
-        List<String> targets = XCodeService.getTargets();
-        if ( targets.size() <= 1 ) {
-            return getTempPackagePath();
-        }
+        String scheme = XCodeService.getScheme();
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTempPackagePath() );
+        if (scheme != null) {
+            stringBuffer.append( File.separator );
+            stringBuffer.append( scheme );
+        }
         stringBuffer.append( File.separator );
         stringBuffer.append( target );
         return stringBuffer.toString();
