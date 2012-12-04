@@ -20,7 +20,6 @@ import generated.plist.Plist;
 
 import java.io.File;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.ProjectService;
@@ -57,7 +56,7 @@ public final class XCodeService {
 
     private static Hashtable<String, String> fileIndex;
 
-    private static List<String> targets;
+    private static String[] targets;
 
     private XCodeService() {
 
@@ -138,7 +137,9 @@ public final class XCodeService {
     private static final File[] listSchemes() {
 
         StringBuffer extensionInclude = new StringBuffer();
-        extensionInclude.append( "**/*.xcodeproj" );
+        extensionInclude.append( "**" );
+        extensionInclude.append( File.separator );
+        extensionInclude.append( "*" );
         extensionInclude.append( File.separator );
         extensionInclude.append( "xcshareddata" );
         extensionInclude.append( File.separator );
@@ -280,12 +281,12 @@ public final class XCodeService {
         XCodeService.fileIndex = fileIndex;
     }
 
-    public static List<String> getTargets() {
+    public static String[] getTargets() {
 
         return targets;
     }
 
-    public static final void setTargets( List<String> targets ) {
+    public static final void setTargets( String[] targets ) {
 
         XCodeService.targets = targets;
     }
