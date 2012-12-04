@@ -44,8 +44,14 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.cxx.Target
 
     public static File[] getMakefileDirectories() {
 
+        StringBuffer extensionInclude = new StringBuffer();
+        extensionInclude.append( "**" );
+        extensionInclude.append( File.separator );
+        extensionInclude.append( "Makefile" );
+        
         File baseDir = ProjectService.getBaseDir();
-        File[] makefiles = FileUtils.listFilesRecursive( baseDir, new String[] { "**/Makefile" }, null );
+        String[] includes = new String[] { extensionInclude.toString() };
+        File[] makefiles = FileUtils.listFilesRecursive( baseDir, includes, null );
 
         List<File> directories = new ArrayList<File>();
 

@@ -6,23 +6,27 @@
 				<xs:element name="BuildAction">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="BuildActionEntry" minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="BuildActionEntries">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="BuildableReference">
+										<xs:element name="BuildActionEntry" minOccurs="0" maxOccurs="unbounded">
 											<xs:complexType>
-												<xs:attribute name="BlueprintName" type="xs:string" />
-												<xs:attribute name="BlueprintIdentifier" type="xs:string" />
+												<xs:sequence>
+													<xs:element name="BuildableReference">
+														<xs:complexType>
+															<xs:attribute name="BlueprintName" type="xs:string" />
+															<xs:attribute name="BlueprintIdentifier" type="xs:string" />
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
-										<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

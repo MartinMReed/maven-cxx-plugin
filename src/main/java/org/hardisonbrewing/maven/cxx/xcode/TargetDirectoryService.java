@@ -53,14 +53,8 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
 
     public static final String getTempPackagePath( String target ) {
 
-        String scheme = XCodeService.getScheme();
-
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTempPackagePath() );
-        if (scheme != null) {
-            stringBuffer.append( File.separator );
-            stringBuffer.append( scheme );
-        }
         stringBuffer.append( File.separator );
         stringBuffer.append( target );
         return stringBuffer.toString();

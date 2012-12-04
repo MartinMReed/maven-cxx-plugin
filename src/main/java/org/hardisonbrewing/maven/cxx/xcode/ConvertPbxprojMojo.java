@@ -49,6 +49,11 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
      * @parameter
      */
     public String[] targetExcludes;
+    
+	/**
+	 * @parameter
+	 */
+	public String scheme;
 
     private final Hashtable<String, String> groupIndex = new Hashtable<String, String>();
     private final Hashtable<String, String> fileIndex = new Hashtable<String, String>();
@@ -120,7 +125,9 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         for (String key : isaIndex.get( "PBXProject" )) {
             Dict dict = keyIndex.get( key );
             putDefaultCongurationName( dict, properties );
-            putTargets( dict, properties );
+            if (scheme == null) {
+                putTargets( dict, properties );
+            }
         }
 
         for (String key : isaIndex.get( "PBXNativeTarget" )) {
@@ -161,7 +168,11 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
     private void putTargets( Dict dict, Properties properties ) {
 
-        List<String> targets = getTargets( dict );
+    	String[] targets = getTargets( dict );
+    	putTargets( targets, properties );
+    }
+
+    public static void putTargets( String[] targets, Properties properties ) {
 
         XCodeService.setTargets( targets );
 
@@ -175,7 +186,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         properties.put( XCodeService.PROP_TARGETS, _targets );
     }
 
-    private List<String> getTargets( Dict dict ) {
+    private String[] getTargets( Dict dict ) {
 
         List<String> targets = PlistService.getStringArray( dict, XCodeService.PROP_TARGETS );
 
@@ -184,37 +195,40 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
             targets.set( i, PlistService.getString( productReference, PROP_VAL_NAME ) );
         }
 
-        if ( targetIncludes == null && targetExcludes == null ) {
-            return targets;
-        }
+        if ( targetIncludes != null || targetExcludes != null ) {
 
-        List<String> _targets = new ArrayList<String>();
+            List<String> _targets = new ArrayList<String>();
 
-        if ( targetIncludes != null ) {
-            for (String target : targets) {
-                include_loop: for (String include : targetIncludes) {
-                    if ( target.equalsIgnoreCase( include ) ) {
+            if ( targetIncludes != null ) {
+                for (String target : targets) {
+                    include_loop: for (String include : targetIncludes) {
+                        if ( target.equalsIgnoreCase( include ) ) {
+                            _targets.add( target );
+                            break include_loop;
+                        }
+                    }
+                }
+            }
+            else {
+                for (String target : targets) {
+                    boolean match = false;
+                    exclude_loop: for (String exclude : targetExcludes) {
+                        if ( target.equalsIgnoreCase( exclude ) ) {
+                            match = true;
+                            break exclude_loop;
+                        }
+                    }
+                    if ( !match ) {
                         _targets.add( target );
-                        break include_loop;
                     }
                 }
             }
-        }
-        else {
-            for (String target : targets) {
-                boolean match = false;
-                exclude_loop: for (String exclude : targetExcludes) {
-                    if ( target.equalsIgnoreCase( exclude ) ) {
-                        match = true;
-                        break exclude_loop;
-                    }
-                }
-                if ( !match ) {
-                    _targets.add( target );
-                }
-            }
+
+            targets = _targets;
         }
 
+        String[] _targets = new String[targets.size()];
+        targets.toArray(_targets);
         return _targets;
     }
 
