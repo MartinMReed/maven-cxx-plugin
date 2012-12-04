@@ -39,11 +39,25 @@
 						</goals>
 						<configuration>
 							<schemaDirectory>src/main/resources/xcode</schemaDirectory>
-							<generateDirectory>target/generated-sources/xjc/xcode</generateDirectory>
+							<generateDirectory>target/generated-sources/xjc/plist</generateDirectory>
 							<generatePackage>generated.plist</generatePackage>
 							<schemaLanguage>DTD</schemaLanguage>
 							<schemaIncludes>
 								<schemaInclude>PropertyList-1.0.dtd</schemaInclude>
+							</schemaIncludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-xcode-xsd</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory>src/main/resources/xcode</schemaDirectory>
+							<generateDirectory>target/generated-sources/xjc/xcode</generateDirectory>
+							<generatePackage>generated.xcode</generatePackage>
+							<schemaIncludes>
+								<schemaInclude>scheme.xsd</schemaInclude>
 							</schemaIncludes>
 						</configuration>
 					</execution>
