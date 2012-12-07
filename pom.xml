@@ -38,7 +38,6 @@
 			<plugin>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
 				<artifactId>maven-jaxb2-plugin</artifactId>
-<!-- 
 				<executions>
 					<execution>
 						<id>generate-xcode-dtd</id>
@@ -99,7 +98,6 @@
 						</configuration>
 					</execution>
 				</executions>
- -->
 			</plugin>
 		</plugins>
 	</build>
