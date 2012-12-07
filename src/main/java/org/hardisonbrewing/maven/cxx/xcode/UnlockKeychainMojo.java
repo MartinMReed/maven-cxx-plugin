@@ -43,6 +43,7 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         if ( keychain == null ) {
+
             return;
         }
 
@@ -82,9 +83,9 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
                     addKeychain( keychains, path );
                 }
             }
-        }
 
-        unlockKeychain( keychain );
+            unlockKeychain( path );
+        }
     }
 
     private String[] listKeychains() {
@@ -137,16 +138,16 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
         execute( cmd );
     }
 
-    private void unlockKeychain( Keychain keychain ) {
+    private void unlockKeychain( String keychainPath ) {
+
+        getLog().debug( "Unlocking keychain: " + keychainPath );
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "security" );
         cmd.add( "unlock-keychain" );
         cmd.add( "-p" );
         cmd.add( keychain.password );
-        if ( keychain.keychain != null ) {
-            cmd.add( keychain.keychain );
-        }
+        cmd.add( keychainPath );
         execute( cmd );
     }
 }
