@@ -4,7 +4,7 @@
 	<groupId>org.hardisonbrewing</groupId>
 	<artifactId>maven-cxx-plugin</artifactId>
 	<!-- Replaced with Fork from 1.1.19 -->
-	<version>1.1.20.metova-SNAPSHOT</version>
+	<version>1.1.19.metova</version>
 	<packaging>maven-plugin</packaging>
 	<name>${project.artifactId}</name>
 	
