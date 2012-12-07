@@ -36,6 +36,11 @@ public final class CompileMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
+    public Keychain keychain;
+
+    /**
+     * @parameter
+     */
     public String scheme;
 
     @Override
@@ -52,6 +57,8 @@ public final class CompileMojo extends JoJoMojoImpl {
     }
 
     private void execute( String target ) {
+
+        unlockKeychain( keychain );
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "xcodebuild" );
@@ -114,5 +121,11 @@ public final class CompileMojo extends JoJoMojoImpl {
         catch (CommandLineException e) {
             throw new IllegalStateException( e );
         }
+    }
+
+    private void unlockKeychain( Keychain keychain ) {
+
+        List<String> cmd = KeychainHelper.unlockKeychainCommand( keychain );
+        execute( cmd );
     }
 }

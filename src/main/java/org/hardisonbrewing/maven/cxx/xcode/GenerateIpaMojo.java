@@ -66,6 +66,8 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
 
     private void generateIpaFile( String target ) {
 
+        unlockKeychain( keychain );
+
         List<String> cmd = new LinkedList<String>();
 
         cmd.add( "xcrun" );
@@ -148,5 +150,11 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         stringBuffer.append( "." );
         stringBuffer.append( XCodeService.IPA_EXTENSION );
         return stringBuffer.toString();
+    }
+
+    private void unlockKeychain( Keychain keychain ) {
+
+        List<String> cmd = KeychainHelper.unlockKeychainCommand( keychain );
+        execute( cmd );
     }
 }
