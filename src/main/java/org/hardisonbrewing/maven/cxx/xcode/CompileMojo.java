@@ -17,6 +17,7 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -57,9 +58,9 @@ public final class CompileMojo extends JoJoMojoImpl {
 
     private void execute( String target ) {
 
-        List<String> cmd = KeychainHelper.unlockKeychainCommand( keychain );
+        unlockKeychain( keychain );
 
-        cmd.add( "&" );
+        List<String> cmd = new LinkedList<String>();
         cmd.add( "xcodebuild" );
 
         String workspacePath = XCodeService.getXcworkspacePath();
@@ -120,5 +121,11 @@ public final class CompileMojo extends JoJoMojoImpl {
         catch (CommandLineException e) {
             throw new IllegalStateException( e );
         }
+    }
+
+    private void unlockKeychain( Keychain keychain ) {
+
+        List<String> cmd = KeychainHelper.unlockKeychainCommand( keychain );
+        execute( cmd );
     }
 }

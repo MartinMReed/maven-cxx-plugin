@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.cxx.PropertiesService;
 
 public class KeychainHelper {
@@ -45,17 +44,13 @@ public class KeychainHelper {
     protected static final List<String> unlockKeychainCommand( Keychain keychain ) {
 
         List<String> cmd = new LinkedList<String>();
-        if ( keychain != null ) {
+        cmd.add( "security" );
+        cmd.add( "unlock-keychain" );
+        cmd.add( "-p" );
+        cmd.add( keychain.password );
+        if ( keychain.keychain != null ) {
 
-            JoJoMojo.getMojo().getLog().debug( "Unlocking " + keychain.keychain );
-            cmd.add( "security" );
-            cmd.add( "unlock-keychain" );
-            cmd.add( "-p" );
-            cmd.add( keychain.password );
-            if ( keychain.keychain != null ) {
-
-                KeychainHelper.findKeychainPath( keychain );
-            }
+            KeychainHelper.findKeychainPath( keychain );
         }
         return cmd;
     }
