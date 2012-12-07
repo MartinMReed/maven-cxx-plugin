@@ -20,7 +20,6 @@ import generated.plist.Plist;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -38,11 +37,6 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
     private static final String DOWNLOAD_ICON_URL = "downloadIconUrl";
     private static final String ITUNES_ICON_URL = "itunesIconUrl";
-
-    /**
-     * @parameter
-     */
-    public Keychain keychain;
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
@@ -68,8 +62,6 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         }
 
         // http://developer.apple.com/library/ios/#featuredarticles/FA_Wireless_Enterprise_App_Distribution/Introduction/Introduction.html
-
-        unlockKeychain( keychain );
 
         String plistPath = XCodeService.getConvertedInfoPlistPath( target );
         Plist plist = XCodeService.readInfoPlist( new File( plistPath ) );
@@ -139,11 +131,5 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         catch (IOException e) {
             throw new IllegalStateException( e );
         }
-    }
-
-    private void unlockKeychain( Keychain keychain ) {
-
-        List<String> cmd = KeychainHelper.unlockKeychainCommand( keychain );
-        execute( cmd );
     }
 }
