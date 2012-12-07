@@ -87,23 +87,10 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
             cmd.add( provisioningFile.getAbsolutePath() );
         }
 
-		String codesignAllocateLocation = getCodesignAllocateVariable();
-		if (codesignAllocateLocation == null || codesignAllocateLocation.length() == 0) {
-		
-			/*
-			 * Force to the new Mountain Lion / Xcode 4.5 location
-			 */
-			codesignAllocateLocation = "/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate";
-		}
-
         Commandline commandLine = buildCommandline( cmd );
-<<<<<<< HEAD
-        commandLine.addEnvironment( "CODESIGN_ALLOCATE", codesignAllocateLocation );
-=======
         if ( CommandLineService.getEnvVar( commandLine, CODESIGN_ALLOCATE ) == null ) {
             commandLine.addEnvironment( CODESIGN_ALLOCATE, getCodesignAllocate() );
         }
->>>>>>> upstream/master
         execute( commandLine );
     }
 
@@ -146,23 +133,6 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         stringBuffer.append( PropertiesService.getTargetProductName( target ) );
         return stringBuffer.toString();
     }
-
-	/**
-	 * Check for the CODESIGN_ALLOCATE variable in the bash profile.
-	 * Mountain Lion's codesign allocate tool is in a different location.
-	 * This assumes that the dev has already set it to the preferred location.
-	 */
-	private String getCodesignAllocateVariable() {
-
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "echo" );
-        cmd.add( "$CODESIGN_ALLOCATE" );
-
-        StringStreamConsumer streamConsumer = new StringStreamConsumer();
-        execute( cmd, streamConsumer, streamConsumer );
-
-        return streamConsumer.getOutput().trim();
-	}
 
     private String getIpaFilePath( String target ) {
 
