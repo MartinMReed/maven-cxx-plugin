@@ -105,7 +105,7 @@
 		<dependency>
 			<groupId>org.hardisonbrewing</groupId>
 			<artifactId>hbc-maven-core</artifactId>
-			<version>1.0.9.metova-SNAPSHOT</version>
+			<version>1.0.9.metova</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
