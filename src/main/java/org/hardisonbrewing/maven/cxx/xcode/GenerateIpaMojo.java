@@ -41,11 +41,6 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public Keychain keychain;
-
-    /**
-     * @parameter
-     */
     public String provisioningProfile;
 
     @Override
@@ -90,12 +85,6 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
             File provisioningFile = ProvisioningProfileService.getProvisioningProfile( provisioningProfile );
             cmd.add( "--embed" );
             cmd.add( provisioningFile.getAbsolutePath() );
-        }
-
-        if ( keychain != null ) {
-
-            cmd.add( "--keychain" );
-            cmd.add( KeychainHelper.findKeychainPath( keychain ) );
         }
 
         Commandline commandLine = buildCommandline( cmd );
