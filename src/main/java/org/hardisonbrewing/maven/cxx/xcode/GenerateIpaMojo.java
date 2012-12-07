@@ -92,6 +92,12 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
             cmd.add( provisioningFile.getAbsolutePath() );
         }
 
+        if ( keychain != null ) {
+
+            cmd.add( "--keychain" );
+            cmd.add( KeychainHelper.findKeychainPath( keychain ) );
+        }
+
         Commandline commandLine = buildCommandline( cmd );
         if ( CommandLineService.getEnvVar( commandLine, CODESIGN_ALLOCATE ) == null ) {
             commandLine.addEnvironment( CODESIGN_ALLOCATE, getCodesignAllocate() );
