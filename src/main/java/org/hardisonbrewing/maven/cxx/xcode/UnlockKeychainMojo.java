@@ -16,11 +16,9 @@
  */
 package org.hardisonbrewing.maven.cxx.xcode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +27,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.PropertiesService;
 
 /**
  * @goal xcode-unlock-keychain
@@ -51,7 +48,7 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
 
         if ( keychain.keychain != null ) {
 
-            String path = findKeychainPath( keychain.keychain );
+            String path = KeychainHelper.findKeychainPath( keychain );
             boolean exists = FileUtils.exists( path );
 
             StringBuffer stringBuffer = new StringBuffer();
@@ -151,29 +148,5 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
             cmd.add( keychain.keychain );
         }
         execute( cmd );
-    }
-
-    private String findKeychainPath( String keychain ) {
-
-        if ( keychain.startsWith( File.separator ) ) {
-            return keychain;
-        }
-
-        StringBuffer pathBuffer = new StringBuffer();
-        pathBuffer.append( File.separator );
-        pathBuffer.append( "Library" );
-        pathBuffer.append( File.separator );
-        pathBuffer.append( "Keychains" );
-        pathBuffer.append( File.separator );
-        pathBuffer.append( keychain );
-        String path = pathBuffer.toString();
-
-        if ( FileUtils.exists( path ) ) {
-            return path;
-        }
-
-        Properties properties = PropertiesService.getProperties();
-        String userHome = properties.getProperty( "user.home" );
-        return userHome + path;
     }
 }

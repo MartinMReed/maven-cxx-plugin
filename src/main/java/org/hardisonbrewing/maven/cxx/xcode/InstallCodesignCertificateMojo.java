@@ -38,6 +38,11 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
+    public Keychain keychain;
+
+    /**
+     * @parameter
+     */
     public String codesignCertificate;
 
     @Override
@@ -79,6 +84,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         cmd.add( "i" );
         cmd.add( file.getAbsolutePath() );
         cmd.add( "d" );
+        applyKeychainArgumentToCommand( cmd );
         execute( cmd );
     }
 
@@ -88,6 +94,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         cmd.add( "certtool" );
         cmd.add( "d" );
         cmd.add( file.getAbsolutePath() );
+        applyKeychainArgumentToCommand( cmd );
         cmd.add( "|" );
         cmd.add( "sed" );
         cmd.add( "-n" );
@@ -105,6 +112,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         cmd.add( "certtool" );
         cmd.add( "d" );
         cmd.add( file.getAbsolutePath() );
+        applyKeychainArgumentToCommand( cmd );
         cmd.add( "|" );
         cmd.add( "sed" );
         cmd.add( "-n" );
@@ -121,6 +129,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         List<String> cmd = new LinkedList<String>();
         cmd.add( "certtool" );
         cmd.add( "y" );
+        applyKeychainArgumentToCommand( cmd );
         cmd.add( "|" );
         cmd.add( "sed" );
         cmd.add( "-n" );
@@ -130,5 +139,13 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         execute( cmd, streamConsumer, null );
 
         return serialNumber.equals( streamConsumer.getOutput().trim() );
+    }
+
+    private void applyKeychainArgumentToCommand( List<String> cmd ) {
+
+        if ( keychain != null ) {
+
+            cmd.add( "k=" + KeychainHelper.findKeychainPath( keychain ) );
+        }
     }
 }
