@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,22 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde;
+package org.hardisonbrewing.maven.cxx.cdt;
 
-import java.io.File;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
-import org.hardisonbrewing.maven.cxx.qnx.QnxService;
+/**
+ * @goal cdt-initialize
+ * @phase initialize
+ */
+public class InitializeMojo extends JoJoMojoImpl {
 
-public final class QdeService {
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
-    public static final String getEclipseDirPath() {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( QnxService.getQnxHostUsrDirPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( "qde" );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( "eclipse" );
-        return stringBuffer.toString();
+        CdtService.loadCdtCoreFileExtensions();
     }
 }

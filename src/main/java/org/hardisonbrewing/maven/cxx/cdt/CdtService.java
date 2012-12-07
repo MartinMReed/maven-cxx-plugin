@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,22 +19,20 @@ package org.hardisonbrewing.maven.cxx.cdt;
 import generated.org.eclipse.cdt.Plugin;
 import generated.org.eclipse.cdt.Plugin.Extension;
 import generated.org.eclipse.cdt.Plugin.Extension.ContentType;
+import generated.org.eclipse.cdt.StorageModule.Configuration;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
 import org.codehaus.plexus.util.IOUtil;
 import org.hardisonbrewing.jaxb.JAXB;
-import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.GnuToolChain;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
 
 public class CdtService {
 
-    private static String eclipseDirPath;
     private static String[] sourceExtensions;
     private static String[] resourceExtensions;
 
@@ -97,43 +95,16 @@ public class CdtService {
         }
     }
 
-    public static final String getEclipsePluginsDirPath() {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getEclipseDirPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( "plugins" );
-        return stringBuffer.toString();
-    }
-
-    public static final String getCdtCoreJarPath() {
-
-        File baseDir = new File( getEclipsePluginsDirPath() );
-
-        String[] includes = new String[] { "org.eclipse.cdt.core_*.jar" };
-        String[] files = FileUtils.listFilePathsRecursive( baseDir, includes, null );
-
-        if ( files.length > 0 ) {
-            return files[0];
-        }
-
-        return null;
-    }
-
     public static final Plugin getCdtCorePlugin() {
 
         InputStream inputStream = null;
 
-        String jarFilePath = getCdtCoreJarPath();
-
         try {
-            JarFile jarFile = new JarFile( jarFilePath );
-            ZipEntry zipEntry = jarFile.getEntry( "plugin.xml" );
-            inputStream = jarFile.getInputStream( zipEntry );
+            inputStream = CdtService.class.getResourceAsStream( "/cdt/plugin.xml" );
             return JAXB.unmarshal( inputStream, Plugin.class );
         }
         catch (Exception e) {
-            JoJoMojo.getMojo().getLog().error( "Unable to load JAR: " + jarFilePath );
+            JoJoMojo.getMojo().getLog().error( "Unable to parse plugin.xml" );
             throw new IllegalStateException();
         }
         finally {
@@ -141,14 +112,19 @@ public class CdtService {
         }
     }
 
-    public static String getEclipseDirPath() {
+    @SuppressWarnings( "unchecked" )
+    public static <T> T getToolChain( Configuration configuration ) {
 
-        return eclipseDirPath;
-    }
+        if ( QccToolChain.matches( configuration ) ) {
+            return (T) new QccToolChain( configuration );
+        }
+        else if ( GnuToolChain.matches( configuration ) ) {
+            return (T) new GnuToolChain( configuration );
+        }
 
-    public static void setEclipseDirPath( String eclipseDirPath ) {
-
-        CdtService.eclipseDirPath = eclipseDirPath;
+        String id = configuration.getId();
+        JoJoMojo.getMojo().getLog().error( "Unsupported toolChain[" + id + "]" );
+        throw new UnsupportedOperationException();
     }
 
     public static String[] getSourceExtensions() {

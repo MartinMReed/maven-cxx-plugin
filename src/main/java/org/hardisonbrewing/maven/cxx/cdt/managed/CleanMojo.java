@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Martin M Reed
+ * Copyright (c) 2011-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,11 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.qde.managed;
+package org.hardisonbrewing.maven.cxx.cdt.managed;
 
 import generated.org.eclipse.cdt.StorageModule.Configuration;
-import generated.org.eclipse.cdt.ToolChain;
-import generated.org.eclipse.cdt.ToolChain.Builder;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,10 +25,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.qde.CProjectService;
+import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
+import org.hardisonbrewing.maven.cxx.cdt.CdtService;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain;
+import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain.Builder;
 
 /**
- * @goal qde-managed-clean
+ * @goal cdt-managed-clean
  * @phase clean
  */
 public final class CleanMojo extends JoJoMojoImpl {
@@ -40,20 +41,37 @@ public final class CleanMojo extends JoJoMojoImpl {
 
         Configuration[] configurations = CProjectService.getBuildConfigurations();
         for (Configuration configuration : configurations) {
-
-            ToolChain toolChain = CProjectService.getToolChain( configuration );
-            cleanBuilder( toolChain.getBuilder() );
+            cleanBuilder( configuration );
         }
     }
 
-    private void cleanBuilder( Builder builder ) {
+    private void cleanBuilder( Configuration configuration ) {
 
-        if ( CProjectService.isMakefileBuilder( builder ) ) {
+        ToolChain toolChain = CdtService.getToolChain( configuration );
+        Builder builder = toolChain.getBuilder();
+
+        if ( builder.isMakefile() ) {
             getLog().info( "Not a managed project... skipping" );
             return;
         }
 
-        File buildDir = new File( CProjectService.getBuildPath( builder ) );
+        String buildPath = builder.getBuildPath();
+
+        if ( getLog().isDebugEnabled() ) {
+
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( "Cleaning builder name[" );
+            stringBuffer.append( builder.getName() );
+            stringBuffer.append( "], path[" );
+            stringBuffer.append( builder.getBuildPath() );
+            stringBuffer.append( "] -> path[" );
+            stringBuffer.append( buildPath );
+            stringBuffer.append( "]" );
+            getLog().debug( stringBuffer.toString() );
+
+        }
+
+        File buildDir = new File( buildPath );
 
         if ( !buildDir.exists() ) {
             return;

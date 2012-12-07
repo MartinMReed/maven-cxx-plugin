@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,14 +20,16 @@ import generated.plist.Plist;
 
 import java.io.File;
 import java.util.Hashtable;
-import java.util.List;
 
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.ProjectService;
 
 public final class XCodeService {
 
     public static final String MOBILEPROVISION_EXTENSION = "mobileprovision";
+    public static final String XCSCHEME_EXTENSION = "xcscheme";
     public static final String XCODEPROJ_EXTENSION = "xcodeproj";
+    public static final String XCWORKSPACE_EXTENSION = "xcworkspace";
     public static final String IPA_EXTENSION = "ipa";
 
     public static final String PRODUCT_TYPE_APPLICATION = "com.apple.product-type.application";
@@ -39,65 +41,151 @@ public final class XCodeService {
     public static final String PROP_BUILD_CONFIG_LIST = "buildConfigurationList";
     public static final String PROP_PRODUCT_REFERENCE = "productReference";
     public static final String PROP_TARGETS = "targets";
+    public static final String PROP_SCHEME = "targets";
 
     private static String project;
+    private static String projectPath;
+
+    private static String workspace;
+    private static String workspacePath;
+
+    private static String[] schemes;
+    private static String scheme;
+
     private static String configuration;
 
     private static Hashtable<String, String> fileIndex;
 
-    private static List<String> targets;
+    private static String[] targets;
 
     private XCodeService() {
 
         // do nothing
     }
 
+    public static String getProductType( String target ) {
+
+        return PropertiesService.getXCodeProperty( target, PROP_PRODUCT_TYPE );
+    }
+
     public static boolean isApplicationType( String target ) {
 
-        String productType = PropertiesService.getXCodeProperty( target, PROP_PRODUCT_TYPE );
-        return PRODUCT_TYPE_APPLICATION.equals( productType );
+        return PRODUCT_TYPE_APPLICATION.equals( getProductType( target ) );
     }
 
-    public static final String getProject() {
+    public static final File loadWorkspace() {
 
-        if ( project == null ) {
-            File file = ProjectService.getBaseDir();
-            for (String filePath : file.list()) {
-                if ( filePath.endsWith( XCODEPROJ_EXTENSION ) ) {
-                    project = filePath.substring( 0, filePath.lastIndexOf( XCODEPROJ_EXTENSION ) - 1 );
-                    break;
-                }
+        File baseDir = ProjectService.getBaseDir();
+
+        for (File file : baseDir.listFiles()) {
+            if ( file.getName().endsWith( XCWORKSPACE_EXTENSION ) ) {
+                return file;
             }
         }
-        return project;
+
+        return null;
     }
 
-    public static final String getXcodeprojFilename() {
+    public static final String getSchemeXcprojPath( String scheme ) {
+
+        String schemePath = getSchemePath( scheme );
+        if ( schemePath == null ) {
+            return null;
+        }
+
+        int lastIndexOf = schemePath.lastIndexOf( XCODEPROJ_EXTENSION );
+        schemePath = schemePath.substring( 0, lastIndexOf + XCODEPROJ_EXTENSION.length() );
+        return schemePath;
+    }
+
+    public static final String getSchemePath( String scheme ) {
+
+        File[] files = listSchemes();
+        if ( files == null ) {
+            return null;
+        }
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getProject() );
+        stringBuffer.append( scheme );
         stringBuffer.append( "." );
-        stringBuffer.append( XCODEPROJ_EXTENSION );
-        return stringBuffer.toString();
+        stringBuffer.append( XCSCHEME_EXTENSION );
+        String filename = stringBuffer.toString();
+
+        for (File file : files) {
+            if ( filename.equals( file.getName() ) ) {
+                return file.getPath();
+            }
+        }
+
+        return null;
     }
 
-    public static final String getXcodeprojPath() {
+    public static final void loadSchemes() {
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( ProjectService.getBaseDirPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( getXcodeprojFilename() );
-        return stringBuffer.toString();
+        File[] files = listSchemes();
+        String[] schemes = new String[files.length];
+
+        for (int i = 0; i < files.length; i++) {
+            String filename = files[i].getName();
+            filename = filename.substring( 0, filename.lastIndexOf( XCSCHEME_EXTENSION ) - 1 );
+            schemes[i] = filename;
+        }
+
+        XCodeService.schemes = schemes;
+    }
+
+    private static final File[] listSchemes() {
+
+        StringBuffer extensionInclude = new StringBuffer();
+        extensionInclude.append( "**" );
+        extensionInclude.append( File.separator );
+        extensionInclude.append( "*" );
+        extensionInclude.append( File.separator );
+        extensionInclude.append( "xcshareddata" );
+        extensionInclude.append( File.separator );
+        extensionInclude.append( "xcschemes" );
+        extensionInclude.append( File.separator );
+        extensionInclude.append( "*." );
+        extensionInclude.append( XCSCHEME_EXTENSION );
+
+        File baseDir = ProjectService.getBaseDir();
+        String[] includes = new String[] { extensionInclude.toString() };
+        return FileUtils.listFilesRecursive( baseDir, includes, null );
+    }
+
+    public static final File loadProject() {
+
+        File baseDir = ProjectService.getBaseDir();
+
+        for (File file : baseDir.listFiles()) {
+            if ( file.getName().endsWith( XCODEPROJ_EXTENSION ) ) {
+                return file;
+            }
+        }
+
+        return null;
     }
 
     public static final String getPbxprojPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( ProjectService.getBaseDirPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( getXcodeprojFilename() );
+        stringBuffer.append( getXcprojPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( "project.pbxproj" );
+        return stringBuffer.toString();
+    }
+
+    public static final String getWorkspacedataPath() {
+
+        String workspacePath = getXcworkspacePath();
+        if ( workspacePath == null ) {
+            return null;
+        }
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( workspacePath );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "contents.xcworkspacedata" );
         return stringBuffer.toString();
     }
 
@@ -116,11 +204,6 @@ public final class XCodeService {
             return PlistService.readPlist( file );
         }
         return null;
-    }
-
-    public static final File getConvertedInfoPlist( String target ) {
-
-        return new File( getConvertedInfoPlistPath( target ) );
     }
 
     public static final String getConvertedInfoPlistPath( String target ) {
@@ -198,13 +281,68 @@ public final class XCodeService {
         XCodeService.fileIndex = fileIndex;
     }
 
-    public static List<String> getTargets() {
+    public static String[] getTargets() {
 
         return targets;
     }
 
-    public static final void setTargets( List<String> targets ) {
+    public static final void setTargets( String[] targets ) {
 
         XCodeService.targets = targets;
+    }
+
+    public static final String[] getSchemes() {
+
+        return schemes;
+    }
+
+    public static String getScheme() {
+
+        return scheme;
+    }
+
+    public static void setScheme( String scheme ) {
+
+        XCodeService.scheme = scheme;
+    }
+
+    public static final String getProject() {
+
+        return project;
+    }
+
+    public static void setProject( String project ) {
+
+        XCodeService.project = project;
+    }
+
+    public static String getXcprojPath() {
+
+        return projectPath;
+    }
+
+    public static void setXcprojPath( String projectPath ) {
+
+        XCodeService.projectPath = projectPath;
+    }
+
+    public static String getWorkspace() {
+
+        return workspace;
+    }
+
+    public static void setWorkspace( String workspace ) {
+
+        XCodeService.workspace = workspace;
+    }
+
+    public static String getXcworkspacePath() {
+
+        return workspacePath;
+    }
+
+    public static void setXcworkspacePath( String workspacePath ) {
+
+        XCodeService.workspacePath = workspacePath;
     }
 }

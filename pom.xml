@@ -3,14 +3,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.hardisonbrewing</groupId>
 	<artifactId>maven-cxx-plugin</artifactId>
-	<!-- forked from 1.1.18 -->
-	<version>1.1.18.4.metova-SNAPSHOT</version>
+	<!-- Originally forked from 1.1.18 -->
+	<version>1.1.19.metova-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>${project.artifactId}</name>
-        <scm>
-                <connection>scm:git:git@github.com:metova/maven-cxx-plugin.git</connection>
-                <developerConnection>scm:git:git@github.com:metova/maven-cxx-plugin.git</developerConnection>
-        </scm>
+	
+	<scm>
+		<connection>scm:git:git@github.com:metova/maven-cxx-plugin.git</connection>
+		<developerConnection>scm:git:git@github.com:metova/maven-cxx-plugin.git</developerConnection>
+	</scm>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -44,11 +46,25 @@
 						</goals>
 						<configuration>
 							<schemaDirectory>src/main/resources/xcode</schemaDirectory>
-							<generateDirectory>target/generated-sources/xjc/xcode</generateDirectory>
+							<generateDirectory>target/generated-sources/xjc/plist</generateDirectory>
 							<generatePackage>generated.plist</generatePackage>
 							<schemaLanguage>DTD</schemaLanguage>
 							<schemaIncludes>
 								<schemaInclude>PropertyList-1.0.dtd</schemaInclude>
+							</schemaIncludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-xcode-xsd</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaDirectory>src/main/resources/xcode</schemaDirectory>
+							<generateDirectory>target/generated-sources/xjc/xcode</generateDirectory>
+							<generatePackage>generated.xcode</generatePackage>
+							<schemaIncludes>
+								<schemaInclude>scheme.xsd</schemaInclude>
 							</schemaIncludes>
 						</configuration>
 					</execution>
@@ -58,10 +74,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<args>
-								<arg>-nv</arg>
-							</args>
-							<schemaDirectory>src/main/resources/eclipse</schemaDirectory>
+							<schemaDirectory>src/main/resources/cdt</schemaDirectory>
 							<generateDirectory>target/generated-sources/xjc/eclipse</generateDirectory>
 							<generatePackage>generated.org.eclipse.cdt</generatePackage>
 							<schemaIncludes>
@@ -115,16 +128,17 @@
 			<version>2.2.4</version>
 		</dependency>
 	</dependencies>
-        <distributionManagement>
-                <repository>
-                        <id>metova</id>
-                        <name>Metova Repo</name>
-                        <url>http://repo.metova.com/nexus/content/repositories/metova/</url>
-                </repository>
-                <snapshotRepository>
-                        <id>metova-snapshots</id>
-                        <name>Metova Repo</name>
-                        <url>http://repo.metova.com/nexus/content/repositories/metova-snapshots/</url>
-                </snapshotRepository>
-        </distributionManagement>
+
+	<distributionManagement>
+			<repository>
+					<id>metova</id>
+					<name>Metova Repo</name>
+					<url>http://repo.metova.com/nexus/content/repositories/metova/</url>
+			</repository>
+			<snapshotRepository>
+					<id>metova-snapshots</id>
+					<name>Metova Repo</name>
+					<url>http://repo.metova.com/nexus/content/repositories/metova-snapshots/</url>
+			</snapshotRepository>
+	</distributionManagement>
 </project>

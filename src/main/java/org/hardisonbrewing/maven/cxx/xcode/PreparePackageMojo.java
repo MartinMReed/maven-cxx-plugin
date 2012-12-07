@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,29 +31,58 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  */
 public final class PreparePackageMojo extends JoJoMojoImpl {
 
+	/**
+	 * @parameter
+	 */
+	public String scheme;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        for (String target : XCodeService.getTargets()) {
-            execute( target );
-        }
-    }
+		String[] targets = XCodeService.getTargets();
+		
+    	if (scheme != null) {
 
-    private void execute( String target ) {
+            for (String target : targets) {
 
-        copyConfigBuildFiles( target );
+            	copyProductFile( target );
 
-        if ( XCodeService.isApplicationType( target ) ) {
-            copyProvisioningFile( target );
-            copyIpaFile( target );
-        }
+                if ( XCodeService.isApplicationType( target ) ) {
+                    copyProvisioningFile( target );
+                    copyIpaFile( target );
+                }
 
-        copyIconFile( target );
+                copyIconFile( target );
+            }
+            
+            String[] excludes = new String[targets.length];
+            for (int i = 0; i < excludes.length; i++){
+            	excludes[i] = getProductFileInclude(targets[i]);
+            }
+
+            copyConfigBuildFiles( scheme, excludes );
+    	}
+    	else {
+
+            for (String target : targets) {
+
+                copyConfigBuildFiles( target, null );
+
+                if ( XCodeService.isApplicationType( target ) ) {
+                    copyProvisioningFile( target );
+                    copyIpaFile( target );
+                }
+
+                copyIconFile( target );
+            }
+    	}
     }
 
     private void copyIconFile( String target ) {
 
-        Plist plist = XCodeService.readInfoPlist( XCodeService.getConvertedInfoPlist( target ) );
+        String plistPath = XCodeService.getConvertedInfoPlistPath( target );
+        Plist plist = XCodeService.readInfoPlist( new File( plistPath ) );
+
         if ( plist == null ) {
             return;
         }
@@ -86,6 +115,37 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         prepareTargetFile( target, bundleIconFile, bundleIconFile.getName() );
     }
 
+    private void copyProductFile( String target ) {
+
+        String directoryRoot = TargetDirectoryService.getConfigBuildDirPath( target );
+        File configBuildDir = new File( directoryRoot );
+        
+        String productName = PropertiesService.getTargetProductName( target );
+        File productFile = new File(configBuildDir, productName);
+        
+        if (!productFile.isDirectory()){
+            prepareTargetFile( target, productFile, getFilename( directoryRoot, productFile ) );
+        }
+
+        getLog().info( "Copying product files for target["+target+"] from: " + configBuildDir );
+
+        String[] includes = new String[] { getProductFileInclude(target) };
+        
+        for (File file : FileUtils.listFilesRecursive( configBuildDir, includes, null )) {
+            prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
+        }
+    }
+    
+    private String getProductFileInclude(String target) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( PropertiesService.getTargetProductName( target ) );
+        stringBuffer.append( "*" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "**" );
+        return stringBuffer.toString();
+    }
+
     private void copyProvisioningFile( String target ) {
 
         StringBuffer srcFilePath = new StringBuffer();
@@ -105,14 +165,14 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         prepareTargetFile( target, srcFile, destFilePath.toString() );
     }
 
-    private void copyConfigBuildFiles( String target ) {
+    private void copyConfigBuildFiles( String target, String[] excludes ) {
 
         String directoryRoot = TargetDirectoryService.getConfigBuildDirPath( target );
         File configBuildDir = new File( directoryRoot );
 
         getLog().info( "Copying files from: " + configBuildDir );
 
-        for (File file : FileUtils.listFilesRecursive( configBuildDir )) {
+        for (File file : FileUtils.listFilesRecursive( configBuildDir, null, excludes )) {
             prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
         }
     }
@@ -139,7 +199,9 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private final void prepareTargetFile( String target, File src, String filename ) {
 
-        if ( XCodeService.getTargets().size() > 1 ) {
+    	String[] targets = XCodeService.getTargets();
+
+        if ( targets.length > 1 ) {
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append( target );
             stringBuffer.append( File.separator );

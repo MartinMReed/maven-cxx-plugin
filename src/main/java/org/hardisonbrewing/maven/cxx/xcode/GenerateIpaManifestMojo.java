@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -50,7 +50,11 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
         if ( !XCodeService.isApplicationType( target ) ) {
             StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( "No targets found of type `" );
+            stringBuffer.append( "Target[" );
+            stringBuffer.append( target );
+            stringBuffer.append( "], type[" );
+            stringBuffer.append( XCodeService.getProductType( target ) );
+            stringBuffer.append( "] does not match `" );
             stringBuffer.append( XCodeService.PRODUCT_TYPE_APPLICATION );
             stringBuffer.append( "`...skipping" );
             getLog().info( stringBuffer.toString() );
@@ -59,19 +63,8 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
         // http://developer.apple.com/library/ios/#featuredarticles/FA_Wireless_Enterprise_App_Distribution/Introduction/Introduction.html
 
-        StringBuffer destPath = new StringBuffer();
-        destPath.append( TargetDirectoryService.getTempPackagePath( target ) );
-        destPath.append( File.separator );
-        destPath.append( "manifest.vm" );
-        File dest = new File( destPath.toString() );
-
-        if ( !dest.getParentFile().exists() ) {
-            dest.getParentFile().mkdirs();
-        }
-
-        getLog().info( "Generating " + destPath + "..." );
-
-        Plist plist = XCodeService.readInfoPlist( XCodeService.getConvertedInfoPlist( target ) );
+        String plistPath = XCodeService.getConvertedInfoPlistPath( target );
+        Plist plist = XCodeService.readInfoPlist( new File( plistPath ) );
 
         StringBuffer ipaFilePath = new StringBuffer();
         ipaFilePath.append( target );
@@ -117,6 +110,18 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
             velocityContext.put( DOWNLOAD_ICON_URL, iconUrlValue );
             velocityContext.put( ITUNES_ICON_URL, iconUrlValue );
         }
+
+        StringBuffer destPath = new StringBuffer();
+        destPath.append( TargetDirectoryService.getTempPackagePath( target ) );
+        destPath.append( File.separator );
+        destPath.append( "manifest.vm" );
+        File dest = new File( destPath.toString() );
+
+        if ( !dest.getParentFile().exists() ) {
+            dest.getParentFile().mkdirs();
+        }
+
+        getLog().info( "Generating " + destPath + "..." );
 
         Template template = TemplateService.getTemplateFromClasspath( "/xcode/ipaManifest.vm" );
 

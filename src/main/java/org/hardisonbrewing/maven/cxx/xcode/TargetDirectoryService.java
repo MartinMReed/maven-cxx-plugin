@@ -36,19 +36,29 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
 
     public static final String getTargetBuildDirPath( String target ) {
 
+        String scheme = XCodeService.getScheme();
+
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTargetDirectoryPath() );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( target );
+        if (scheme != null) {
+            stringBuffer.append( File.separator );
+            stringBuffer.append( scheme );
+        }
+        else {
+            stringBuffer.append( File.separator );
+            stringBuffer.append( target );
+        }
         return stringBuffer.toString();
     }
 
     public static final String getTempPackagePath( String target ) {
 
-        if ( XCodeService.getTargets().size() <= 1 ) {
-            return getTempPackagePath();
-        }
-
+    	String scheme = XCodeService.getScheme();
+    	String[] targets = XCodeService.getTargets();
+    	if (scheme == null && targets.length == 1) {
+    		return getTempPackagePath();
+    	}
+    	
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTempPackagePath() );
         stringBuffer.append( File.separator );

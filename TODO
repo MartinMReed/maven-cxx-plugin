@@ -1,0 +1,4 @@
+qde and qnx packages need to be merged
+bar and flex need to be merged
+flex should parse the .actionScriptProperties file and reduce the configurations in the pom
+a/o should use -I to add include directories (helps cut out ../ in header includes... see hbc-commons-c).

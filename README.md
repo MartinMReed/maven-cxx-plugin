@@ -38,6 +38,7 @@ To download this plugin without building it manually, you can add the following 
 Continuous Integration: [Bamboo Status](http://hardisonbrewing.org:8083/browse/CXX)
 
 # Setting up your pom.xml
+Packages that are <del>struck out</del> have been disabled, but are still present in the source code.
 
 ## Specify the packaging
 The `<packaging/>` in your `pom.xml` must be set to package classifier for the type of tool you're project should build for. See supported tools and package types below:
@@ -46,12 +47,12 @@ The `<packaging/>` in your `pom.xml` must be set to package classifier for the t
 <thead><th>Packaging</th><th>Target</th></thead>
 <tr><td>a</td><td>ar</td></tr>
 <tr><td>o</td><td>gcc/g++</td></tr>
-<tr><td>as.bar</td><td>BlackBerry 10, ActionScript main file</td></tr>
-<tr><td>mxml.bar</td><td>BlackBerry 10, MXML main file</td></tr>
-<tr><td>js.bar</td><td>BlackBerry 10, WebWorks</td></tr>
-<tr><td>qde</td><td>BlackBerry 10, QDE managed</td></tr>
+<tr><td><del>as.bar</del></td><td><del>BlackBerry 10, ActionScript main file</del></td></tr>
+<tr><td><del>mxml.bar</del></td><td><del>BlackBerry 10, MXML main file</del></td></tr>
+<tr><td><del>js.bar</del></td><td><del>BlackBerry 10, WebWorks</del></td></tr>
+<tr><td>cdt</td><td>Eclipse CDT, BlackBerry 10 QDE</td></tr>
 <tr><td>qnx</td><td>BlackBerry 10, Makefile</td></tr>
-<tr><td>arduino</td><td>Arduino</td></tr>
+<tr><td><del>arduino</del></td><td><del>Arduino</del></td></tr>
 <tr><td>xcode</td><td>xcodebuild</td></tr>
 <tr><td>flex</td><td>Adobe Air/Flex</td></tr>
 </table>
@@ -67,17 +68,21 @@ sources</td></tr>
 sources<br/>
 libs<br/>
 frameworks</td></tr>
-<tr><td>*.bar</td><td/></tr>
-<tr><td>qde</td><td>target</td></tr>
+<tr><td><del>*.bar</del></td><td/></tr>
+<tr><td>cdt</td><td>target (Release, Release-Device, etc)</td></tr>
 <tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>
-<tr><td>arduino</td><td>sketchbook<br/>
+<tr><td><del>arduino</del></td><td><del>sketchbook<br/>
 targetDevice<br/>
-sources</td></tr>
-<tr><td>xcode</td><td>configuration<br/>
+sources</del></td></tr>
+<tr><td>xcode</td><td>configuration (Debug/Release/etc)<br/>
+scheme<br/>
+targetIncludes<br/>
+targetExcludes (Usually test targets)<br/>
 provisioningProfile<br/>
 codesignCertificate<br/>
-targetIncludes<br/>
-targetExcludes</td></tr>
+keychain<br/>
+keychain/keychain<br/>
+keychain/password</td></tr>
 <tr><td>flex</td><td>target (air, apk, ipa-app-store, <a href="http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html">etc</a>)<br/>
 sourceFile (i.e. src/Main.mxml)<br/>
 libDirectory (Directory containing SWC libs)<br/>
@@ -97,18 +102,18 @@ Usable through the `settings.xml`, `pom.xml` or commandline with a `-Dkey=value`
 <thead><th>Packaging</th><th>Properties</th></thead>
 <tr><td>a</td><td/></tr>
 <tr><td>o</td><td/></tr>
-<tr><td>*.bar</td><td>adobe.flex.home<br/>
+<tr><td><del>*.bar</del></td><td><del>adobe.flex.home<br/>
 blackberry.webworks.tablet.home<br/>
 blackberry.tablet.home<br/>
 blackberry.tablet.device.ip<br/>
 blackberry.tablet.device.password<br/>
-debug</td></tr>
-<tr><td>qde</td><td/></tr>
+debug</del></td></tr>
+<tr><td>cdt</td><td/></tr>
 <tr><td>qnx</td><td/></tr>
-<tr><td>arduino</td><td>arduino.home<br/>
+<tr><td><del>arduino</del></td><td><del>arduino.home<br/>
 avr.bin<br/>
 avrdude.config.path<br/>
-serial.port</td></tr>
+serial.port</del></td></tr>
 <tr><td>xcode</td><td/></tr>
 <tr><td>flex</td><td>adobe.flex.home</td></tr>
 </table>
@@ -118,7 +123,7 @@ serial.port</td></tr>
 	<?xml version="1.0" encoding="UTF-8"?>
 	<project xmlns="http://maven.apache.org/POM/4.0.0" 
 	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 >
+	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
 	  <modelVersion>4.0.0</modelVersion>
 	  <parent>
 	  <groupId>org.hardisonbrewing</groupId>
@@ -185,7 +190,7 @@ serial.port</td></tr>
 	<?xml version="1.0" encoding="UTF-8"?>
 	<project xmlns="http://maven.apache.org/POM/4.0.0"
 	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 >
+	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
 	  <modelVersion>4.0.0</modelVersion>
 	  <groupId>net.hardisonbrewing</groupId>
 	  <artifactId>komodododo</artifactId>
@@ -219,6 +224,10 @@ serial.port</td></tr>
 	        <configuration>
 	          <provisioningProfile>Komodododo_AdHoc.mobileprovision</provisioningProfile>
 	          <codesignCertificate>developer_identity.cer</codesignCertificate>
+	          <keychain>
+	            <keychain>/tools/keychains/ios.keychain</keychain>
+	            <password>password</password>
+	          </keychain>
 	          <targetExcludes>
 	            <targetExclude>KomodododoTests</targetExclude>
 	          </targetExcludes>
