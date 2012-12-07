@@ -145,8 +145,7 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
         cmd.add( "-p" );
         cmd.add( keychain.password );
         if ( keychain.keychain != null ) {
-
-            KeychainHelper.findKeychainPath( keychain );
+            cmd.add( keychain.keychain );
         }
         execute( cmd );
     }
