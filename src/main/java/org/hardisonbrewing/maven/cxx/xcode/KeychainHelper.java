@@ -1,6 +1,8 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.FileUtils;
@@ -37,5 +39,19 @@ public class KeychainHelper {
         Properties properties = PropertiesService.getProperties();
         String userHome = properties.getProperty( "user.home" );
         return userHome + path;
+    }
+
+    protected static final List<String> unlockKeychainCommand( Keychain keychain ) {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "security" );
+        cmd.add( "unlock-keychain" );
+        cmd.add( "-p" );
+        cmd.add( keychain.password );
+        if ( keychain.keychain != null ) {
+
+            KeychainHelper.findKeychainPath( keychain );
+        }
+        return cmd;
     }
 }

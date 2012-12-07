@@ -139,15 +139,7 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
 
     private void unlockKeychain( Keychain keychain ) {
 
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "security" );
-        cmd.add( "unlock-keychain" );
-        cmd.add( "-p" );
-        cmd.add( keychain.password );
-        if ( keychain.keychain != null ) {
-
-            KeychainHelper.findKeychainPath( keychain );
-        }
+        List<String> cmd = KeychainHelper.unlockKeychainCommand( keychain );
         execute( cmd );
     }
 }
