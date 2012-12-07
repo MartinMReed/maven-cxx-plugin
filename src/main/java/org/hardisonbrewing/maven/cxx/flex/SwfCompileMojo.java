@@ -62,9 +62,7 @@ public class SwfCompileMojo extends JoJoMojoImpl {
         // http://livedocs.adobe.com/flex/3/html/help.html?content=compilers_14.html
         List<String> cmd = new LinkedList<String>();
         cmd.add( "mxmlc" );
-        
-        cmd.add( "-keep-generated-actionscript" );
-        
+
         cmd.add( "-output" );
         cmd.add( swfFilename + ".swf" );
 
