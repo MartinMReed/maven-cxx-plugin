@@ -1,4 +1,5 @@
 /**
+ * Copyright (c) 2012 Todd Grooms
  * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
@@ -49,21 +50,22 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         }
 
         File certificateFile = CodesignCertificateService.getCertificateFile( codesignCertificate );
+        String keychainPath = XCodeService.getKeychainPath();
 
-        storeIdentity( certificateFile );
+        storeIdentity( certificateFile, keychainPath );
 
-        String serialNumber = getSerialNumber( certificateFile );
-        if ( hasSerialNumber( serialNumber ) ) {
+        String serialNumber = getSerialNumber( certificateFile, keychainPath );
+        if ( hasSerialNumber( serialNumber, keychainPath ) ) {
             getLog().info( "Codesign certificate already installed, skipping." );
             return;
         }
 
-        importCertificateFile( certificateFile );
+        importCertificateFile( certificateFile, keychainPath );
     }
 
-    private void storeIdentity( File file ) {
+    private void storeIdentity( File file, String keychainPath ) {
 
-        String identity = getIdentity( file );
+        String identity = getIdentity( file, keychainPath );
 
         getLog().info( XCodeService.CODE_SIGN_IDENTITY + ": " + identity );
 
@@ -72,22 +74,28 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         PropertiesService.storeXCodeProperties( properties );
     }
 
-    private void importCertificateFile( File file ) {
+    private void importCertificateFile( File file, String keychainPath ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "certtool" );
         cmd.add( "i" );
         cmd.add( file.getAbsolutePath() );
         cmd.add( "d" );
+        if ( keychainPath != null ) {
+            cmd.add( "k=" + keychainPath );
+        }
         execute( cmd );
     }
 
-    private String getSerialNumber( File file ) {
+    private String getSerialNumber( File file, String keychainPath ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "certtool" );
         cmd.add( "d" );
         cmd.add( file.getAbsolutePath() );
+        if ( keychainPath != null ) {
+            cmd.add( "k=" + keychainPath );
+        }
         cmd.add( "|" );
         cmd.add( "sed" );
         cmd.add( "-n" );
@@ -99,12 +107,15 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         return streamConsumer.getOutput().trim();
     }
 
-    private String getIdentity( File file ) {
+    private String getIdentity( File file, String keychainPath ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "certtool" );
         cmd.add( "d" );
         cmd.add( file.getAbsolutePath() );
+        if ( keychainPath != null ) {
+            cmd.add( "k=" + keychainPath );
+        }
         cmd.add( "|" );
         cmd.add( "sed" );
         cmd.add( "-n" );
@@ -116,11 +127,14 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         return streamConsumer.getOutput().trim();
     }
 
-    private boolean hasSerialNumber( String serialNumber ) {
+    private boolean hasSerialNumber( String serialNumber, String keychainPath ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "certtool" );
         cmd.add( "y" );
+        if ( keychainPath != null ) {
+            cmd.add( "k=" + keychainPath );
+        }
         cmd.add( "|" );
         cmd.add( "sed" );
         cmd.add( "-n" );

@@ -16,11 +16,9 @@
  */
 package org.hardisonbrewing.maven.cxx.xcode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,13 +27,14 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.PropertiesService;
 
 /**
  * @goal xcode-unlock-keychain
  * @phase generate-resources
  */
 public class UnlockKeychainMojo extends JoJoMojoImpl {
+
+    public static final String KEYCHAIN_REGEX = "\"([^\"]*)\"";
 
     /**
      * @parameter
@@ -49,45 +48,42 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
             return;
         }
 
-        if ( keychain.keychain != null ) {
+        String keychainPath = XCodeService.getKeychainPath();
+        boolean exists = FileUtils.exists( keychainPath );
 
-            String path = findKeychainPath( keychain.keychain );
-            boolean exists = FileUtils.exists( path );
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( "Using keychain path `" );
+        stringBuffer.append( keychainPath );
+        stringBuffer.append( "`... exists[" );
+        stringBuffer.append( exists );
+        stringBuffer.append( "]" );
+        getLog().info( stringBuffer.toString() );
 
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( "Using keychain path `" );
-            stringBuffer.append( path );
-            stringBuffer.append( "`... exists[" );
-            stringBuffer.append( exists );
-            stringBuffer.append( "]" );
-            getLog().info( stringBuffer.toString() );
+        if ( !exists ) {
+            getLog().info( "Creating new keychain: " + keychainPath );
+            createKeychain( keychain, keychainPath );
+        }
+        else {
 
-            if ( !exists ) {
-                getLog().info( "Creating new keychain: " + path );
-                createKeychain( keychain, path );
+            boolean found = false;
+
+            getLog().info( "Checking current keychain search path..." );
+            String[] keychains = listKeychains();
+
+            for (String keychain : keychains) {
+                if ( keychain.equals( keychainPath ) ) {
+                    found = true;
+                    break;
+                }
             }
-            else {
 
-                boolean found = false;
-
-                getLog().info( "Checking current keychain search path..." );
-                String[] keychains = listKeychains();
-
-                for (String keychain : keychains) {
-                    if ( keychain.equals( path ) ) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if ( !found ) {
-                    getLog().info( "Adding keychain to search path: " + path );
-                    addKeychain( keychains, path );
-                }
+            if ( !found ) {
+                getLog().info( "Adding keychain to search path: " + keychainPath );
+                addKeychain( keychains, keychainPath );
             }
         }
 
-        unlockKeychain( keychain );
+        unlockKeychain( keychain, keychainPath );
     }
 
     private String[] listKeychains() {
@@ -101,7 +97,7 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
 
         List<String> keychains = new ArrayList<String>();
 
-        Pattern pattern = Pattern.compile( "\"([^\"]*)\"" );
+        Pattern pattern = Pattern.compile( KEYCHAIN_REGEX );
         Matcher matcher = pattern.matcher( streamConsumer.getOutput() );
 
         while (matcher.find()) {
@@ -130,50 +126,21 @@ public class UnlockKeychainMojo extends JoJoMojoImpl {
         cmd.add( "security" );
         cmd.add( "list-keychains" );
         cmd.add( "-s" );
-
         for (String keychain : keychains) {
             cmd.add( keychain );
         }
-
         cmd.add( path );
-
         execute( cmd );
     }
 
-    private void unlockKeychain( Keychain keychain ) {
+    private void unlockKeychain( Keychain keychain, String keychainPath ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "security" );
         cmd.add( "unlock-keychain" );
         cmd.add( "-p" );
         cmd.add( keychain.password );
-        if ( keychain.keychain != null ) {
-            cmd.add( keychain.keychain );
-        }
+        cmd.add( keychainPath );
         execute( cmd );
-    }
-
-    private String findKeychainPath( String keychain ) {
-
-        if ( keychain.startsWith( File.separator ) ) {
-            return keychain;
-        }
-
-        StringBuffer pathBuffer = new StringBuffer();
-        pathBuffer.append( File.separator );
-        pathBuffer.append( "Library" );
-        pathBuffer.append( File.separator );
-        pathBuffer.append( "Keychains" );
-        pathBuffer.append( File.separator );
-        pathBuffer.append( keychain );
-        String path = pathBuffer.toString();
-
-        if ( FileUtils.exists( path ) ) {
-            return path;
-        }
-
-        Properties properties = PropertiesService.getProperties();
-        String userHome = properties.getProperty( "user.home" );
-        return userHome + path;
     }
 }

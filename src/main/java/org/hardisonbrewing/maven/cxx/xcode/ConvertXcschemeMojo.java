@@ -38,74 +38,68 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  * @goal xcode-convert-xcscheme
  * @phase compile
  */
-public final class ConvertXcschemeMojo extends JoJoMojoImpl
-{
-	/**
-	 * @parameter
-	 */
-	public String scheme;
+public final class ConvertXcschemeMojo extends JoJoMojoImpl {
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException
-	{
-		String schemeName = this.scheme;
-		if (schemeName == null)
-		{
-			return;
-		}
+    /**
+     * @parameter
+     */
+    public String scheme;
 
-		String filePath = XCodeService.getSchemePath(schemeName);
-		File file = new File(filePath);
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
-		Scheme scheme = readScheme(file);
-		String[] targets = getSchemeTargets(scheme);
+        String schemeName = this.scheme;
+        if ( schemeName == null ) {
+            return;
+        }
 
-		Properties properties = PropertiesService.getXCodeProperties();
+        String filePath = XCodeService.getSchemePath( schemeName );
+        File file = new File( filePath );
 
-		ConvertPbxprojMojo.putTargets(targets, properties);
+        Scheme scheme = readScheme( file );
+        String[] targets = getSchemeTargets( scheme );
 
-		for (Object key : properties.keySet())
-		{
-			getLog().info(key + ": " + properties.getProperty((String) key));
-		}
+        Properties properties = PropertiesService.getXCodeProperties();
 
-		PropertiesService.storeXCodeProperties(properties);
-	}
+        ConvertPbxprojMojo.putTargets( targets, properties );
 
-	private String[] getSchemeTargets(Scheme scheme)
-	{
-		BuildAction buildAction = scheme.getBuildAction();
-		BuildActionEntries _buildActionEntries = buildAction.getBuildActionEntries();
-		List<BuildActionEntry> buildActionEntries = _buildActionEntries.getBuildActionEntry();
+        for (Object key : properties.keySet()) {
+            getLog().info( key + ": " + properties.getProperty( (String) key ) );
+        }
 
-		String[] targets = new String[buildActionEntries.size()];
+        PropertiesService.storeXCodeProperties( properties );
+    }
 
-		for (int i = 0; i < buildActionEntries.size(); i++)
-		{
-			BuildActionEntry buildActionEntry = buildActionEntries.get(i);
-			BuildableReference buildableReference = buildActionEntry.getBuildableReference();
-			targets[i] = buildableReference.getBlueprintName();
-		}
+    private String[] getSchemeTargets( Scheme scheme ) {
 
-		return targets;
-	}
+        BuildAction buildAction = scheme.getBuildAction();
+        BuildActionEntries _buildActionEntries = buildAction.getBuildActionEntries();
+        List<BuildActionEntry> buildActionEntries = _buildActionEntries.getBuildActionEntry();
 
-	private Scheme readScheme(File file)
-	{
-		if (!file.exists())
-		{
-			JoJoMojo.getMojo().getLog().error("Unable to locate Xcscheme file: " + file);
-			throw new IllegalStateException();
-		}
+        String[] targets = new String[buildActionEntries.size()];
 
-		try
-		{
-			return JAXB.unmarshal(file, Scheme.class);
-		}
-		catch (JAXBException e)
-		{
-			JoJoMojo.getMojo().getLog().error("Unable to unmarshal Xcscheme file: " + file);
-			throw new IllegalStateException(e);
-		}
-	}
+        for (int i = 0; i < buildActionEntries.size(); i++) {
+            BuildActionEntry buildActionEntry = buildActionEntries.get( i );
+            BuildableReference buildableReference = buildActionEntry.getBuildableReference();
+            targets[i] = buildableReference.getBlueprintName();
+        }
+
+        return targets;
+    }
+
+    private Scheme readScheme( File file ) {
+
+        if ( !file.exists() ) {
+            JoJoMojo.getMojo().getLog().error( "Unable to locate Xcscheme file: " + file );
+            throw new IllegalStateException();
+        }
+
+        try {
+            return JAXB.unmarshal( file, Scheme.class );
+        }
+        catch (JAXBException e) {
+            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal Xcscheme file: " + file );
+            throw new IllegalStateException( e );
+        }
+    }
 }
