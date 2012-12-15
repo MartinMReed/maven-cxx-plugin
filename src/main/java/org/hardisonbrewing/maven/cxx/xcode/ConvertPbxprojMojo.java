@@ -49,11 +49,11 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
      * @parameter
      */
     public String[] targetExcludes;
-    
-	/**
-	 * @parameter
-	 */
-	public String scheme;
+
+    /**
+     * @parameter
+     */
+    public String scheme;
 
     private final Hashtable<String, String> groupIndex = new Hashtable<String, String>();
     private final Hashtable<String, String> fileIndex = new Hashtable<String, String>();
@@ -125,7 +125,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         for (String key : isaIndex.get( "PBXProject" )) {
             Dict dict = keyIndex.get( key );
             putDefaultCongurationName( dict, properties );
-            if (scheme == null) {
+            if ( scheme == null ) {
                 putTargets( dict, properties );
             }
         }
@@ -168,8 +168,8 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
 
     private void putTargets( Dict dict, Properties properties ) {
 
-    	String[] targets = getTargets( dict );
-    	putTargets( targets, properties );
+        String[] targets = getTargets( dict );
+        putTargets( targets, properties );
     }
 
     public static void putTargets( String[] targets, Properties properties ) {
@@ -228,7 +228,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         }
 
         String[] _targets = new String[targets.size()];
-        targets.toArray(_targets);
+        targets.toArray( _targets );
         return _targets;
     }
 

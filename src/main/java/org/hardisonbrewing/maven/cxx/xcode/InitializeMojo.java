@@ -1,4 +1,5 @@
 /**
+ * Copyright (c) 2012 Todd Grooms
  * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,10 +18,16 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
@@ -48,6 +55,11 @@ public final class InitializeMojo extends JoJoMojoImpl {
      * @parameter
      */
     public String scheme;
+
+    /**
+     * @parameter
+     */
+    public Keychain keychain;
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
@@ -81,6 +93,18 @@ public final class InitializeMojo extends JoJoMojoImpl {
         if ( codesignCertificate != null ) {
             CodesignCertificateService.assertCodesignCertificate( codesignCertificate );
         }
+
+        if ( keychain != null ) {
+            String keychainPath;
+            if ( keychain.keychain == null ) {
+                keychainPath = defaultKeychain();
+            }
+            else {
+                keychainPath = findKeychainPath( keychain.keychain );
+            }
+            getLog().info( "Using keychain: " + keychainPath );
+            XCodeService.setKeychainPath( keychainPath );
+        }
     }
 
     private void initWorkspace() {
@@ -102,5 +126,54 @@ public final class InitializeMojo extends JoJoMojoImpl {
         int endIndex = projectPath.lastIndexOf( XCodeService.XCODEPROJ_EXTENSION );
         String projectName = projectPath.substring( startIndex + 1, endIndex - 1 );
         XCodeService.setProject( projectName );
+    }
+
+    private String findKeychainPath( String keychain ) {
+
+        if ( keychain.startsWith( File.separator ) ) {
+            return keychain;
+        }
+        else if ( keychain.startsWith( "~/" ) ) {
+            Properties properties = PropertiesService.getProperties();
+            String userHome = properties.getProperty( "user.home" );
+            return userHome + keychain.substring( 1 );
+        }
+
+        StringBuffer pathBuffer = new StringBuffer();
+        pathBuffer.append( File.separator );
+        pathBuffer.append( "Library" );
+        pathBuffer.append( File.separator );
+        pathBuffer.append( "Keychains" );
+        pathBuffer.append( File.separator );
+        pathBuffer.append( keychain );
+        String path = pathBuffer.toString();
+
+        if ( FileUtils.exists( path ) ) {
+            return path;
+        }
+
+        Properties properties = PropertiesService.getProperties();
+        String userHome = properties.getProperty( "user.home" );
+        return userHome + path;
+    }
+
+    private String defaultKeychain() {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "security" );
+        cmd.add( "default-keychain" );
+
+        StringStreamConsumer streamConsumer = new StringStreamConsumer();
+        execute( cmd, streamConsumer, streamConsumer );
+
+        Pattern pattern = Pattern.compile( UnlockKeychainMojo.KEYCHAIN_REGEX );
+        Matcher matcher = pattern.matcher( streamConsumer.getOutput() );
+
+        if ( matcher.find() ) {
+            return matcher.group( 1 );
+        }
+
+        getLog().error( "Unable to locate default keychain. You must specify the keyhain name or path in the pom.xml." );
+        throw new IllegalStateException();
     }
 }

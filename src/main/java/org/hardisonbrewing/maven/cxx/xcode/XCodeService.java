@@ -58,6 +58,8 @@ public final class XCodeService {
 
     private static String[] targets;
 
+    private static String keychainPath;
+
     private XCodeService() {
 
         // do nothing
@@ -344,5 +346,15 @@ public final class XCodeService {
     public static void setXcworkspacePath( String workspacePath ) {
 
         XCodeService.workspacePath = workspacePath;
+    }
+
+    public static String getKeychainPath() {
+
+        return keychainPath;
+    }
+
+    public static void setKeychainPath( String keychainPath ) {
+
+        XCodeService.keychainPath = keychainPath;
     }
 }
