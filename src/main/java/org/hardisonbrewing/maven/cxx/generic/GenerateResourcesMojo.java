@@ -33,6 +33,7 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 public class GenerateResourcesMojo extends JoJoMojoImpl {
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         String generatedResourcesDirectory = TargetDirectoryService.getGeneratedResourcesDirectoryPath();

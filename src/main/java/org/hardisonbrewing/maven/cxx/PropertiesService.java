@@ -35,6 +35,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.core.Properties
         return "env." + key;
     }
 
+    @SuppressWarnings( "unchecked" )
     public static final boolean pluginVersionsHaveChanged() {
 
         Properties properties = loadBuildDifferenceProperties();

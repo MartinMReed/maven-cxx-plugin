@@ -95,6 +95,7 @@ public final class LinkMojo extends JoJoMojoImpl {
         execute( cmd );
     }
 
+    @SuppressWarnings( "unchecked" )
     private final void buildArguments( List<String> cmd, MavenProject mavenProject, File dest ) throws Exception {
 
         for (Dependency dependency : (List<Dependency>) mavenProject.getDependencies()) {
