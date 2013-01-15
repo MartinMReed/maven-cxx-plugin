@@ -35,7 +35,7 @@ public final class PackageMojo extends JoJoMojoImpl {
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
         File src = new File( TargetDirectoryService.getTempPackagePath() );
-        File dest = new File( TargetDirectoryService.getTempPackagePath() + ".jar" );
+        File dest = new File( TargetDirectoryService.getTempPackagePath() + ".zip" );
 
         getLog().info( "Archiving " + src + " to " + dest );
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,17 +26,16 @@ import org.hardisonbrewing.maven.core.DependencyService;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
-public abstract class InstallMojo extends JoJoMojoImpl {
+/**
+ * @goal install
+ * @phase install
+ */
+public final class InstallMojo extends JoJoMojoImpl {
 
     /**
      * @parameter
      */
-    protected String classifier;
-
-    /**
-     * @parameter expression="${configuration.classifier}"
-     */
-    private String projectClassifier;
+    private String classifier;
 
     protected InstallMojo() {
 
@@ -46,17 +45,7 @@ public abstract class InstallMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        String classifier = this.projectClassifier;
-        if ( classifier == null ) {
-            classifier = this.classifier;
-        }
-
-        if ( classifier == null ) {
-            getLog().error( "Classifier could not be determined. Please specify manually as <classifier />." );
-            throw new IllegalStateException();
-        }
-
-        File src = new File( TargetDirectoryService.getTempPackagePath() + ".jar" );
+        File src = new File( TargetDirectoryService.getTempPackagePath() + ".zip" );
         Artifact artifact = DependencyService.createArtifactWithClassifier( getProject().getArtifact(), classifier );
 
         try {
