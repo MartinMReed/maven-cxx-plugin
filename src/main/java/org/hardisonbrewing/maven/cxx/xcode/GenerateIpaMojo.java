@@ -56,6 +56,7 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         if ( !XCodeService.isApplicationType( target ) ) {
             return;
         }
+
         generateIpaFile( target );
     }
 
