@@ -3,31 +3,31 @@
 	<xs:element name="Scheme">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="BuildAction">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="BuildActionEntries">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="BuildActionEntry" minOccurs="0" maxOccurs="unbounded">
-											<xs:complexType>
-												<xs:sequence>
-													<xs:element name="BuildableReference">
-														<xs:complexType>
-															<xs:attribute name="BlueprintName" type="xs:string" />
-															<xs:attribute name="BlueprintIdentifier" type="xs:string" />
-														</xs:complexType>
-													</xs:element>
-												</xs:sequence>
-											</xs:complexType>
-										</xs:element>
-									</xs:sequence>
-								</xs:complexType>
-							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
+				<xs:element name="BuildAction" type="BuildAction" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+	<xs:complexType name="BuildAction">
+		<xs:sequence>
+			<xs:element name="BuildActionEntries" type="BuildActionEntries" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BuildActionEntries">
+		<xs:sequence>
+			<xs:element name="BuildActionEntry" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="BuildableReference" type="BuildableReference" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="BuildableReference">
+		<xs:attribute name="BuildableIdentifier" type="xs:string" />
+		<xs:attribute name="BlueprintIdentifier" type="xs:string" />
+		<xs:attribute name="BuildableName" type="xs:string" />
+		<xs:attribute name="BlueprintName" type="xs:string" />
+		<xs:attribute name="ReferencedContainer" type="xs:string" />
+	</xs:complexType>
 </xs:schema>

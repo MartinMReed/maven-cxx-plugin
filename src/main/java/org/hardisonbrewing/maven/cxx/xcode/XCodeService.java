@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2012 Martin M Reed
+ * Copyright (c) 2010-2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,6 +20,9 @@ import generated.plist.Plist;
 
 import java.io.File;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.ProjectService;
@@ -42,6 +45,17 @@ public final class XCodeService {
     public static final String PROP_PRODUCT_REFERENCE = "productReference";
     public static final String PROP_TARGETS = "targets";
     public static final String PROP_SCHEME = "targets";
+
+    public static final String BUILD_INFOPLIST_PATH = "INFOPLIST_PATH";
+    public static final String BUILD_BUILT_PRODUCTS_DIR = "BUILT_PRODUCTS_DIR";
+    public static final String BUILD_ARCHIVE_PRODUCTS_PATH = "ARCHIVE_PRODUCTS_PATH";
+    public static final String BUILD_ARCHIVE_PATH = "ARCHIVE_PATH";
+    public static final String BUILD_ACTION = "ACTION";
+    public static final String BUILD_FULL_PRODUCT_NAME = "FULL_PRODUCT_NAME";
+    public static final String BUILD_EMBEDDED_PROFILE_NAME = "EMBEDDED_PROFILE_NAME";
+
+    public static final String ACTION_BUILD = "build";
+    public static final String ACTION_ARCHIVE = "archive";
 
     private static String project;
     private static String projectPath;
@@ -90,69 +104,134 @@ public final class XCodeService {
 
     public static final String getSchemeXcprojPath( String scheme ) {
 
-        String schemePath = getSchemePath( scheme );
-        if ( schemePath == null ) {
+        File schemeFile = findXcscheme( scheme );
+        if ( schemeFile == null ) {
             return null;
         }
 
+        String schemePath = schemeFile.getPath();
         int lastIndexOf = schemePath.lastIndexOf( XCODEPROJ_EXTENSION );
         schemePath = schemePath.substring( 0, lastIndexOf + XCODEPROJ_EXTENSION.length() );
         return schemePath;
     }
 
-    public static final String getSchemePath( String scheme ) {
+    public static final File findXcscheme( String scheme ) {
 
-        File[] files = listSchemes();
-        if ( files == null ) {
+        File[] files = listSchemes( scheme, true );
+        if ( files != null && files.length > 0 ) {
+            return files[0];
+        }
+
+        files = listSchemes( scheme, false );
+        if ( files == null || files.length == 0 ) {
             return null;
         }
 
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( scheme );
-        stringBuffer.append( "." );
-        stringBuffer.append( XCSCHEME_EXTENSION );
-        String filename = stringBuffer.toString();
+        File latest = null;
+        long latestModified = 0;
 
         for (File file : files) {
-            if ( filename.equals( file.getName() ) ) {
-                return file.getPath();
+            long lastModified = file.lastModified();
+            if ( latest == null || lastModified > latestModified ) {
+                latestModified = lastModified;
+                latest = file;
             }
         }
 
-        return null;
+        return latest;
     }
 
     public static final void loadSchemes() {
 
-        File[] files = listSchemes();
-        String[] schemes = new String[files.length];
+        List<String> schemes = new LinkedList<String>();
 
-        for (int i = 0; i < files.length; i++) {
-            String filename = files[i].getName();
+        for (File scheme : listSchemes()) {
+
+            String filename = scheme.getName();
             filename = filename.substring( 0, filename.lastIndexOf( XCSCHEME_EXTENSION ) - 1 );
-            schemes[i] = filename;
+
+            if ( !schemes.contains( filename ) ) {
+                schemes.add( filename );
+            }
         }
 
-        XCodeService.schemes = schemes;
+        String[] _schemes = new String[schemes.size()];
+        schemes.toArray( _schemes );
+        XCodeService.schemes = _schemes;
     }
 
-    private static final File[] listSchemes() {
+    public static boolean isSharedScheme( String scheme, String filePath ) {
 
-        StringBuffer extensionInclude = new StringBuffer();
-        extensionInclude.append( "**" );
-        extensionInclude.append( File.separator );
-        extensionInclude.append( "*" );
-        extensionInclude.append( File.separator );
-        extensionInclude.append( "xcshareddata" );
-        extensionInclude.append( File.separator );
-        extensionInclude.append( "xcschemes" );
-        extensionInclude.append( File.separator );
-        extensionInclude.append( "*." );
-        extensionInclude.append( XCSCHEME_EXTENSION );
+        String schemeSharedPath = getSchemeSharedPath( scheme );
+        return filePath.matches( schemeSharedPath );
+    }
+
+    public static File[] listSchemes() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( "**" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "xcschemes" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "*." );
+        stringBuffer.append( XCSCHEME_EXTENSION );
 
         File baseDir = ProjectService.getBaseDir();
-        String[] includes = new String[] { extensionInclude.toString() };
+        String[] includes = new String[] { stringBuffer.toString() };
         return FileUtils.listFilesRecursive( baseDir, includes, null );
+    }
+
+    private static File[] listSchemes( String scheme, boolean shared ) {
+
+        File baseDir = ProjectService.getBaseDir();
+        String[] includes = new String[] { getSchemeIncludePath( scheme, shared ) };
+        return FileUtils.listFilesRecursive( baseDir, includes, null );
+    }
+
+    private static String getSchemeIncludePath( String scheme, boolean shared ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( "**" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "*" );
+        stringBuffer.append( File.separator );
+        if ( shared ) {
+            stringBuffer.append( "xcshareddata" );
+        }
+        else {
+            stringBuffer.append( "xcuserdata" );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( "*" );
+        }
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "xcschemes" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( scheme == null ? "*" : scheme );
+        stringBuffer.append( "." );
+        stringBuffer.append( XCSCHEME_EXTENSION );
+        return stringBuffer.toString();
+    }
+
+    public static String getSchemeSharedDirPath( String scheme ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getXcprojPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "xcshareddata" );
+        return stringBuffer.toString();
+    }
+
+    public static String getSchemeSharedPath( String scheme ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getSchemeSharedDirPath( scheme ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "xcschemes" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( scheme );
+        stringBuffer.append( "." );
+        stringBuffer.append( XCSCHEME_EXTENSION );
+        return stringBuffer.toString();
     }
 
     public static final File loadProject() {
@@ -222,15 +301,77 @@ public final class XCodeService {
         return new File( getEmbeddedInfoPlistPath( target ) );
     }
 
+    public static final String getArchivePath( String target ) {
+
+        if ( !isArchiveAction( target ) ) {
+            return null;
+        }
+
+        Properties environmentProperties = PropertiesService.getBuildEnvironmentProperties( target );
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( environmentProperties.get( BUILD_ARCHIVE_PATH ) );
+        return stringBuffer.toString();
+    }
+
+    public static final boolean isArchiveAction( String target ) {
+
+        Properties buildSettings = PropertiesService.getBuildSettings( target );
+        String action = (String) buildSettings.get( BUILD_ACTION );
+        return ACTION_ARCHIVE.equals( action );
+    }
+
+    public static final String getProductDirPath( String target ) {
+
+        if ( isArchiveAction( target ) ) {
+
+            Properties environmentProperties = PropertiesService.getBuildEnvironmentProperties( target );
+
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( environmentProperties.get( BUILD_ARCHIVE_PRODUCTS_PATH ) );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( "Applications" );
+            return stringBuffer.toString();
+        }
+
+        Properties buildSettings = PropertiesService.getBuildSettings( target );
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( buildSettings.get( BUILD_BUILT_PRODUCTS_DIR ) );
+        return stringBuffer.toString();
+    }
+
+    public static final String getProductFilePath( String target ) {
+
+        Properties buildSettings = PropertiesService.getBuildSettings( target );
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getProductDirPath( target ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( buildSettings.get( BUILD_FULL_PRODUCT_NAME ) );
+        return stringBuffer.toString();
+    }
+
     public static final String getEmbeddedInfoPlistPath( String target ) {
 
-        StringBuffer plistPath = new StringBuffer();
-        plistPath.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
-        plistPath.append( File.separator );
-        plistPath.append( PropertiesService.getTargetProductName( target ) );
-        plistPath.append( File.separator );
-        plistPath.append( InfoPlistService.INFO_PLIST );
-        return plistPath.toString();
+        Properties buildSettings = PropertiesService.getBuildSettings( target );
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getProductDirPath( target ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( buildSettings.get( BUILD_INFOPLIST_PATH ) );
+        return stringBuffer.toString();
+    }
+
+    public static final String getEmbeddedProvisoningProfilePath( String target ) {
+
+        Properties buildSettings = PropertiesService.getBuildSettings( target );
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getProductFilePath( target ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( buildSettings.get( BUILD_EMBEDDED_PROFILE_NAME ) );
+        return stringBuffer.toString();
     }
 
     public static final String getConfiguration( String target ) {

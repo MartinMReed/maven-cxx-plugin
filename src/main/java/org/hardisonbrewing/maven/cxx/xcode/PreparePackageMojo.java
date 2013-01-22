@@ -50,6 +50,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
                 if ( XCodeService.isApplicationType( target ) ) {
                     copyProvisioningFile( target );
                     copyIpaFile( target );
+                    copyIpaManifest( target );
                 }
 
                 copyIconFile( target );
@@ -60,17 +61,18 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
                 excludes[i] = getProductFileInclude( targets[i] );
             }
 
-            copyConfigBuildFiles( scheme, excludes );
+            copyProductFiles( scheme, excludes );
         }
         else {
 
             for (String target : targets) {
 
-                copyConfigBuildFiles( target, null );
+                copyProductFiles( target, null );
 
                 if ( XCodeService.isApplicationType( target ) ) {
                     copyProvisioningFile( target );
                     copyIpaFile( target );
+                    copyIpaManifest( target );
                 }
 
                 copyIconFile( target );
@@ -117,22 +119,36 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private void copyProductFile( String target ) {
 
-        String directoryRoot = TargetDirectoryService.getConfigBuildDirPath( target );
-        File configBuildDir = new File( directoryRoot );
+        if ( XCodeService.isArchiveAction( target ) ) {
 
-        String productName = PropertiesService.getTargetProductName( target );
-        File productFile = new File( configBuildDir, productName );
+            String archivePath = XCodeService.getArchivePath( target );
+            File archiveFile = new File( archivePath );
+            String directoryRoot = archiveFile.getParent();
 
-        if ( !productFile.isDirectory() ) {
-            prepareTargetFile( target, productFile, getFilename( directoryRoot, productFile ) );
+            getLog().info( "Copying archive for target[" + target + "]: " + archiveFile );
+
+            for (File file : FileUtils.listFilesRecursive( archiveFile )) {
+                prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
+            }
         }
+        else {
 
-        getLog().info( "Copying product files for target[" + target + "] from: " + configBuildDir );
+            String directoryRoot = XCodeService.getProductDirPath( target );
+            File productDir = new File( directoryRoot );
 
-        String[] includes = new String[] { getProductFileInclude( target ) };
+            File productFile = new File( XCodeService.getProductFilePath( target ) );
 
-        for (File file : FileUtils.listFilesRecursive( configBuildDir, includes, null )) {
-            prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
+            if ( !productFile.isDirectory() ) {
+                prepareTargetFile( target, productFile, getFilename( directoryRoot, productFile ) );
+            }
+
+            getLog().info( "Copying product files for target[" + target + "] from: " + productDir );
+
+            String[] includes = new String[] { getProductFileInclude( target ) };
+
+            for (File file : FileUtils.listFilesRecursive( productDir, includes, null )) {
+                prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
+            }
         }
     }
 
@@ -148,31 +164,24 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private void copyProvisioningFile( String target ) {
 
-        StringBuffer srcFilePath = new StringBuffer();
-        srcFilePath.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
-        srcFilePath.append( File.separator );
-        srcFilePath.append( PropertiesService.getTargetProductName( target ) );
-        srcFilePath.append( File.separator );
-        srcFilePath.append( "embedded." );
-        srcFilePath.append( XCodeService.MOBILEPROVISION_EXTENSION );
-        File srcFile = new File( srcFilePath.toString() );
+        File src = new File( XCodeService.getEmbeddedProvisoningProfilePath( target ) );
 
         StringBuffer destFilePath = new StringBuffer();
         destFilePath.append( target );
         destFilePath.append( "." );
         destFilePath.append( XCodeService.MOBILEPROVISION_EXTENSION );
 
-        prepareTargetFile( target, srcFile, destFilePath.toString() );
+        prepareTargetFile( target, src, destFilePath.toString() );
     }
 
-    private void copyConfigBuildFiles( String target, String[] excludes ) {
+    private void copyProductFiles( String target, String[] excludes ) {
 
-        String directoryRoot = TargetDirectoryService.getConfigBuildDirPath( target );
-        File configBuildDir = new File( directoryRoot );
+        String directoryRoot = XCodeService.getProductDirPath( target );
+        File productDir = new File( directoryRoot );
 
-        getLog().info( "Copying files from: " + configBuildDir );
+        getLog().info( "Copying files from: " + productDir );
 
-        for (File file : FileUtils.listFilesRecursive( configBuildDir, null, excludes )) {
+        for (File file : FileUtils.listFilesRecursive( productDir, null, excludes )) {
             prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
         }
     }
@@ -193,6 +202,19 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         ipaFilePath.append( "." );
         ipaFilePath.append( XCodeService.IPA_EXTENSION );
         File ipaFile = new File( ipaFilePath.toString() );
+
+        prepareTargetFile( target, ipaFile, getFilename( rootDirectory, ipaFile ) );
+    }
+
+    private void copyIpaManifest( String target ) {
+
+        String rootDirectory = TargetDirectoryService.getTargetBuildDirPath( target );
+
+        StringBuffer ipaManifestPath = new StringBuffer();
+        ipaManifestPath.append( rootDirectory );
+        ipaManifestPath.append( File.separator );
+        ipaManifestPath.append( GenerateIpaManifestMojo.MANIFEST_NAME );
+        File ipaFile = new File( ipaManifestPath.toString() );
 
         prepareTargetFile( target, ipaFile, getFilename( rootDirectory, ipaFile ) );
     }

@@ -71,7 +71,7 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
 
         cmd.add( "PackageApplication" );
 
-        cmd.add( getAppFilePath( target ) );
+        cmd.add( XCodeService.getProductFilePath( target ) );
 
         cmd.add( "-o" );
         cmd.add( getIpaFilePath( target ) );
@@ -124,15 +124,6 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         execute( cmd, streamConsumer, null );
 
         return streamConsumer.getOutput().trim();
-    }
-
-    private String getAppFilePath( String target ) {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( PropertiesService.getTargetProductName( target ) );
-        return stringBuffer.toString();
     }
 
     private String getIpaFilePath( String target ) {

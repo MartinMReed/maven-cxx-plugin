@@ -58,6 +58,7 @@
 							<generatePackage>generated.xcode</generatePackage>
 							<schemaIncludes>
 								<schemaInclude>scheme.xsd</schemaInclude>
+								<schemaInclude>schemeAll.xsd</schemaInclude>
 							</schemaIncludes>
 						</configuration>
 					</execution>

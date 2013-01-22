@@ -25,6 +25,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.StringEscapeUtils;
 import org.hardisonbrewing.maven.core.TemplateService;
@@ -37,6 +38,8 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
     private static final String DOWNLOAD_ICON_URL = "downloadIconUrl";
     private static final String ITUNES_ICON_URL = "itunesIconUrl";
+
+    public static final String MANIFEST_NAME = "manifest.vm";
 
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
@@ -112,13 +115,13 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         }
 
         StringBuffer destPath = new StringBuffer();
-        destPath.append( TargetDirectoryService.getTempPackagePath( target ) );
+        destPath.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
         destPath.append( File.separator );
-        destPath.append( "manifest.vm" );
+        destPath.append( MANIFEST_NAME );
         File dest = new File( destPath.toString() );
 
         if ( !dest.getParentFile().exists() ) {
-            dest.getParentFile().mkdirs();
+            FileUtils.ensureParentExists( dest.getPath() );
         }
 
         getLog().info( "Generating " + destPath + "..." );
