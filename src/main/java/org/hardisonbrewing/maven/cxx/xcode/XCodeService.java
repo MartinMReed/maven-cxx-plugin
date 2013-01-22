@@ -118,12 +118,23 @@ public final class XCodeService {
 
     public static final File findXcscheme( String scheme ) {
 
-        File[] files = listSchemes( scheme, true );
+        Properties properties = PropertiesService.getProperties();
+        String username = properties.getProperty( "user.name" );
+
+        // specific user
+        File[] files = listSchemes( scheme, username );
         if ( files != null && files.length > 0 ) {
             return files[0];
         }
 
-        files = listSchemes( scheme, false );
+        // shared
+        files = listSchemes( scheme, null );
+        if ( files != null && files.length > 0 ) {
+            return files[0];
+        }
+
+        // any user
+        files = listSchemes( scheme, "*" );
         if ( files == null || files.length == 0 ) {
             return null;
         }
@@ -161,10 +172,10 @@ public final class XCodeService {
         XCodeService.schemes = _schemes;
     }
 
-    public static boolean isSharedScheme( String scheme, String filePath ) {
+    public static boolean isExpectedScheme( String scheme, String filePath ) {
 
-        String schemeSharedPath = getSchemeSharedPath( scheme );
-        return filePath.matches( schemeSharedPath );
+        String schemePath = getSchemePath( scheme );
+        return filePath.matches( schemePath );
     }
 
     public static File[] listSchemes() {
@@ -182,50 +193,65 @@ public final class XCodeService {
         return FileUtils.listFilesRecursive( baseDir, includes, null );
     }
 
-    private static File[] listSchemes( String scheme, boolean shared ) {
+    private static File[] listSchemes( String scheme, String username ) {
 
         File baseDir = ProjectService.getBaseDir();
-        String[] includes = new String[] { getSchemeIncludePath( scheme, shared ) };
+        String[] includes = new String[] { getSchemeIncludePath( scheme, username ) };
         return FileUtils.listFilesRecursive( baseDir, includes, null );
     }
 
-    private static String getSchemeIncludePath( String scheme, boolean shared ) {
+    private static String getSchemeIncludePath( String scheme, String username ) {
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( "**" );
         stringBuffer.append( File.separator );
         stringBuffer.append( "*" );
         stringBuffer.append( File.separator );
-        if ( shared ) {
+        if ( username == null || username.length() == 0 ) {
             stringBuffer.append( "xcshareddata" );
         }
         else {
             stringBuffer.append( "xcuserdata" );
             stringBuffer.append( File.separator );
-            stringBuffer.append( "*" );
+            stringBuffer.append( username );
+            stringBuffer.append( ".xcuserdatad" );
         }
         stringBuffer.append( File.separator );
         stringBuffer.append( "xcschemes" );
         stringBuffer.append( File.separator );
-        stringBuffer.append( scheme == null ? "*" : scheme );
+        stringBuffer.append( scheme );
         stringBuffer.append( "." );
         stringBuffer.append( XCSCHEME_EXTENSION );
         return stringBuffer.toString();
     }
 
-    public static String getSchemeSharedDirPath( String scheme ) {
+    public static String getSchemeDirPath() {
+
+        String workspace = getWorkspace();
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getXcprojPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( "xcshareddata" );
+        if ( workspace != null && workspace.length() > 0 ) {
+            stringBuffer.append( "xcshareddata" );
+        }
+        else {
+
+            Properties properties = PropertiesService.getProperties();
+            String username = properties.getProperty( "user.name" );
+
+            stringBuffer.append( "xcuserdata" );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( username );
+            stringBuffer.append( ".xcuserdatad" );
+        }
         return stringBuffer.toString();
     }
 
-    public static String getSchemeSharedPath( String scheme ) {
+    public static String getSchemePath( String scheme ) {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getSchemeSharedDirPath( scheme ) );
+        stringBuffer.append( getSchemeDirPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( "xcschemes" );
         stringBuffer.append( File.separator );

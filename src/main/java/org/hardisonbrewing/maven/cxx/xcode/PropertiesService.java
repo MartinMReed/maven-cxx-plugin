@@ -32,14 +32,18 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
 
     public static final Properties getXCodeProperties() {
 
-        if ( properties == null ) {
-            properties = loadProperties( getXCodePropertiesPath() );
+        String xcodePropertiesPath = getXCodePropertiesPath();
+
+        if ( properties == null && FileUtils.exists( xcodePropertiesPath ) ) {
+            properties = loadProperties( xcodePropertiesPath );
         }
+
         if ( properties == null ) {
             Properties properties = new Properties();
             storeXCodeProperties( properties );
             PropertiesService.properties = properties;
         }
+
         return properties;
     }
 

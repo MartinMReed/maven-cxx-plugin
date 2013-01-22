@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
 import org.hardisonbrewing.maven.core.model.ProjectConfiguration;
@@ -88,12 +89,14 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
     private final void storePropertyDifferences() {
 
-        Properties previousProperties = PropertiesService.loadBuildProperties();
-        if ( previousProperties == null ) {
+        String buildPropertiesPath = PropertiesService.getBuildPropertiesPath();
+
+        if ( !FileUtils.exists( buildPropertiesPath ) ) {
             getLog().debug( "A previous build.properties file was not found... skipping difference check" );
             return;
         }
 
+        Properties previousProperties = PropertiesService.loadBuildProperties();
         Properties currentProperties = PropertiesService.getProperties();
 
         Properties differenceProperties = new Properties();
