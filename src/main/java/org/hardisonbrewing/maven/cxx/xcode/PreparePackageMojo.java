@@ -39,31 +39,26 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        String[] targets = XCodeService.getTargets();
-
         if ( scheme != null ) {
 
-            for (String target : targets) {
+            String target = XCodeService.getBuildTargetName( scheme );
 
-                copyProductFile( target );
+            copyProductFile( target );
 
-                if ( XCodeService.isApplicationType( target ) ) {
-                    copyProvisioningFile( target );
-                    copyIpaFile( target );
-                    copyIpaManifest( target );
-                }
-
-                copyIconFile( target );
+            if ( XCodeService.isApplicationType( target ) ) {
+                copyProvisioningFile( target );
+                copyIpaFile( target );
+                copyIpaManifest( target );
             }
 
-            String[] excludes = new String[targets.length];
-            for (int i = 0; i < excludes.length; i++) {
-                excludes[i] = getProductFileInclude( targets[i] );
-            }
+            copyIconFile( target );
 
+            String[] excludes = new String[] { getProductFileInclude( target ) };
             copyProductFiles( scheme, excludes );
         }
         else {
+
+            String[] targets = XCodeService.getTargets();
 
             for (String target : targets) {
 

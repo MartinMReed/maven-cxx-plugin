@@ -30,11 +30,22 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  */
 public final class ConvertPlistMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String scheme;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        for (String target : XCodeService.getTargets()) {
+        if ( scheme != null ) {
+            String target = XCodeService.getBuildTargetName( scheme );
             execute( target );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
         }
     }
 
