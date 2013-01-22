@@ -91,25 +91,27 @@ public final class CompileMojo extends JoJoMojoImpl {
     private void executeScheme( String scheme ) {
 
         File schemeFile = XCodeService.findXcscheme( scheme );
-        boolean sharedScheme = XCodeService.isSharedScheme( scheme, schemeFile.getPath() );
+        boolean expectedScheme = XCodeService.isExpectedScheme( scheme, schemeFile.getPath() );
+        getLog().info( "schemeFile[" + schemeFile.getPath() + "], expectedScheme[" + expectedScheme + "]" );
         File schemeTmpFile = null;
 
         try {
 
-            if ( sharedScheme ) {
+            if ( expectedScheme ) {
                 File targetDirectory = TargetDirectoryService.getTargetDirectory();
                 schemeTmpFile = new File( targetDirectory, schemeFile.getName() );
                 FileUtils.copyFile( schemeFile, schemeTmpFile );
             }
             else {
 
-                schemeTmpFile = new File( XCodeService.getSchemeSharedDirPath( scheme ) );
+                schemeTmpFile = new File( XCodeService.getSchemeDirPath() );
                 schemeTmpFile.mkdir();
 
                 File userFile = schemeFile;
 
-                schemeFile = new File( XCodeService.getSchemeSharedPath( scheme ) );
+                schemeFile = new File( XCodeService.getSchemePath( scheme ) );
                 FileUtils.ensureParentExists( schemeFile.getPath() );
+                getLog().info( "schemeTmpFile[" + schemeTmpFile.getPath() + "], schemeFile[" + schemeFile.getPath() + "]" );
 
                 FileUtils.copyFile( userFile, schemeFile );
             }
@@ -129,11 +131,11 @@ public final class CompileMojo extends JoJoMojoImpl {
         finally {
 
             try {
-                if ( !sharedScheme ) {
-                    FileUtils.deleteDirectory( schemeTmpFile );
+                if ( expectedScheme ) {
+                    FileUtils.copyFile( schemeTmpFile, schemeFile );
                 }
                 else {
-                    FileUtils.copyFile( schemeTmpFile, schemeFile );
+                    FileUtils.deleteDirectory( schemeTmpFile );
                 }
             }
             catch (IOException e) {

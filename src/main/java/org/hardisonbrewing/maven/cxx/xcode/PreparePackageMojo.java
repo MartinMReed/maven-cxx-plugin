@@ -216,14 +216,17 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private final void prepareTargetFile( String target, File src, String filename ) {
 
-        String[] targets = XCodeService.getTargets();
+        if ( scheme == null ) {
 
-        if ( targets.length > 1 ) {
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( target );
-            stringBuffer.append( File.separator );
-            stringBuffer.append( filename );
-            filename = stringBuffer.toString();
+            String[] targets = XCodeService.getTargets();
+
+            if ( targets.length > 1 ) {
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append( target );
+                stringBuffer.append( File.separator );
+                stringBuffer.append( filename );
+                filename = stringBuffer.toString();
+            }
         }
 
         org.hardisonbrewing.maven.cxx.generic.PreparePackageMojo.prepareTargetFile( src, filename );
