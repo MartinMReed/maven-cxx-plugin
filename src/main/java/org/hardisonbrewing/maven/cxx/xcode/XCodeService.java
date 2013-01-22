@@ -50,6 +50,7 @@ public final class XCodeService {
     public static final String BUILD_BUILT_PRODUCTS_DIR = "BUILT_PRODUCTS_DIR";
     public static final String BUILD_ARCHIVE_PRODUCTS_PATH = "ARCHIVE_PRODUCTS_PATH";
     public static final String BUILD_ARCHIVE_PATH = "ARCHIVE_PATH";
+    public static final String BUILD_TARGET_NAME = "TARGET_NAME";
     public static final String BUILD_ACTION = "ACTION";
     public static final String BUILD_FULL_PRODUCT_NAME = "FULL_PRODUCT_NAME";
     public static final String BUILD_EMBEDDED_PROFILE_NAME = "EMBEDDED_PROFILE_NAME";
@@ -372,6 +373,12 @@ public final class XCodeService {
         stringBuffer.append( File.separator );
         stringBuffer.append( buildSettings.get( BUILD_EMBEDDED_PROFILE_NAME ) );
         return stringBuffer.toString();
+    }
+
+    public static final String getBuildTargetName( String target ) {
+
+        Properties buildSettings = PropertiesService.getBuildSettings( target );
+        return (String) buildSettings.get( BUILD_TARGET_NAME );
     }
 
     public static final String getConfiguration( String target ) {

@@ -41,11 +41,22 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
 
     public static final String MANIFEST_NAME = "manifest.vm";
 
-    @Override
-    public final void execute() throws MojoExecutionException, MojoFailureException {
+    /**
+     * @parameter
+     */
+    public String scheme;
 
-        for (String target : XCodeService.getTargets()) {
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+        if ( scheme != null ) {
+            String target = XCodeService.getBuildTargetName( scheme );
             execute( target );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
         }
     }
 

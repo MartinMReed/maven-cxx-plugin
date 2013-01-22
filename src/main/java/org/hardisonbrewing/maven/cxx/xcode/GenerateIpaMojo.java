@@ -43,11 +43,22 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
      */
     public String provisioningProfile;
 
+    /**
+     * @parameter
+     */
+    public String scheme;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        for (String target : XCodeService.getTargets()) {
+        if ( scheme != null ) {
+            String target = XCodeService.getBuildTargetName( scheme );
             execute( target );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
         }
     }
 
