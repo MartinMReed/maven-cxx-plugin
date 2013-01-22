@@ -92,7 +92,6 @@ public final class CompileMojo extends JoJoMojoImpl {
 
         File schemeFile = XCodeService.findXcscheme( scheme );
         boolean expectedScheme = XCodeService.isExpectedScheme( scheme, schemeFile.getPath() );
-        getLog().info( "schemeFile[" + schemeFile.getPath() + "], expectedScheme[" + expectedScheme + "]" );
         File schemeTmpFile = null;
 
         try {
@@ -111,7 +110,6 @@ public final class CompileMojo extends JoJoMojoImpl {
 
                 schemeFile = new File( XCodeService.getSchemePath( scheme ) );
                 FileUtils.ensureParentExists( schemeFile.getPath() );
-                getLog().info( "schemeTmpFile[" + schemeTmpFile.getPath() + "], schemeFile[" + schemeFile.getPath() + "]" );
 
                 FileUtils.copyFile( userFile, schemeFile );
             }
