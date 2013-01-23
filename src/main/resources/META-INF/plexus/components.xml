@@ -39,7 +39,8 @@
 								org.hardisonbrewing:maven-cxx-plugin:a-archive</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:a-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
-							<install>org.hardisonbrewing:maven-cxx-plugin:install</install>
+							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
+							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
 						</phases>
 					</lifecycle>
 				</lifecycles>
@@ -271,7 +272,8 @@
 								org.hardisonbrewing:maven-cxx-plugin:qnx-bar-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:cdt-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
-							<install>org.hardisonbrewing:maven-cxx-plugin:install</install>
+							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
+							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
 						</phases>
 					</lifecycle>
 				</lifecycles>
@@ -316,7 +318,8 @@
 								org.hardisonbrewing:maven-cxx-plugin:flex-air-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:flex-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
-							<install>org.hardisonbrewing:maven-cxx-plugin:install</install>
+							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
+							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
 						</phases>
 					</lifecycle>
 				</lifecycles>
@@ -357,7 +360,8 @@
 								org.hardisonbrewing:maven-cxx-plugin:o-link</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:o-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
-							<install>org.hardisonbrewing:maven-cxx-plugin:install</install>
+							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
+							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
 						</phases>
 					</lifecycle>
 				</lifecycles>
@@ -401,7 +405,8 @@
 								org.hardisonbrewing:maven-cxx-plugin:qnx-bar-compile</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:qnx-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
-							<install>org.hardisonbrewing:maven-cxx-plugin:install</install>
+							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
+							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
 						</phases>
 					</lifecycle>
 				</lifecycles>
@@ -446,7 +451,8 @@
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:xcode-generate-ipa,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-prepare-package</prepare-package>
 							<package>org.hardisonbrewing:maven-cxx-plugin:package</package>
-							<install>org.hardisonbrewing:maven-cxx-plugin:install</install>
+							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
+							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
 						</phases>
 					</lifecycle>
 				</lifecycles>
