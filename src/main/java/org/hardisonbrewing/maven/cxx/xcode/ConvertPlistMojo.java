@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2012 Martin M Reed
+ * Copyright (c) 2010-2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,11 +30,22 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  */
 public final class ConvertPlistMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    public String scheme;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        for (String target : XCodeService.getTargets()) {
+        if ( scheme != null ) {
+            String target = XCodeService.getBuildTargetName( scheme );
             execute( target );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
         }
     }
 

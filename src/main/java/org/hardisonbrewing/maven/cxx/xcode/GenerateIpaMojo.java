@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2012 Martin M Reed
+ * Copyright (c) 2010-2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -43,11 +43,22 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
      */
     public String provisioningProfile;
 
+    /**
+     * @parameter
+     */
+    public String scheme;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        for (String target : XCodeService.getTargets()) {
+        if ( scheme != null ) {
+            String target = XCodeService.getBuildTargetName( scheme );
             execute( target );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
         }
     }
 
@@ -56,6 +67,7 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         if ( !XCodeService.isApplicationType( target ) ) {
             return;
         }
+
         generateIpaFile( target );
     }
 
@@ -70,7 +82,7 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
 
         cmd.add( "PackageApplication" );
 
-        cmd.add( getAppFilePath( target ) );
+        cmd.add( XCodeService.getProductFilePath( target ) );
 
         cmd.add( "-o" );
         cmd.add( getIpaFilePath( target ) );
@@ -123,15 +135,6 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
         execute( cmd, streamConsumer, null );
 
         return streamConsumer.getOutput().trim();
-    }
-
-    private String getAppFilePath( String target ) {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( TargetDirectoryService.getConfigBuildDirPath( target ) );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( PropertiesService.getTargetProductName( target ) );
-        return stringBuffer.toString();
     }
 
     private String getIpaFilePath( String target ) {

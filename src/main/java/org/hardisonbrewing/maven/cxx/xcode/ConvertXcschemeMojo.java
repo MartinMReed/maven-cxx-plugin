@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2012 Martin M Reed
+ * Copyright (c) 2013 Martin M Reed
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,11 +16,11 @@
  */
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import generated.xcode.BuildAction;
+import generated.xcode.BuildActionEntries;
+import generated.xcode.BuildActionEntries.BuildActionEntry;
+import generated.xcode.BuildableReference;
 import generated.xcode.Scheme;
-import generated.xcode.Scheme.BuildAction;
-import generated.xcode.Scheme.BuildAction.BuildActionEntries;
-import generated.xcode.Scheme.BuildAction.BuildActionEntries.BuildActionEntry;
-import generated.xcode.Scheme.BuildAction.BuildActionEntries.BuildActionEntry.BuildableReference;
 
 import java.io.File;
 import java.util.List;
@@ -36,7 +36,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
  * @goal xcode-convert-xcscheme
- * @phase compile
+ * @phase initialize
  */
 public final class ConvertXcschemeMojo extends JoJoMojoImpl {
 
@@ -53,10 +53,9 @@ public final class ConvertXcschemeMojo extends JoJoMojoImpl {
             return;
         }
 
-        String filePath = XCodeService.getSchemePath( schemeName );
-        File file = new File( filePath );
-
+        File file = XCodeService.findXcscheme( schemeName );
         Scheme scheme = readScheme( file );
+
         String[] targets = getSchemeTargets( scheme );
 
         Properties properties = PropertiesService.getXCodeProperties();

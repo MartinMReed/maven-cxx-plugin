@@ -41,6 +41,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
     private static final String SED_EXPIRATION_DATE = "/Not After/s/^[^\\:]*\\: *\\(.*\\)/\\1/p";
     private static final String SED_IDENTITY = "/Subject Name/,/Common Name/s/^ *Common Name *\\: *\\(.*\\)/\\1/p";
     private static final String SED_SERIAL_NUMBER = "/Serial Number/s/^.*\\: *\\(.*\\)/\\1/p";
+    private static final String CERT_DATE_FORMAT = "HH:mm:ss MMM dd, yyyy";
 
     /**
      * @parameter
@@ -60,6 +61,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         File certificateFile = CodesignCertificateService.getCertificateFile( codesignCertificate );
         String keychainPath = XCodeService.getKeychainPath();
 
+        validateExpirationDate( certificateFile, keychainPath );
         storeIdentity( certificateFile, keychainPath );
 
         String expirationDateString = getExpirationDate( certificateFile, keychainPath );
@@ -87,6 +89,47 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         }
 
         importCertificateFile( certificateFile, keychainPath );
+    }
+
+    private void validateExpirationDate( File file, String keychainPath ) {
+
+        String expirationDate = getExpirationDate( file, keychainPath );
+        DateFormat dateFormat = new SimpleDateFormat( CERT_DATE_FORMAT );
+
+        Date date;
+
+        try {
+            date = dateFormat.parse( expirationDate );
+        }
+        catch (ParseException e) {
+            getLog().error( "Unable to parse expiration date for certificate.", e );
+            throw new IllegalStateException();
+        }
+
+        if ( date.before( new Date() ) ) {
+            getLog().error( "The certificate has expired on " + expirationDate + "." );
+            throw new IllegalStateException();
+        }
+    }
+
+    private String getExpirationDate( File file, String keychainPath ) {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "certtool" );
+        cmd.add( "d" );
+        cmd.add( file.getAbsolutePath() );
+        if ( keychainPath != null ) {
+            cmd.add( "k=" + keychainPath );
+        }
+        cmd.add( "|" );
+        cmd.add( "sed" );
+        cmd.add( "-n" );
+        cmd.add( SED_EXPIRATION_DATE );
+
+        StringStreamConsumer streamConsumer = new StringStreamConsumer();
+        execute( cmd, streamConsumer, null );
+
+        return streamConsumer.getOutput().trim();
     }
 
     private void storeIdentity( File file, String keychainPath ) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,6 +19,8 @@ package org.hardisonbrewing.maven.cxx.xcode;
 import java.io.File;
 import java.util.Properties;
 
+import org.hardisonbrewing.maven.core.FileUtils;
+
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
     private static Properties properties;
@@ -30,14 +32,18 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
 
     public static final Properties getXCodeProperties() {
 
-        if ( properties == null ) {
-            properties = loadProperties( getXCodePropertiesPath() );
+        String xcodePropertiesPath = getXCodePropertiesPath();
+
+        if ( properties == null && FileUtils.exists( xcodePropertiesPath ) ) {
+            properties = loadProperties( xcodePropertiesPath );
         }
+
         if ( properties == null ) {
             Properties properties = new Properties();
             storeXCodeProperties( properties );
             PropertiesService.properties = properties;
         }
+
         return properties;
     }
 
@@ -81,5 +87,40 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     public static final String getTargetProductName( String target ) {
 
         return getXCodeProperty( target, XCodeService.PROP_PRODUCT_REFERENCE );
+    }
+
+    public static final Properties getBuildSettings( String target ) {
+
+        return loadProperties( getBuildSettingsPath( target ) );
+    }
+
+    public static final String getBuildSettingsPath( String target ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "buildSettings.properties" );
+        return stringBuffer.toString();
+    }
+
+    public static final void storeBuildSettings( Properties buildSettings, String target ) {
+
+        String filePath = getBuildSettingsPath( target );
+        FileUtils.ensureParentExists( filePath );
+        storeProperties( buildSettings, filePath );
+    }
+
+    public static final Properties getBuildEnvironmentProperties( String target ) {
+
+        return loadProperties( getBuildEnvironmentPropertiesPath( target ) );
+    }
+
+    public static final String getBuildEnvironmentPropertiesPath( String target ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "environment.properties" );
+        return stringBuffer.toString();
     }
 }

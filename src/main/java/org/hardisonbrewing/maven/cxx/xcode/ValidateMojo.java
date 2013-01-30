@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2012 Martin M Reed
+ * Copyright (c) 2010-2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -72,11 +72,19 @@ public final class ValidateMojo extends JoJoMojoImpl {
         validateOS();
 
         File workspace = XCodeService.loadWorkspace();
+
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "scheme", scheme, workspace != null );
+
         if ( workspace != null ) {
             validateWorkspace();
         }
         else {
             validateProject();
+        }
+
+        if ( scheme != null ) {
+            XCodeService.loadSchemes();
+            validateScheme( scheme );
         }
 
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "provisioningProfile", provisioningProfile, false );
@@ -117,17 +125,12 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
     private void validateWorkspace() {
 
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "scheme", scheme, true );
-
         if ( targetIncludes != null || targetExcludes != null ) {
             if ( targetIncludes.length > 0 || targetExcludes.length > 0 ) {
                 JoJoMojo.getMojo().getLog().error( "Invalid workspace configuration! The pom.xml must not specify any targets in `targetIncludes` or `targetExcludes`." );
                 throw new IllegalStateException();
             }
         }
-
-        XCodeService.loadSchemes();
-        validateScheme( scheme );
     }
 
     private void validateScheme( String scheme ) {

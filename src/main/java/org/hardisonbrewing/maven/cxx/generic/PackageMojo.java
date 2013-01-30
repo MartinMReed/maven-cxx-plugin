@@ -20,6 +20,8 @@ import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.hardisonbrewing.maven.core.ArchiveService;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -31,11 +33,22 @@ import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
  */
 public final class PackageMojo extends JoJoMojoImpl {
 
+    /**
+     * @parameter
+     */
+    private String classifier;
+
+    /**
+     * @component
+     * @readonly
+     */
+    protected MavenProjectHelper projectHelper;
+
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
         File src = new File( TargetDirectoryService.getTempPackagePath() );
-        File dest = new File( TargetDirectoryService.getTempPackagePath() + ".jar" );
+        File dest = new File( TargetDirectoryService.getTempPackagePath() + ".zip" );
 
         getLog().info( "Archiving " + src + " to " + dest );
 
@@ -44,6 +57,15 @@ public final class PackageMojo extends JoJoMojoImpl {
         }
         catch (ArchiverException e) {
             throw new IllegalStateException( e );
+        }
+
+        MavenProject project = getProject();
+
+        if ( classifier == null ) {
+            project.getArtifact().setFile( dest );
+        }
+        else {
+            projectHelper.attachArtifact( project, dest, classifier );
         }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2012 Martin M Reed
+ * Copyright (c) 2010-2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,6 +25,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.StringEscapeUtils;
 import org.hardisonbrewing.maven.core.TemplateService;
@@ -38,11 +39,24 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
     private static final String DOWNLOAD_ICON_URL = "downloadIconUrl";
     private static final String ITUNES_ICON_URL = "itunesIconUrl";
 
-    @Override
-    public final void execute() throws MojoExecutionException, MojoFailureException {
+    public static final String MANIFEST_NAME = "manifest.vm";
 
-        for (String target : XCodeService.getTargets()) {
+    /**
+     * @parameter
+     */
+    public String scheme;
+
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+        if ( scheme != null ) {
+            String target = XCodeService.getBuildTargetName( scheme );
             execute( target );
+        }
+        else {
+            for (String target : XCodeService.getTargets()) {
+                execute( target );
+            }
         }
     }
 
@@ -112,13 +126,13 @@ public final class GenerateIpaManifestMojo extends JoJoMojoImpl {
         }
 
         StringBuffer destPath = new StringBuffer();
-        destPath.append( TargetDirectoryService.getTempPackagePath( target ) );
+        destPath.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
         destPath.append( File.separator );
-        destPath.append( "manifest.vm" );
+        destPath.append( MANIFEST_NAME );
         File dest = new File( destPath.toString() );
 
         if ( !dest.getParentFile().exists() ) {
-            dest.getParentFile().mkdirs();
+            FileUtils.ensureParentExists( dest.getPath() );
         }
 
         getLog().info( "Generating " + destPath + "..." );

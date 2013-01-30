@@ -188,11 +188,13 @@ public abstract class JoJoMojoImpl extends JoJoMojo implements Contextualizable 
         this.plexusContainer = plexusContainer;
     }
 
+    @SuppressWarnings( "unchecked" )
     protected <T> T lookup( Class<T> role ) throws ComponentLookupException {
 
         return (T) getPlexusContainer().lookup( role.getName() );
     }
 
+    @SuppressWarnings( "unchecked" )
     protected <T> T lookup( Class<T> role, String id ) throws ComponentLookupException {
 
         return (T) getPlexusContainer().lookup( role.getName(), id );

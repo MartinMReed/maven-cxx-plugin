@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2010-2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -25,44 +25,16 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
         // do nothing
     }
 
-    public static final String getConfigBuildDirPath( String target ) {
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getTargetBuildDirPath( target ) );
-        stringBuffer.append( File.separator );
-        stringBuffer.append( XCodeService.getConfiguration( target ) );
-        return stringBuffer.toString();
-    }
-
     public static final String getTargetBuildDirPath( String target ) {
 
         String scheme = XCodeService.getScheme();
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTargetDirectoryPath() );
-        if ( scheme != null ) {
-            stringBuffer.append( File.separator );
-            stringBuffer.append( scheme );
-        }
-        else {
-            stringBuffer.append( File.separator );
-            stringBuffer.append( target );
-        }
-        return stringBuffer.toString();
-    }
-
-    public static final String getTempPackagePath( String target ) {
-
-        String scheme = XCodeService.getScheme();
-        String[] targets = XCodeService.getTargets();
-        if ( scheme == null && targets.length == 1 ) {
-            return getTempPackagePath();
-        }
-
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getTempPackagePath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( target );
+        stringBuffer.append( scheme == null ? target : scheme );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( XCodeService.getConfiguration( target ) );
         return stringBuffer.toString();
     }
 }

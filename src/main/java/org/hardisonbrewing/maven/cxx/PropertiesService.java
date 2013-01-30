@@ -35,6 +35,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.core.Properties
         return "env." + key;
     }
 
+    @SuppressWarnings( "unchecked" )
     public static final boolean pluginVersionsHaveChanged() {
 
         Properties properties = loadBuildDifferenceProperties();
@@ -63,12 +64,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.core.Properties
     public static final void storeBuildProperties() {
 
         Properties properties = PropertiesService.getProperties();
-
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        filePath.append( File.separator );
-        filePath.append( "build.properties" );
-        storeProperties( properties, filePath.toString() );
+        storeProperties( properties, getBuildPropertiesPath() );
     }
 
     public static final Properties loadBuildDifferenceProperties() {
@@ -82,10 +78,15 @@ public class PropertiesService extends org.hardisonbrewing.maven.core.Properties
 
     public static final Properties loadBuildProperties() {
 
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( TargetDirectoryService.getTargetDirectoryPath() );
-        filePath.append( File.separator );
-        filePath.append( "build.properties" );
-        return loadProperties( filePath.toString() );
+        return loadProperties( getBuildPropertiesPath() );
+    }
+
+    public static final String getBuildPropertiesPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "build.properties" );
+        return stringBuffer.toString();
     }
 }

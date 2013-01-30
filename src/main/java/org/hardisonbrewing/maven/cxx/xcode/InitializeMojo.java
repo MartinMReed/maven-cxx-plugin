@@ -1,6 +1,6 @@
 /**
+ * Copyright (c) 2010-2013 Martin M Reed
  * Copyright (c) 2012 Todd Grooms
- * Copyright (c) 2010-2012 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -66,24 +66,23 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         XCodeService.setConfiguration( configuration );
 
-        if ( scheme != null ) {
+        String projectPath;
 
-            initWorkspace();
-            XCodeService.setScheme( scheme );
-            initWorkspaceProject( scheme );
+        File workspace = XCodeService.loadWorkspace();
 
-            Properties properties = PropertiesService.getXCodeProperties();
-            properties.put( XCodeService.PROP_SCHEME, scheme );
-            PropertiesService.storeXCodeProperties( properties );
+        if ( workspace != null ) {
+            initWorkspace( workspace );
+            projectPath = XCodeService.getSchemeXcprojPath( scheme );
         }
         else {
-
             File project = XCodeService.loadProject();
-            XCodeService.setXcprojPath( project.getPath() );
+            projectPath = project.getPath();
+        }
 
-            String filename = project.getName();
-            filename.substring( 0, filename.lastIndexOf( XCodeService.XCODEPROJ_EXTENSION ) - 1 );
-            XCodeService.setProject( filename );
+        initProject( projectPath );
+
+        if ( scheme != null ) {
+            initScheme( scheme );
         }
 
         if ( provisioningProfile != null ) {
@@ -95,21 +94,12 @@ public final class InitializeMojo extends JoJoMojoImpl {
         }
 
         if ( keychain != null ) {
-            String keychainPath;
-            if ( keychain.keychain == null ) {
-                keychainPath = defaultKeychain();
-            }
-            else {
-                keychainPath = findKeychainPath( keychain.keychain );
-            }
-            getLog().info( "Using keychain: " + keychainPath );
-            XCodeService.setKeychainPath( keychainPath );
+            initKeychain( keychain );
         }
     }
 
-    private void initWorkspace() {
+    private void initWorkspace( File workspace ) {
 
-        File workspace = XCodeService.loadWorkspace();
         XCodeService.setXcworkspacePath( workspace.getPath() );
 
         String workspaceName = workspace.getName();
@@ -117,15 +107,56 @@ public final class InitializeMojo extends JoJoMojoImpl {
         XCodeService.setWorkspace( workspaceName );
     }
 
-    private void initWorkspaceProject( String scheme ) {
+    private void initProject( String projectPath ) {
 
-        String projectPath = XCodeService.getSchemeXcprojPath( scheme );
         XCodeService.setXcprojPath( projectPath );
 
         int startIndex = projectPath.lastIndexOf( File.separatorChar );
         int endIndex = projectPath.lastIndexOf( XCodeService.XCODEPROJ_EXTENSION );
         String projectName = projectPath.substring( startIndex + 1, endIndex - 1 );
         XCodeService.setProject( projectName );
+    }
+
+    private void initScheme( String scheme ) {
+
+        XCodeService.setScheme( scheme );
+
+        Properties properties = PropertiesService.getXCodeProperties();
+        properties.put( XCodeService.PROP_SCHEME, scheme );
+        PropertiesService.storeXCodeProperties( properties );
+    }
+
+    private void initKeychain( Keychain keychain ) {
+
+        String keychainPath;
+        if ( keychain.keychain == null ) {
+            keychainPath = defaultKeychain();
+        }
+        else {
+            keychainPath = findKeychainPath( keychain.keychain );
+        }
+        getLog().info( "Using keychain: " + keychainPath );
+        XCodeService.setKeychainPath( keychainPath );
+    }
+
+    private String defaultKeychain() {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "security" );
+        cmd.add( "default-keychain" );
+
+        StringStreamConsumer streamConsumer = new StringStreamConsumer();
+        execute( cmd, streamConsumer, streamConsumer );
+
+        Pattern pattern = Pattern.compile( UnlockKeychainMojo.KEYCHAIN_REGEX );
+        Matcher matcher = pattern.matcher( streamConsumer.getOutput() );
+
+        if ( matcher.find() ) {
+            return matcher.group( 1 );
+        }
+
+        getLog().error( "Unable to locate default keychain. You must specify the keyhain name or path in the pom.xml." );
+        throw new IllegalStateException();
     }
 
     private String findKeychainPath( String keychain ) {
@@ -155,25 +186,5 @@ public final class InitializeMojo extends JoJoMojoImpl {
         Properties properties = PropertiesService.getProperties();
         String userHome = properties.getProperty( "user.home" );
         return userHome + path;
-    }
-
-    private String defaultKeychain() {
-
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "security" );
-        cmd.add( "default-keychain" );
-
-        StringStreamConsumer streamConsumer = new StringStreamConsumer();
-        execute( cmd, streamConsumer, streamConsumer );
-
-        Pattern pattern = Pattern.compile( UnlockKeychainMojo.KEYCHAIN_REGEX );
-        Matcher matcher = pattern.matcher( streamConsumer.getOutput() );
-
-        if ( matcher.find() ) {
-            return matcher.group( 1 );
-        }
-
-        getLog().error( "Unable to locate default keychain. You must specify the keyhain name or path in the pom.xml." );
-        throw new IllegalStateException();
     }
 }
