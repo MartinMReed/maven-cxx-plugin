@@ -67,6 +67,8 @@ public final class XCodeService {
     private static String[] schemes;
     private static String scheme;
 
+    private static String workspaceScheme;
+    
     private static String configuration;
 
     private static Hashtable<String, String> fileIndex;
@@ -480,6 +482,16 @@ public final class XCodeService {
     public static void setScheme( String scheme ) {
 
         XCodeService.scheme = scheme;
+    }
+
+    public static String getWorkspaceScheme() {
+
+        return workspaceScheme;
+    }
+
+    public static void setWorkspaceScheme( String workspaceScheme ) {
+
+        XCodeService.workspaceScheme = workspaceScheme;
     }
 
     public static final String getProject() {

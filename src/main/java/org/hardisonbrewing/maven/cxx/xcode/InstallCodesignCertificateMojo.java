@@ -112,26 +112,6 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         }
     }
 
-    private String getExpirationDate( File file, String keychainPath ) {
-
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "certtool" );
-        cmd.add( "d" );
-        cmd.add( file.getAbsolutePath() );
-        if ( keychainPath != null ) {
-            cmd.add( "k=" + keychainPath );
-        }
-        cmd.add( "|" );
-        cmd.add( "sed" );
-        cmd.add( "-n" );
-        cmd.add( SED_EXPIRATION_DATE );
-
-        StringStreamConsumer streamConsumer = new StringStreamConsumer();
-        execute( cmd, streamConsumer, null );
-
-        return streamConsumer.getOutput().trim();
-    }
-
     private void storeIdentity( File file, String keychainPath ) {
 
         String identity = getIdentity( file, keychainPath );

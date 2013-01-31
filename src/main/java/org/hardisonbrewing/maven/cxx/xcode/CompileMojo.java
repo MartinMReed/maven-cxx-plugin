@@ -72,6 +72,11 @@ public final class CompileMojo extends JoJoMojoImpl {
      */
     public String scheme;
 
+    /**
+     * @parameter
+     */
+    public String workspaceScheme;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -159,13 +164,20 @@ public final class CompileMojo extends JoJoMojoImpl {
             cmd.add( XCodeService.getXcprojPath() );
         }
 
-        if ( scheme ) {
+        if ( workspaceScheme != null ) {
+            getLog().debug( "Workspace scheme: " + workspaceScheme );
             cmd.add( "-scheme" );
+            cmd.add( workspaceScheme );
         }
         else {
-            cmd.add( "-target" );
+            if ( scheme ) {
+                cmd.add( "-scheme" );
+            }
+            else {
+                cmd.add( "-target" );
+            }
+            cmd.add( target );
         }
-        cmd.add( target );
 
         String configuration = XCodeService.getConfiguration( target );
         cmd.add( "-configuration" );

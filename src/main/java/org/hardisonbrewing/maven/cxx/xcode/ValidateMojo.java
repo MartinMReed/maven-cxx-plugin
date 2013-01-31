@@ -49,6 +49,11 @@ public final class ValidateMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
+    public String workspaceScheme;
+
+    /**
+     * @parameter
+     */
     public Keychain keychain;
 
     /**
@@ -72,8 +77,8 @@ public final class ValidateMojo extends JoJoMojoImpl {
         validateOS();
 
         File workspace = XCodeService.loadWorkspace();
-
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "scheme", scheme, workspace != null );
+        boolean force = workspace != null && workspaceScheme == null;
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "scheme", scheme, force );
 
         if ( workspace != null ) {
             validateWorkspace();
@@ -135,6 +140,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
     private void validateScheme( String scheme ) {
 
+        getLog().debug( "Validating Scheme " + scheme );
         String[] schemes = XCodeService.getSchemes();
 
         if ( schemes == null ) {
@@ -142,7 +148,14 @@ public final class ValidateMojo extends JoJoMojoImpl {
             throw new IllegalStateException();
         }
 
+        if ( schemes.length == 0 ) {
+            getLog().error( "Unable to find list of schemes!" );
+            throw new IllegalStateException();
+        }
+
         for (String _scheme : schemes) {
+
+            getLog().debug( "Possible Scheme Match: " + _scheme );
             if ( scheme.equals( _scheme ) ) {
                 return;
             }
