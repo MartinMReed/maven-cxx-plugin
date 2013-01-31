@@ -7,8 +7,7 @@
 	<packaging>maven-plugin</packaging>
 	<name>${project.artifactId}</name>
 	<scm>
-		<url>scm:git:git@github.com:hardisonbrewing/maven-cxx-plugin.git</url>
-		<connection>scm:git:git@github.com:hardisonbrewing/maven-cxx-plugin.git</connection>
+		<url>git@github.com:hardisonbrewing/maven-cxx-plugin.git</url>
 		<developerConnection>scm:git:git@github.com:hardisonbrewing/maven-cxx-plugin.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
@@ -108,9 +107,10 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<!-- https://github.com/hardisonbrewing/hbc-maven-core -->
 			<groupId>org.hardisonbrewing</groupId>
 			<artifactId>hbc-maven-core</artifactId>
-			<version>1.0.8.2</version>
+			<version>1.0.8.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
