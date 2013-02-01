@@ -35,7 +35,7 @@ To download this plugin without building it manually, you can add the following 
 		</pluginRepository>
 	</pluginRepositories>
 
-Continuous Integration: [Bamboo Status](http://hardisonbrewing.org:8083/browse/CXX)
+Continuous Integration: [Bamboo Status](http://bamboo.hardisonbrewing.org/browse/MVN-CXX)
 
 # Setting up your pom.xml
 Packages that are <del>struck out</del> have been disabled, but are still present in the source code.
