@@ -20,8 +20,6 @@ import generated.plist.Plist;
 
 import java.io.File;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.FileUtils;
@@ -67,8 +65,6 @@ public final class XCodeService {
     private static String[] schemes;
     private static String scheme;
 
-    private static String workspaceScheme;
-    
     private static String configuration;
 
     private static Hashtable<String, String> fileIndex;
@@ -153,25 +149,6 @@ public final class XCodeService {
         }
 
         return latest;
-    }
-
-    public static final void loadSchemes() {
-
-        List<String> schemes = new LinkedList<String>();
-
-        for (File scheme : listSchemes()) {
-
-            String filename = scheme.getName();
-            filename = filename.substring( 0, filename.lastIndexOf( XCSCHEME_EXTENSION ) - 1 );
-
-            if ( !schemes.contains( filename ) ) {
-                schemes.add( filename );
-            }
-        }
-
-        String[] _schemes = new String[schemes.size()];
-        schemes.toArray( _schemes );
-        XCodeService.schemes = _schemes;
     }
 
     public static boolean isExpectedScheme( String scheme, String filePath ) {
@@ -482,16 +459,6 @@ public final class XCodeService {
     public static void setScheme( String scheme ) {
 
         XCodeService.scheme = scheme;
-    }
-
-    public static String getWorkspaceScheme() {
-
-        return workspaceScheme;
-    }
-
-    public static void setWorkspaceScheme( String workspaceScheme ) {
-
-        XCodeService.workspaceScheme = workspaceScheme;
     }
 
     public static final String getProject() {
