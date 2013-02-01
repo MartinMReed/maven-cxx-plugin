@@ -141,7 +141,7 @@ serial.port</del></td></tr>
   <packaging>a</packaging>
   <build>
     <!-- <sourceDirectory/> not required -->
-    <sourceDirectory>src</sourceDirectory/> 
+    <sourceDirectory>src</sourceDirectory> 
     <resources>
      <resource>
       <directory>src</directory>
