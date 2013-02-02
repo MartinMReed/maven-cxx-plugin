@@ -7,33 +7,37 @@ To build this you need to use [Maven](http://maven.apache.org/download.html) wit
 # Pulling the latest version from Nexus
 To pull the latest version of the plugin you will need to update your [remote repository](http://maven.apache.org/guides/introduction/introduction-to-repositories.html) settings under your `.m2/settings.xml`.
 
-	<repositories>
-		<repository>
-			<id>hardisonbrewing-releases</id>
-			<name>hardisonbrewing-releases</name>
-			<url>http://repo.hardisonbrewing.org/content/repositories/releases/</url>
-		</repository>
-		<repository>
-			<id>hardisonbrewing-snapshots</id>
-			<name>hardisonbrewing-snapshots</name>
-			<url>http://repo.hardisonbrewing.org/content/repositories/snapshots/</url>
-		</repository>
-	</repositories>
+```xml
+<repositories>
+	<repository>
+		<id>hardisonbrewing-releases</id>
+		<name>hardisonbrewing-releases</name>
+		<url>http://repo.hardisonbrewing.org/content/repositories/releases/</url>
+	</repository>
+	<repository>
+		<id>hardisonbrewing-snapshots</id>
+		<name>hardisonbrewing-snapshots</name>
+		<url>http://repo.hardisonbrewing.org/content/repositories/snapshots/</url>
+	</repository>
+</repositories>
+```
 
 To download this plugin without building it manually, you can add the following remote plugin repository:
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>hardisonbrewing-releases</id>
-			<name>hardisonbrewing-releases</name>
-			<url>http://repo.hardisonbrewing.org/content/repositories/releases/</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>hardisonbrewing-snapshots</id>
-			<name>hardisonbrewing-snapshots</name>
-			<url>http://repo.hardisonbrewing.org/content/repositories/snapshots/</url>
-		</pluginRepository>
-	</pluginRepositories>
+```xml
+<pluginRepositories>
+	<pluginRepository>
+		<id>hardisonbrewing-releases</id>
+		<name>hardisonbrewing-releases</name>
+		<url>http://repo.hardisonbrewing.org/content/repositories/releases/</url>
+	</pluginRepository>
+	<pluginRepository>
+		<id>hardisonbrewing-snapshots</id>
+		<name>hardisonbrewing-snapshots</name>
+		<url>http://repo.hardisonbrewing.org/content/repositories/snapshots/</url>
+	</pluginRepository>
+</pluginRepositories>
+```
 
 Continuous Integration: [Bamboo Status](http://bamboo.hardisonbrewing.org/browse/MVN-CXX)
 
@@ -120,162 +124,168 @@ serial.port</del></td></tr>
 
 # Sample: C++ Library POM
 
-	<?xml version="1.0" encoding="UTF-8"?>
-	<project xmlns="http://maven.apache.org/POM/4.0.0" 
-	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
-	  <modelVersion>4.0.0</modelVersion>
-	  <parent>
-	  <groupId>org.hardisonbrewing</groupId>
-	    <artifactId>commons-c-parent</artifactId>
-	    <version>1.0-SNAPSHOT</version>
-	  </parent>
-	  <groupId>org.hardisonbrewing</groupId>
-	  <artifactId>libhbc_math</artifactId>
-	  <name>${project.artifactId}</name>
-	  <packaging>a</packaging>
-	  <build>
-	    <!-- <sourceDirectory/> not required -->
-	    <sourceDirectory>src</sourceDirectory/> 
-	    <resources>
-	     <resource>
-	      <directory>src</directory>
-	        <includes>
-	          <include>**/*.h</include>
-	        </includes>
-	     </resource>
-	     <resource>
-	      <directory>third-party</directory>
-	        <includes>
-	          <include>**/*.h</include>
-	        </includes>
-	     </resource> 
-	    </resources>
-	    <plugins>
-	     <plugin>
-	      <groupId>org.hardisonbrewing</groupId>
-	      <artifactId>maven-cxx-plugin</artifactId>
-	      <extensions>true</extensions>
-	      <configuration>
-	        <!-- language of c++ will delegate to g++ instead of gcc -->
-	        <language>c++</language>
-	        <sources>
-	          <source>
-	            <!-- no <directory/> means use <sourceDirectory/> -->
-	            <includes>
-	              <include>**/*.cc</include>
-	            </includes>
-	<!--             <excludes>-->
-	<!--                <exclude>**/*.m</exclude>-->
-	<!--             </excludes>-->
-	          </source> 
-	          <source>
-	            <directory>third-party</directory>
-	<!--             <includes>-->
-	<!--              <include>**/*.cc</include>-->
-	<!--             </includes>-->
-	            <excludes>
-	              <exclude>**/*.m</exclude>
-	            </excludes>
-	          </source>
-	        </sources>
-	      </configuration>
-	     </plugin>
-	    </plugins>
-	  </build>
-	</project>
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+  <groupId>org.hardisonbrewing</groupId>
+    <artifactId>commons-c-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.hardisonbrewing</groupId>
+  <artifactId>libhbc_math</artifactId>
+  <name>${project.artifactId}</name>
+  <packaging>a</packaging>
+  <build>
+    <!-- <sourceDirectory/> not required -->
+    <sourceDirectory>src</sourceDirectory> 
+    <resources>
+     <resource>
+      <directory>src</directory>
+        <includes>
+          <include>**/*.h</include>
+        </includes>
+     </resource>
+     <resource>
+      <directory>third-party</directory>
+        <includes>
+          <include>**/*.h</include>
+        </includes>
+     </resource> 
+    </resources>
+    <plugins>
+     <plugin>
+      <groupId>org.hardisonbrewing</groupId>
+      <artifactId>maven-cxx-plugin</artifactId>
+      <extensions>true</extensions>
+      <configuration>
+        <!-- language of c++ will delegate to g++ instead of gcc -->
+        <language>c++</language>
+        <sources>
+          <source>
+            <!-- no <directory/> means use <sourceDirectory/> -->
+            <includes>
+              <include>**/*.cc</include>
+            </includes>
+<!--             <excludes>-->
+<!--                <exclude>**/*.m</exclude>-->
+<!--             </excludes>-->
+          </source> 
+          <source>
+            <directory>third-party</directory>
+<!--             <includes>-->
+<!--              <include>**/*.cc</include>-->
+<!--             </includes>-->
+            <excludes>
+              <exclude>**/*.m</exclude>
+            </excludes>
+          </source>
+        </sources>
+      </configuration>
+     </plugin>
+    </plugins>
+  </build>
+</project>
+```
 
 # Sample: XCode Project POM
-	
-	<?xml version="1.0" encoding="UTF-8"?>
-	<project xmlns="http://maven.apache.org/POM/4.0.0"
-	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
-	  <modelVersion>4.0.0</modelVersion>
-	  <groupId>net.hardisonbrewing</groupId>
-	  <artifactId>komodododo</artifactId>
-	  <version>0.0.1-SNAPSHOT</version>
-	  <name>${project.artifactId}</name>
-	  <packaging>xcode</packaging>
-	  <profiles>
-	    <profile>
-	      <id>ios-distribution</id>
-	      <build>
-	        <plugins>
-	          <plugin>
-	            <groupId>org.hardisonbrewing</groupId>
-	            <artifactId>maven-cxx-plugin</artifactId>
-	            <extensions>true</extensions>
-	            <configuration>
-	              <provisioningProfile>Komodododo_AdHoc_Dist.mobileprovision</provisioningProfile>
-	              <codesignCertificate>distribution_identity.cer</codesignCertificate>
-	            </configuration>
-	          </plugin>
-	        </plugins>
-	      </build>
-	    </profile>
-	  </profiles>
-	  <build>
-	    <plugins>
-	      <plugin>
-	        <groupId>org.hardisonbrewing</groupId>
-	        <artifactId>maven-cxx-plugin</artifactId>
-	        <extensions>true</extensions>
-	        <configuration>
-	          <provisioningProfile>Komodododo_AdHoc.mobileprovision</provisioningProfile>
-	          <codesignCertificate>developer_identity.cer</codesignCertificate>
-	          <keychain>
-	            <keychain>/tools/keychains/ios.keychain</keychain>
-	            <password>password</password>
-	          </keychain>
-	          <targetExcludes>
-	            <targetExclude>KomodododoTests</targetExclude>
-	          </targetExcludes>
-	        </configuration>
-	      </plugin>
-	    </plugins>
-	  </build>
-	</project>
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.hardisonbrewing</groupId>
+  <artifactId>komodododo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>${project.artifactId}</name>
+  <packaging>xcode</packaging>
+  <profiles>
+    <profile>
+      <id>ios-distribution</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.hardisonbrewing</groupId>
+            <artifactId>maven-cxx-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+              <provisioningProfile>Komodododo_AdHoc_Dist.mobileprovision</provisioningProfile>
+              <codesignCertificate>distribution_identity.cer</codesignCertificate>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.hardisonbrewing</groupId>
+        <artifactId>maven-cxx-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <provisioningProfile>Komodododo_AdHoc.mobileprovision</provisioningProfile>
+          <codesignCertificate>developer_identity.cer</codesignCertificate>
+          <keychain>
+            <keychain>/tools/keychains/ios.keychain</keychain>
+            <password>password</password>
+          </keychain>
+          <targetExcludes>
+            <targetExclude>KomodododoTests</targetExclude>
+          </targetExcludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
 
 # Sample: Adobe Air/Flex Project POM
-	
-	<project xmlns="http://maven.apache.org/POM/4.0.0"
-	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
-	  <modelVersion>4.0.0</modelVersion>
-	  <groupId>net.hardisonbrewing</groupId>
-	  <artifactId>komodododo</artifactId>
-	  <version>0.0.1-SNAPSHOT</version>
-	  <name>${project.artifactId}</name>
-	  <packaging>flex</packaging>
-	  <properties>
-	    <adobe.flex.home>/tools/adobe/flex_sdk_4.5</adobe.flex.home>
-	  </properties>
-	  <build>
-	    <sourceDirectory>src</sourceDirectory>
-	    <plugins>
-	      <plugin>
-	        <groupId>org.hardisonbrewing</groupId>
-	        <artifactId>maven-cxx-plugin</artifactId>
-	        <extensions>true</extensions>
-	        <configuration>
-	          <target>air</target>
-	          <!--<target>ipa-app-store</target>-->
-	          <sourceFile>Main.mxml</sourceFile>
-	          <libDirectory>libs</libDirectory>
-	          <descriptorFile>src/Main-app.xml</descriptorFile>
-	          <!--<provisioningProfile>komodododo.mobileprovision</provisioningProfile>-->
-	          <keystore>
-	            <keystore>keystore.p12</keystore>
-	            <storepass>storepass</storepass>
-	            <!--<keypass>keypass</keypass>-->
-	            <!--<alias>alias</alias>-->
-	          </keystore>
-	        </configuration>
-	      </plugin>
-	    </plugins>
-	  </build>
-	</project>
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.hardisonbrewing</groupId>
+  <artifactId>komodododo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>${project.artifactId}</name>
+  <packaging>flex</packaging>
+  <properties>
+    <adobe.flex.home>/tools/adobe/flex_sdk_4.5</adobe.flex.home>
+  </properties>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.hardisonbrewing</groupId>
+        <artifactId>maven-cxx-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <target>air</target>
+          <!--<target>ipa-app-store</target>-->
+          <sourceFile>Main.mxml</sourceFile>
+          <libDirectory>libs</libDirectory>
+          <descriptorFile>src/Main-app.xml</descriptorFile>
+          <!--<provisioningProfile>komodododo.mobileprovision</provisioningProfile>-->
+          <keystore>
+            <keystore>keystore.p12</keystore>
+            <storepass>storepass</storepass>
+            <!--<keypass>keypass</keypass>-->
+            <!--<alias>alias</alias>-->
+          </keystore>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
 
 # License
 GNU Lesser General Public License, Version 3.0.
