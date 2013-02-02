@@ -16,12 +16,46 @@
  */
 package org.hardisonbrewing.maven.cxx.msbuild;
 
+import java.io.File;
+
+import org.hardisonbrewing.maven.core.FileUtils;
+import org.hardisonbrewing.maven.core.ProjectService;
+
 public class MSBuildService {
 
     public static final String XAP_EXTENSION = "xap";
+    public static final String SLN_EXTENSION = "sln";
+    public static final String CSPROJ_EXTENSION = "csproj";
+    public static final String PROJ_EXTENSION = "proj";
+
+    private static String project;
 
     protected MSBuildService() {
 
         // do nothing
+    }
+
+    public static File[] listSolutions() {
+
+        File baseDir = ProjectService.getBaseDir();
+        String[] includes = new String[] { "*." + SLN_EXTENSION };
+        return FileUtils.listFilesRecursive( baseDir, includes, null );
+    }
+
+    public static File[] listProjects() {
+
+        File baseDir = ProjectService.getBaseDir();
+        String[] includes = new String[] { "*." + CSPROJ_EXTENSION, "*." + PROJ_EXTENSION };
+        return FileUtils.listFilesRecursive( baseDir, includes, null );
+    }
+
+    public static String getProject() {
+
+        return project;
+    }
+
+    public static void setProject( String project ) {
+
+        MSBuildService.project = project;
     }
 }
