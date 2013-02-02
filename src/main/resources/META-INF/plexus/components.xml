@@ -483,7 +483,8 @@
 						<phases>
 							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
 								org.hardisonbrewing:maven-cxx-plugin:msbuild-validate</validate>
-							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize</initialize>
+							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
+								org.hardisonbrewing:maven-cxx-plugin:msbuild-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
 							<generate-resources></generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:msbuild-compile</compile>

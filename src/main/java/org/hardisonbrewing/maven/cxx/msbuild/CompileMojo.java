@@ -32,25 +32,20 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
  */
 public final class CompileMojo extends JoJoMojoImpl {
 
-    /**
-     * @parameter
-     */
-    public String project;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "MSBuild" );
 
-        cmd.add( project );
+        cmd.add( MSBuildService.getProject() );
 
         cmd.add( "/p:OutDir=" + TargetDirectoryService.getBinDirectoryPath() );
 
-        MavenProject project = getProject();
+        MavenProject mavenProject = getProject();
 
         StringBuffer xapFilename = new StringBuffer();
-        xapFilename.append( project.getArtifactId() );
+        xapFilename.append( mavenProject.getArtifactId() );
         xapFilename.append( "." );
         xapFilename.append( MSBuildService.XAP_EXTENSION );
 
