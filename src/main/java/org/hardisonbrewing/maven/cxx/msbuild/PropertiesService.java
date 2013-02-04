@@ -16,6 +16,11 @@
  */
 package org.hardisonbrewing.maven.cxx.msbuild;
 
+import java.io.File;
+import java.util.Properties;
+
+import org.hardisonbrewing.maven.core.FileUtils;
+
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
     public static final String DOTNET_FRAMEWORK_HOME = "dotnet.framework.home";
@@ -23,5 +28,26 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     protected PropertiesService() {
 
         // do nothing
+    }
+
+    public static final Properties getBuildSettings() {
+
+        return loadProperties( getBuildSettingsPath() );
+    }
+
+    public static final String getBuildSettingsPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( TargetDirectoryService.getBinDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "buildSettings.properties" );
+        return stringBuffer.toString();
+    }
+
+    public static final void storeBuildSettings( Properties buildSettings ) {
+
+        String filePath = getBuildSettingsPath();
+        FileUtils.ensureParentExists( filePath );
+        storeProperties( buildSettings, filePath );
     }
 }

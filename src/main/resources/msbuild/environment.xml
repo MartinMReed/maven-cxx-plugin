@@ -1,0 +1,4 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup><ProjectFiles Include="${project}" /></ItemGroup>
+	<Target Name="Environment"><Message Text="${message}" /></Target>
+</Project>
