@@ -49,6 +49,11 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
     private void validateProjectFile( String project ) {
 
+        if ( !project.endsWith( MSBuildService.PROJ_EXTENSION ) || !project.endsWith( MSBuildService.CSPROJ_EXTENSION ) ) {
+            getLog().error( "Project must be an extension of: " + MSBuildService.PROJ_EXTENSION + " or " + MSBuildService.CSPROJ_EXTENSION );
+            throw new IllegalStateException();
+        }
+
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( ProjectService.getBaseDirPath() );
         stringBuffer.append( File.separator );
