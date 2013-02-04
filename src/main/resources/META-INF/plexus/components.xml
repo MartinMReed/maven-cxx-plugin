@@ -370,6 +370,7 @@
 			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
 			<implementation>org.hardisonbrewing.maven.cxx.msbuild.MSBuildArtifactHandler</implementation>
 			<configuration>
+				<extension>xap</extension>
 				<packaging>msbuild</packaging>
 				<type>msbuild</type>
 			</configuration>
