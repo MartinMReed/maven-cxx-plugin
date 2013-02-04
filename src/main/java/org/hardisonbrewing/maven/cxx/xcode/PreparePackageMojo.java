@@ -161,6 +161,14 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
         File src = new File( XCodeService.getEmbeddedProvisoningProfilePath( target ) );
 
+        if ( !src.exists() ) {
+            String codeSignIdentity = PropertiesService.getXCodeProperty( XCodeService.CODE_SIGN_IDENTITY );
+            if ( codeSignIdentity == null ) {
+                getLog().info( "Signing is disabled. Skipping packaging of missing file: " + src );
+                return;
+            }
+        }
+
         StringBuffer destFilePath = new StringBuffer();
         destFilePath.append( target );
         destFilePath.append( "." );
