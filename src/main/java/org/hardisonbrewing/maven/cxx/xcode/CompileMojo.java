@@ -81,7 +81,7 @@ public final class CompileMojo extends JoJoMojoImpl {
         else {
             for (String target : XCodeService.getTargets()) {
                 List<String> cmd = buildCommand( target, false );
-                Properties buildSettings = getBuildSettings( cmd );
+                Properties buildSettings = loadBuildSettings( cmd );
                 PropertiesService.storeBuildSettings( buildSettings, target );
                 execute( cmd );
             }
@@ -115,7 +115,7 @@ public final class CompileMojo extends JoJoMojoImpl {
             }
 
             List<String> cmd = buildCommand( scheme, true );
-            Properties buildSettings = getBuildSettings( cmd );
+            Properties buildSettings = loadBuildSettings( cmd );
             PropertiesService.storeBuildSettings( buildSettings, scheme );
 
             injectPostAction( scheme, schemeFile, buildSettings );
@@ -210,7 +210,7 @@ public final class CompileMojo extends JoJoMojoImpl {
         }
     }
 
-    private Properties getBuildSettings( List<String> cmd ) {
+    private Properties loadBuildSettings( List<String> cmd ) {
 
         cmd = new LinkedList<String>( cmd );
         cmd.add( "-showBuildSettings" );
@@ -370,7 +370,6 @@ public final class CompileMojo extends JoJoMojoImpl {
             line = line.trim();
 
             int indexOf = line.indexOf( '=' );
-
             if ( indexOf == -1 ) {
                 return;
             }

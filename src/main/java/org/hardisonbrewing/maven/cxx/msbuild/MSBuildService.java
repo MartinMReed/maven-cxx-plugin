@@ -28,6 +28,8 @@ public class MSBuildService {
     public static final String CSPROJ_EXTENSION = "csproj";
     public static final String PROJ_EXTENSION = "proj";
 
+    public static final String BUILD_XAP_FILENAME = "XapFilename";
+
     private static String project;
 
     protected MSBuildService() {
