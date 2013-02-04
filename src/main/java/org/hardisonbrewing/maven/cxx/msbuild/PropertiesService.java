@@ -30,11 +30,6 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
         // do nothing
     }
 
-    public static final String getBuildXapFilename() {
-
-        return getBuildSetting( MSBuildService.BUILD_XAP_FILENAME );
-    }
-
     public static final boolean hasXapOutput() {
 
         String output = getBuildSetting( MSBuildService.BUILD_XAP_OUTPUTS );

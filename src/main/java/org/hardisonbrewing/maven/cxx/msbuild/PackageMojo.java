@@ -44,16 +44,23 @@ public final class PackageMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        if ( !PropertiesService.hasXapOutput() ) {
-            getLog().info( "Project has no XAP output. Skipping..." );
-            return;
-        }
+        File file;
 
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( TargetDirectoryService.getBinDirectoryPath() );
-        filePath.append( File.separator );
-        filePath.append( PropertiesService.getBuildXapFilename() );
-        File file = new File( filePath.toString() );
+        if ( !PropertiesService.hasXapOutput() ) {
+            StringBuffer filePath = new StringBuffer();
+            filePath.append( TargetDirectoryService.getBinDirectoryPath() );
+            filePath.append( File.separator );
+            filePath.append( PropertiesService.getBuildSetting( MSBuildService.BUILD_ASSEMBLY_NAME ) );
+            filePath.append( ".dll" );
+            file = new File( filePath.toString() );
+        }
+        else {
+            StringBuffer filePath = new StringBuffer();
+            filePath.append( TargetDirectoryService.getBinDirectoryPath() );
+            filePath.append( File.separator );
+            filePath.append( PropertiesService. getBuildSetting( MSBuildService.BUILD_XAP_FILENAME ) );
+            file = new File( filePath.toString() );
+        }
 
         MavenProject project = getProject();
 

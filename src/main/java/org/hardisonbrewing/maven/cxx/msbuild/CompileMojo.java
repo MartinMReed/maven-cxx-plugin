@@ -66,6 +66,7 @@ public final class CompileMojo extends JoJoMojoImpl {
         variables.add( MSBuildService.BUILD_XAP_FILENAME );
         variables.add( MSBuildService.BUILD_CONFIGURATION );
         variables.add( MSBuildService.BUILD_XAP_OUTPUTS );
+        variables.add( MSBuildService.BUILD_ASSEMBLY_NAME );
 
         File buildSettingsTarget = new File( getBuildSettingsTargetPath() );
 
