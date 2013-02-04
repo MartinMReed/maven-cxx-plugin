@@ -16,17 +16,66 @@
  */
 package org.hardisonbrewing.maven.cxx.msbuild;
 
-import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.artifact.handler.ArtifactHandler;
 
-public final class MSBuildArtifactHandler extends DefaultArtifactHandler {
+public final class MSBuildArtifactHandler implements ArtifactHandler {
+
+    private final ArtifactHandler artifactHandler;
+    private String extension;
+
+    public MSBuildArtifactHandler(ArtifactHandler artifactHandler) {
+
+        this.artifactHandler = artifactHandler;
+    }
+
+    @Override
+    public String getClassifier() {
+
+        return artifactHandler.getClassifier();
+    }
+
+    @Override
+    public String getDirectory() {
+
+        return artifactHandler.getDirectory();
+    }
 
     @Override
     public String getExtension() {
 
-        if ( !PropertiesService.hasXapOutput() ) {
-            return "dll";
+        if ( extension != null ) {
+            return extension;
         }
 
-        return MSBuildService.XAP_EXTENSION;
+        return artifactHandler.getExtension();
+    }
+
+    public void setExtension( String extension ) {
+
+        this.extension = extension;
+    }
+
+    @Override
+    public String getLanguage() {
+
+        return artifactHandler.getLanguage();
+    }
+
+    @Override
+    public String getPackaging() {
+
+        return artifactHandler.getPackaging();
+    }
+
+    @Override
+    public boolean isAddedToClasspath() {
+
+        return artifactHandler.isAddedToClasspath();
+    }
+
+    @Override
+    public boolean isIncludesDependencies() {
+
+        return artifactHandler.isIncludesDependencies();
     }
 }

@@ -18,10 +18,12 @@ package org.hardisonbrewing.maven.cxx.msbuild;
 
 import java.io.File;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
@@ -63,6 +65,11 @@ public final class PackageMojo extends JoJoMojoImpl {
         }
 
         MavenProject project = getProject();
+
+        Artifact artifact = project.getArtifact();
+        MSBuildArtifactHandler artifactHandler = new MSBuildArtifactHandler( artifact.getArtifactHandler() );
+        artifactHandler.setExtension( FileUtils.extension( file.getName() ) );
+        artifact.setArtifactHandler( artifactHandler );
 
         if ( classifier == null ) {
             project.getArtifact().setFile( file );
