@@ -28,6 +28,7 @@ public class MSBuildService {
     public static final String CSPROJ_EXTENSION = "csproj";
     public static final String PROJ_EXTENSION = "proj";
 
+    public static final String BUILD_ASSEMBLY_NAME = "AssemblyName";
     public static final String BUILD_CONFIGURATION = "Configuration";
     public static final String BUILD_XAP_FILENAME = "XapFilename";
     public static final String BUILD_XAP_OUTPUTS = "XapOutputs";
