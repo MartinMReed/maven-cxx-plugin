@@ -53,19 +53,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
     private String findProjectFile() {
 
-        // solution files cannot be imported into a build.xml
-//        File[] solutions = MSBuildService.listSolutions();
-//
-//        if ( solutions != null && solutions.length > 0 ) {
-//
-//            if ( solutions.length > 1 ) {
-//                getLog().error( "Multiple project solution files available. Please specify a <project/> in the pom.xml" );
-//                throw new IllegalStateException();
-//            }
-//
-//            return solutions[0].getPath();
-//        }
-
         File[] projects = MSBuildService.listProjects();
 
         if ( projects != null && projects.length > 0 ) {
