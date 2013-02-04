@@ -94,6 +94,8 @@ public final class CompileMojo extends JoJoMojoImpl {
         boolean expectedScheme = XCodeService.isExpectedScheme( scheme, schemeFile.getPath() );
         File schemeTmpFile = null;
 
+//        getLog().info( "schemeFile[" + schemeFile.getPath() + "], expectedScheme[" + expectedScheme + "]" );
+
         try {
 
             if ( expectedScheme ) {
@@ -194,6 +196,11 @@ public final class CompileMojo extends JoJoMojoImpl {
         String codeSignIdentity = PropertiesService.getXCodeProperty( XCodeService.CODE_SIGN_IDENTITY );
         if ( codeSignIdentity != null ) {
             cmd.add( "CODE_SIGN_IDENTITY=" + codeSignIdentity );
+        }
+        else {
+            getLog().info( "No codesign identity found. Disabling signing..." );
+            cmd.add( "CODE_SIGN_IDENTITY=" );
+            cmd.add( "CODE_SIGNING_REQUIRED=NO" );
         }
 
         return cmd;
