@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -58,7 +58,7 @@ public final class PackageMojo extends JoJoMojoImpl {
             StringBuffer filePath = new StringBuffer();
             filePath.append( TargetDirectoryService.getBinDirectoryPath() );
             filePath.append( File.separator );
-            filePath.append( PropertiesService. getBuildSetting( MSBuildService.BUILD_XAP_FILENAME ) );
+            filePath.append( PropertiesService.getBuildSetting( MSBuildService.BUILD_XAP_FILENAME ) );
             file = new File( filePath.toString() );
         }
 

@@ -368,9 +368,8 @@
 		<component>
 			<role-hint>msbuild</role-hint>
 			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-			<implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
+			<implementation>org.hardisonbrewing.maven.cxx.msbuild.MSBuildArtifactHandler</implementation>
 			<configuration>
-				<extension>xap</extension>
 				<packaging>msbuild</packaging>
 				<type>msbuild</type>
 			</configuration>
