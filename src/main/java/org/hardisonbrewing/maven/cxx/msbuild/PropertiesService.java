@@ -30,6 +30,23 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
         // do nothing
     }
 
+    public static final String getBuildXapFilename() {
+
+        return getBuildSetting( MSBuildService.BUILD_XAP_FILENAME );
+    }
+
+    public static final boolean hasXapOutput() {
+
+        String output = getBuildSetting( MSBuildService.BUILD_XAP_OUTPUTS );
+        return "true".equalsIgnoreCase( output );
+    }
+
+    public static final String getBuildSetting( String key ) {
+
+        Properties properties = PropertiesService.getBuildSettings();
+        return properties.getProperty( key );
+    }
+
     public static final Properties getBuildSettings() {
 
         return loadProperties( getBuildSettingsPath() );
@@ -38,7 +55,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
     public static final String getBuildSettingsPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( TargetDirectoryService.getBinDirectoryPath() );
+        stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( "buildSettings.properties" );
         return stringBuffer.toString();

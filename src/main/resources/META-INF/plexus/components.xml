@@ -336,6 +336,46 @@
 			</configuration>
 		</component>
 		
+		
+		<!--
+			MSBUILD (Windows Phone)
+		-->
+		<component>
+			<role-hint>msbuild</role-hint>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+			<configuration>
+				<lifecycles>
+					<lifecycle>
+						<id>default</id>
+						<phases>
+							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
+								org.hardisonbrewing:maven-cxx-plugin:msbuild-validate</validate>
+							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
+								org.hardisonbrewing:maven-cxx-plugin:msbuild-initialize</initialize>
+							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
+							<generate-resources></generate-resources>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:msbuild-compile</compile>
+							<prepare-package></prepare-package>
+							<package>org.hardisonbrewing:maven-cxx-plugin:msbuild-package</package>
+							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
+							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
+						</phases>
+					</lifecycle>
+				</lifecycles>
+			</configuration>
+		</component>
+		<component>
+			<role-hint>msbuild</role-hint>
+			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+			<implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
+			<configuration>
+				<extension>xap</extension>
+				<packaging>msbuild</packaging>
+				<type>msbuild</type>
+			</configuration>
+		</component>
+		
 		<!--
 			.O (GCC, Object File)
 		-->
@@ -465,46 +505,6 @@
 				<extension>zip</extension>
 				<packaging>xcode</packaging>
 				<type>xcode</type>
-			</configuration>
-		</component>
-		
-		
-		<!--
-			MSBUILD (Windows Phone)
-		-->
-		<component>
-			<role-hint>msbuild</role-hint>
-			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
-			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
-			<configuration>
-				<lifecycles>
-					<lifecycle>
-						<id>default</id>
-						<phases>
-							<validate>org.hardisonbrewing:maven-cxx-plugin:validate,
-								org.hardisonbrewing:maven-cxx-plugin:msbuild-validate</validate>
-							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
-								org.hardisonbrewing:maven-cxx-plugin:msbuild-initialize</initialize>
-							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<generate-resources></generate-resources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:msbuild-compile</compile>
-							<prepare-package></prepare-package>
-							<package>org.hardisonbrewing:maven-cxx-plugin:msbuild-package</package>
-							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
-							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
-						</phases>
-					</lifecycle>
-				</lifecycles>
-			</configuration>
-		</component>
-		<component>
-			<role-hint>msbuild</role-hint>
-			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-			<implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
-			<configuration>
-				<extension>xap</extension>
-				<packaging>msbuild</packaging>
-				<type>msbuild</type>
 			</configuration>
 		</component>
 	</components>

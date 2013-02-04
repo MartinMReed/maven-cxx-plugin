@@ -30,6 +30,7 @@ import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.core.cli.LogStreamConsumer;
 
 /**
  * @goal msbuild-compile
@@ -44,10 +45,8 @@ public final class CompileMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         String project = MSBuildService.getProject();
-
         storeBuildSettings( project );
-
-//        compile( project );
+        compile( project );
     }
 
     @Override
@@ -65,6 +64,8 @@ public final class CompileMojo extends JoJoMojoImpl {
 
         List<String> variables = new LinkedList<String>();
         variables.add( MSBuildService.BUILD_XAP_FILENAME );
+        variables.add( MSBuildService.BUILD_CONFIGURATION );
+        variables.add( MSBuildService.BUILD_XAP_OUTPUTS );
 
         File buildSettingsTarget = new File( getBuildSettingsTargetPath() );
 
@@ -85,8 +86,9 @@ public final class CompileMojo extends JoJoMojoImpl {
         CommandLineService.addDotnetEnvVars( commandLine );
 
         Properties properties = new Properties();
-        PropertyStreamConsumer streamConsumer = new PropertyStreamConsumer( properties );
-        execute( commandLine, streamConsumer, null );
+        StreamConsumer systemOut = new PropertyStreamConsumer( properties, LogStreamConsumer.LEVEL_INFO );
+        StreamConsumer systemErr = new LogStreamConsumer( LogStreamConsumer.LEVEL_ERROR );
+        execute( commandLine, systemOut, systemErr );
 
         PropertiesService.storeBuildSettings( properties );
     }
@@ -98,18 +100,6 @@ public final class CompileMojo extends JoJoMojoImpl {
         stringBuffer.append( File.separator );
         stringBuffer.append( "buildSettings.xml" );
         return stringBuffer.toString();
-    }
-
-    private void compile( String project ) {
-
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "MSBuild" );
-        cmd.add( project );
-        cmd.add( "/p:OutDir=" + TargetDirectoryService.getBinDirectoryPath() );
-
-        Commandline commandLine = buildCommandline( cmd );
-        CommandLineService.addDotnetEnvVars( commandLine );
-        execute( commandLine );
     }
 
     private void writeEnvironmentTarget( File file, String project, List<String> properties ) throws Exception {
@@ -129,27 +119,42 @@ public final class CompileMojo extends JoJoMojoImpl {
     private String buildEnvironmentTarget( String project, List<String> properties ) {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( "<Project xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">" );
-        stringBuffer.append( "<ItemGroup><ProjectFiles Include=\"" );
+        stringBuffer.append( "<Project xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">\r\n" );
+        stringBuffer.append( "\t<Import Project=\"" );
         stringBuffer.append( project );
-        stringBuffer.append( "\" /></ItemGroup>" );
+        stringBuffer.append( "\" />\r\n\t<Target Name=\"Environment\">\r\n" );
         for (String property : properties) {
-            stringBuffer.append( "<Target Name=\"Environment\"><Message Text=\"" );
+            stringBuffer.append( "\t\t<Message Text=\"" );
             stringBuffer.append( ENVVAR_MARKER );
             stringBuffer.append( property );
             stringBuffer.append( "=$(" );
             stringBuffer.append( property );
-            stringBuffer.append( ")\" /></Target>" );
+            stringBuffer.append( ")\" />\r\n" );
         }
-        stringBuffer.append( "</Project>" );
+        stringBuffer.append( "\t</Target>\r\n</Project>" );
         return stringBuffer.toString();
     }
 
-    private static class PropertyStreamConsumer implements StreamConsumer {
+    private void compile( String project ) {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "MSBuild" );
+        cmd.add( project );
+
+        cmd.add( "/p:OutDir=" + TargetDirectoryService.getBinDirectoryPath() );
+
+        Commandline commandLine = buildCommandline( cmd );
+        CommandLineService.addDotnetEnvVars( commandLine );
+        execute( commandLine );
+    }
+
+    private static class PropertyStreamConsumer extends LogStreamConsumer {
 
         private final Properties properties;
 
-        public PropertyStreamConsumer(Properties properties) {
+        public PropertyStreamConsumer(Properties properties, int level) {
+
+            super( level );
 
             this.properties = properties;
         }
@@ -161,11 +166,13 @@ public final class CompileMojo extends JoJoMojoImpl {
 
             int marker = line.indexOf( ENVVAR_MARKER );
             if ( marker == -1 ) {
+                super.consumeLine( line );
                 return;
             }
 
             int indexOf = line.indexOf( '=' );
             if ( indexOf == -1 ) {
+                super.consumeLine( line );
                 return;
             }
 
