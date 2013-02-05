@@ -1,5 +1,5 @@
 # Usage
-A [Maven](http://maven.apache.org/download.html) plugin with support for gcc, g++, ar, arduino, xcode, Adobe Air/Flex, BlackBerry PlayBook and BB10.
+A [Maven](http://maven.apache.org/download.html) plugin with support for Adobe Air/Flex, ar, Arduino, BlackBerry PlayBook/BB10, gcc, g++, MSBuild and XCode.
 
 # Build or Download
 To build this you need to use [Maven](http://maven.apache.org/download.html) with the [hbc-maven-core](https://github.com/hardisonbrewing/hbc-maven-core) project. Alternatively you can pull the latest version of hbc-maven-core from [http://repo.hardisonbrewing.org](http://repo.hardisonbrewing.org) (see repository settings below).
@@ -50,15 +50,16 @@ The `<packaging/>` in your `pom.xml` must be set to package classifier for the t
 <table>
 <thead><th>Packaging</th><th>Target</th></thead>
 <tr><td>a</td><td>ar</td></tr>
-<tr><td>o</td><td>gcc/g++</td></tr>
-<tr><td><del>as.bar</del></td><td><del>BlackBerry 10, ActionScript main file</del></td></tr>
-<tr><td><del>mxml.bar</del></td><td><del>BlackBerry 10, MXML main file</del></td></tr>
-<tr><td><del>js.bar</del></td><td><del>BlackBerry 10, WebWorks</del></td></tr>
-<tr><td>cdt</td><td>Eclipse CDT, BlackBerry 10 QDE</td></tr>
-<tr><td>qnx</td><td>BlackBerry 10, Makefile</td></tr>
 <tr><td><del>arduino</del></td><td><del>Arduino</del></td></tr>
-<tr><td>xcode</td><td>xcodebuild</td></tr>
+<tr><td><del>as.bar</del></td><td><del>BlackBerry 10, ActionScript main file</del></td></tr>
+<tr><td><del>js.bar</del></td><td><del>BlackBerry 10, WebWorks</del></td></tr>
+<tr><td><del>mxml.bar</del></td><td><del>BlackBerry 10, MXML main file</del></td></tr>
+<tr><td>cdt</td><td>Eclipse CDT, BlackBerry 10 QDE</td></tr>
 <tr><td>flex</td><td>Adobe Air/Flex</td></tr>
+<tr><td>msbuild</td><td>MSBuild</td></tr>
+<tr><td>o</td><td>gcc/g++</td></tr>
+<tr><td>qnx</td><td>BlackBerry 10, Makefile</td></tr>
+<tr><td>xcode</td><td>xcodebuild</td></tr>
 </table>
 
 ## Configuring the plugin
@@ -68,25 +69,11 @@ Under the plugin `<configuration/>` you may be able to specify additional settin
 <thead><th>Packaging</th><th>Configurations</th></thead>
 <tr><td>a</td><td>language<br/>
 sources</td></tr>
-<tr><td>o</td><td>language<br/>
-sources<br/>
-libs<br/>
-frameworks</td></tr>
-<tr><td><del>*.bar</del></td><td/></tr>
-<tr><td>cdt</td><td>target (Release, Release-Device, etc)</td></tr>
-<tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>
 <tr><td><del>arduino</del></td><td><del>sketchbook<br/>
 targetDevice<br/>
 sources</del></td></tr>
-<tr><td>xcode</td><td>configuration (Debug/Release/etc)<br/>
-scheme<br/>
-targetIncludes<br/>
-targetExcludes (Usually test targets)<br/>
-provisioningProfile<br/>
-codesignCertificate<br/>
-keychain<br/>
-keychain/keychain<br/>
-keychain/password</td></tr>
+<tr><td><del>*.bar</del></td><td/></tr>
+<tr><td>cdt</td><td>target (Release, Release-Device, etc)</td></tr>
 <tr><td>flex</td><td>target (air, apk, ipa-app-store, <a href="http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html">etc</a>)<br/>
 sourceFile (i.e. src/Main.mxml)<br/>
 libDirectory (Directory containing SWC libs)<br/>
@@ -97,6 +84,21 @@ keystore/keystore<br/>
 keystore/storepass<br/>
 keystore/keypass<br/>
 keystore/alias</td></tr>
+<tr><td>msbuild</td><td>project</td></tr>
+<tr><td>o</td><td>language<br/>
+sources<br/>
+libs<br/>
+frameworks</td></tr>
+<tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>
+<tr><td>xcode</td><td>configuration (Debug/Release/etc)<br/>
+scheme<br/>
+targetIncludes<br/>
+targetExcludes (Usually test targets)<br/>
+provisioningProfile<br/>
+codesignCertificate<br/>
+keychain<br/>
+keychain/keychain<br/>
+keychain/password</td></tr>
 </table>
 
 ## Properties
@@ -105,7 +107,10 @@ Usable through the `settings.xml`, `pom.xml` or commandline with a `-Dkey=value`
 <table>
 <thead><th>Packaging</th><th>Properties</th></thead>
 <tr><td>a</td><td/></tr>
-<tr><td>o</td><td/></tr>
+<tr><td><del>arduino</del></td><td><del>arduino.home<br/>
+avr.bin<br/>
+avrdude.config.path<br/>
+serial.port</del></td></tr>
 <tr><td><del>*.bar</del></td><td><del>adobe.flex.home<br/>
 blackberry.webworks.tablet.home<br/>
 blackberry.tablet.home<br/>
@@ -113,13 +118,11 @@ blackberry.tablet.device.ip<br/>
 blackberry.tablet.device.password<br/>
 debug</del></td></tr>
 <tr><td>cdt</td><td/></tr>
-<tr><td>qnx</td><td/></tr>
-<tr><td><del>arduino</del></td><td><del>arduino.home<br/>
-avr.bin<br/>
-avrdude.config.path<br/>
-serial.port</del></td></tr>
-<tr><td>xcode</td><td/></tr>
 <tr><td>flex</td><td>adobe.flex.home</td></tr>
+<tr><td>msbuild</td><td>dotnet.framework.home</td></tr>
+<tr><td>o</td><td/></tr>
+<tr><td>qnx</td><td/></tr>
+<tr><td>xcode</td><td/></tr>
 </table>
 
 # Sample: C++ Library POM
@@ -191,6 +194,79 @@ serial.port</del></td></tr>
 </project>
 ```
 
+# Sample: Adobe Air/Flex Project POM
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.hardisonbrewing</groupId>
+  <artifactId>komodododo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>${project.artifactId}</name>
+  <packaging>flex</packaging>
+  <properties>
+    <adobe.flex.home>/tools/adobe/flex_sdk_4.5</adobe.flex.home>
+  </properties>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.hardisonbrewing</groupId>
+        <artifactId>maven-cxx-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <target>air</target>
+          <!--<target>ipa-app-store</target>-->
+          <sourceFile>Main.mxml</sourceFile>
+          <libDirectory>libs</libDirectory>
+          <descriptorFile>src/Main-app.xml</descriptorFile>
+          <!--<provisioningProfile>komodododo.mobileprovision</provisioningProfile>-->
+          <keystore>
+            <keystore>keystore.p12</keystore>
+            <storepass>storepass</storepass>
+            <!--<keypass>keypass</keypass>-->
+            <!--<alias>alias</alias>-->
+          </keystore>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
+# Sample: MSBuild Project POM
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.hardisonbrewing</groupId>
+  <artifactId>komodododo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>${project.artifactId}</name>
+  <packaging>msbuild</packaging>
+  <properties>
+    <dotnet.framework.home>C:\Windows\Microsoft.NET\Framework\v4.0.30319</dotnet.framework.home>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.hardisonbrewing</groupId>
+        <artifactId>maven-cxx-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <!-- <project/> not required if found automatically -->
+          <project>Komodododo.csproj</project>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
 # Sample: XCode Project POM
 
 ```xml
@@ -238,48 +314,6 @@ serial.port</del></td></tr>
           <targetExcludes>
             <targetExclude>KomodododoTests</targetExclude>
           </targetExcludes>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-</project>
-```
-
-# Sample: Adobe Air/Flex Project POM
-
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.hardisonbrewing</groupId>
-  <artifactId>komodododo</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>${project.artifactId}</name>
-  <packaging>flex</packaging>
-  <properties>
-    <adobe.flex.home>/tools/adobe/flex_sdk_4.5</adobe.flex.home>
-  </properties>
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-      <plugin>
-        <groupId>org.hardisonbrewing</groupId>
-        <artifactId>maven-cxx-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <target>air</target>
-          <!--<target>ipa-app-store</target>-->
-          <sourceFile>Main.mxml</sourceFile>
-          <libDirectory>libs</libDirectory>
-          <descriptorFile>src/Main-app.xml</descriptorFile>
-          <!--<provisioningProfile>komodododo.mobileprovision</provisioningProfile>-->
-          <keystore>
-            <keystore>keystore.p12</keystore>
-            <storepass>storepass</storepass>
-            <!--<keypass>keypass</keypass>-->
-            <!--<alias>alias</alias>-->
-          </keystore>
         </configuration>
       </plugin>
     </plugins>
