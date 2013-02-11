@@ -3,12 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.hardisonbrewing</groupId>
 	<artifactId>maven-cxx-plugin</artifactId>
-	<version>1.1.19-SNAPSHOT</version>
+	<version>1.1.18.8-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>${project.artifactId}</name>
 	<scm>
-		<url>scm:git:git@github.com:hardisonbrewing/maven-cxx-plugin.git</url>
-		<connection>scm:git:git@github.com:hardisonbrewing/maven-cxx-plugin.git</connection>
+		<url>git@github.com:hardisonbrewing/maven-cxx-plugin.git</url>
 		<developerConnection>scm:git:git@github.com:hardisonbrewing/maven-cxx-plugin.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
@@ -108,9 +107,10 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<!-- https://github.com/hardisonbrewing/hbc-maven-core -->
 			<groupId>org.hardisonbrewing</groupId>
 			<artifactId>hbc-maven-core</artifactId>
-			<version>1.0.8.1</version>
+			<version>1.0.8.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

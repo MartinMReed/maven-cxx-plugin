@@ -211,10 +211,10 @@ public final class XCodeService {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getXcprojPath() );
         stringBuffer.append( File.separator );
-        if ( workspace != null && workspace.length() > 0 ) {
-            stringBuffer.append( "xcshareddata" );
-        }
-        else {
+//        if ( workspace != null && workspace.length() > 0 ) {
+//            stringBuffer.append( "xcshareddata" );
+//        }
+//        else {
 
             Properties properties = PropertiesService.getProperties();
             String username = properties.getProperty( "user.name" );
@@ -223,7 +223,7 @@ public final class XCodeService {
             stringBuffer.append( File.separator );
             stringBuffer.append( username );
             stringBuffer.append( ".xcuserdatad" );
-        }
+//        }
         return stringBuffer.toString();
     }
 

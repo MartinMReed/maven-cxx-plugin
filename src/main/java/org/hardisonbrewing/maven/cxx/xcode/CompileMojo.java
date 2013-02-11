@@ -52,14 +52,71 @@ public final class CompileMojo extends JoJoMojoImpl {
         else {
             for (String target : XCodeService.getTargets()) {
                 List<String> cmd = buildCommand( target, false );
-                Properties buildSettings = getBuildSettings( cmd );
+                Properties buildSettings = loadBuildSettings( cmd );
                 PropertiesService.storeBuildSettings( buildSettings, target );
                 execute( cmd );
             }
         }
     }
 
-    private List<String> buildCommand( String buildTarget, boolean scheme ) {
+    private void executeScheme( String scheme ) {
+
+        File schemeFile = XCodeService.findXcscheme( scheme );
+        boolean expectedScheme = XCodeService.isExpectedScheme( scheme, schemeFile.getPath() );
+        File schemeTmpFile = null;
+
+//        getLog().info( "schemeFile[" + schemeFile.getPath() + "], expectedScheme[" + expectedScheme + "]" );
+
+        try {
+
+            if ( expectedScheme ) {
+                File targetDirectory = TargetDirectoryService.getTargetDirectory();
+                schemeTmpFile = new File( targetDirectory, schemeFile.getName() );
+                FileUtils.copyFile( schemeFile, schemeTmpFile );
+            }
+            else {
+
+                schemeTmpFile = new File( XCodeService.getSchemeDirPath() );
+                schemeTmpFile.mkdir();
+
+                File userFile = schemeFile;
+
+                schemeFile = new File( XCodeService.getSchemePath( scheme ) );
+                FileUtils.ensureParentExists( schemeFile.getPath() );
+
+                FileUtils.copyFile( userFile, schemeFile );
+            }
+
+            List<String> cmd = buildCommand( scheme, true );
+            Properties buildSettings = loadBuildSettings( cmd );
+            PropertiesService.storeBuildSettings( buildSettings, scheme );
+
+            injectPostAction( scheme, schemeFile, buildSettings );
+
+            execute( cmd );
+        }
+        catch (Exception e) {
+            getLog().error( "Unable to inject Scheme with PostAction" );
+            throw new IllegalStateException( e );
+        }
+        finally {
+
+            try {
+                if ( expectedScheme ) {
+                    FileUtils.copyFile( schemeTmpFile, schemeFile );
+                }
+                else {
+                    FileUtils.deleteDirectory( schemeTmpFile );
+                }
+            }
+            catch (IOException e) {
+                getLog().error( "Unable to cleanup injected Scheme resource: " + schemeTmpFile );
+                throw new IllegalStateException( e );
+            }
+        }
+    }
+
+    private List<String> buildCommand( String target, boolean scheme ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "xcodebuild" );
@@ -106,6 +163,11 @@ public final class CompileMojo extends JoJoMojoImpl {
         if ( codeSignIdentity != null ) {
             cmd.add( "CODE_SIGN_IDENTITY=" + codeSignIdentity );
         }
+        else {
+            getLog().info( "No codesign identity found. Disabling signing..." );
+            cmd.add( "CODE_SIGN_IDENTITY=" );
+            cmd.add( "CODE_SIGNING_REQUIRED=NO" );
+        }
 
         return cmd;
     }
@@ -121,7 +183,7 @@ public final class CompileMojo extends JoJoMojoImpl {
         }
     }
 
-    private Properties getBuildSettings( List<String> cmd ) {
+    private Properties loadBuildSettings( List<String> cmd ) {
 
         cmd = new LinkedList<String>( cmd );
         cmd.add( "-showBuildSettings" );
@@ -148,7 +210,6 @@ public final class CompileMojo extends JoJoMojoImpl {
             line = line.trim();
 
             int indexOf = line.indexOf( '=' );
-
             if ( indexOf == -1 ) {
                 return;
             }
