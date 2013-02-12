@@ -28,6 +28,7 @@ import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
@@ -40,7 +41,6 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
     private static final String SED_EXPIRATION_DATE = "/Not After/s/^[^\\:]*\\: *\\(.*\\)/\\1/p";
     private static final String SED_IDENTITY = "/Subject Name/,/Common Name/s/^ *Common Name *\\: *\\(.*\\)/\\1/p";
     private static final String SED_SERIAL_NUMBER = "/Serial Number/s/^.*\\: *\\(.*\\)/\\1/p";
-
     private static final String CERT_DATE_FORMAT = "HH:mm:ss MMM dd, yyyy";
 
     /**
@@ -51,8 +51,10 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
+        Log log = getLog();
+
         if ( codesignCertificate == null ) {
-            getLog().info( "Codesign certificate not specified, skipping." );
+            log.info( "Codesign certificate not specified, skipping." );
             return;
         }
 
@@ -62,9 +64,27 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         validateExpirationDate( certificateFile, keychainPath );
         storeIdentity( certificateFile, keychainPath );
 
+        String expirationDateString = getExpirationDate( certificateFile, keychainPath );
+        DateFormat dateFormat = new SimpleDateFormat( "HH:mm:ss MMM dd, yyyy" );
+        Date expirationDate = null;
+        try {
+
+            expirationDate = dateFormat.parse( expirationDateString );
+        }
+        catch (ParseException parseException) {
+
+            log.error( "Unable to parse expiration date for certificate.", parseException );
+        }
+
+        if ( expirationDate.compareTo( new Date() ) <= 0 ) {
+
+            log.error( "The certificate has expired; The certificate expired on " + expirationDateString );
+            throw new IllegalStateException();
+        }
+
         String serialNumber = getSerialNumber( certificateFile, keychainPath );
         if ( hasSerialNumber( serialNumber, keychainPath ) ) {
-            getLog().info( "Codesign certificate already installed, skipping." );
+            log.info( "Codesign certificate already installed, skipping." );
             return;
         }
 
@@ -92,26 +112,6 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         }
     }
 
-    private String getExpirationDate( File file, String keychainPath ) {
-
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "certtool" );
-        cmd.add( "d" );
-        cmd.add( file.getAbsolutePath() );
-        if ( keychainPath != null ) {
-            cmd.add( "k=" + keychainPath );
-        }
-        cmd.add( "|" );
-        cmd.add( "sed" );
-        cmd.add( "-n" );
-        cmd.add( SED_EXPIRATION_DATE );
-
-        StringStreamConsumer streamConsumer = new StringStreamConsumer();
-        execute( cmd, streamConsumer, null );
-
-        return streamConsumer.getOutput().trim();
-    }
-
     private void storeIdentity( File file, String keychainPath ) {
 
         String identity = getIdentity( file, keychainPath );
@@ -134,6 +134,26 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
             cmd.add( "k=" + keychainPath );
         }
         execute( cmd );
+    }
+
+    private String getExpirationDate( File file, String keychainPath ) {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "certtool" );
+        cmd.add( "d" );
+        cmd.add( file.getAbsolutePath() );
+        if ( keychainPath != null ) {
+            cmd.add( "k=" + keychainPath );
+        }
+        cmd.add( "|" );
+        cmd.add( "sed" );
+        cmd.add( "-n" );
+        cmd.add( SED_EXPIRATION_DATE );
+
+        StringStreamConsumer streamConsumer = new StringStreamConsumer();
+        execute( cmd, streamConsumer, null );
+
+        return streamConsumer.getOutput().trim();
     }
 
     private String getSerialNumber( File file, String keychainPath ) {

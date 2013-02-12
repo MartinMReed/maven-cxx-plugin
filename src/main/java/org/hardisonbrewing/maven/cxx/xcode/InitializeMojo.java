@@ -79,7 +79,12 @@ public final class InitializeMojo extends JoJoMojoImpl {
             projectPath = project.getPath();
         }
 
-        initProject( projectPath );
+        File project = XCodeService.loadProject();
+        projectPath = project.getPath();
+
+        if ( projectPath != null ) {
+            initProject( projectPath );
+        }
 
         if ( scheme != null ) {
             initScheme( scheme );

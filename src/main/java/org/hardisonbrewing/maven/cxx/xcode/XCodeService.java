@@ -227,24 +227,18 @@ public final class XCodeService {
 
     public static String getSchemeDirPath() {
 
-        String workspace = getWorkspace();
-
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getXcprojPath() );
         stringBuffer.append( File.separator );
-//        if ( workspace != null && workspace.length() > 0 ) {
-//            stringBuffer.append( "xcshareddata" );
-//        }
-//        else {
 
-            Properties properties = PropertiesService.getProperties();
-            String username = properties.getProperty( "user.name" );
+        Properties properties = PropertiesService.getProperties();
+        String username = properties.getProperty( "user.name" );
 
-            stringBuffer.append( "xcuserdata" );
-            stringBuffer.append( File.separator );
-            stringBuffer.append( username );
-            stringBuffer.append( ".xcuserdatad" );
-//        }
+        stringBuffer.append( "xcuserdata" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( username );
+        stringBuffer.append( ".xcuserdatad" );
+
         return stringBuffer.toString();
     }
 

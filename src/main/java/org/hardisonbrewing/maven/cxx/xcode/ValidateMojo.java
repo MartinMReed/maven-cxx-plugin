@@ -34,6 +34,11 @@ public final class ValidateMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
+    public String action;
+
+    /**
+     * @parameter
+     */
     public String[] targetIncludes;
 
     /**
@@ -72,8 +77,8 @@ public final class ValidateMojo extends JoJoMojoImpl {
         validateOS();
 
         File workspace = XCodeService.loadWorkspace();
-
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "scheme", scheme, workspace != null );
+        boolean force = workspace != null;
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "scheme", scheme, force );
 
         if ( workspace != null ) {
             validateWorkspace();
@@ -85,6 +90,11 @@ public final class ValidateMojo extends JoJoMojoImpl {
         if ( scheme != null ) {
             XCodeService.loadSchemes();
             validateScheme( scheme );
+        }
+
+        if ( action != null && action.length() > 0 ) {
+
+            validateAction( action );
         }
 
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "provisioningProfile", provisioningProfile, false );
@@ -135,6 +145,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
     private void validateScheme( String scheme ) {
 
+        getLog().debug( "Validating Scheme " + scheme );
         String[] schemes = XCodeService.getSchemes();
 
         if ( schemes == null ) {
@@ -142,7 +153,14 @@ public final class ValidateMojo extends JoJoMojoImpl {
             throw new IllegalStateException();
         }
 
+        if ( schemes.length == 0 ) {
+            getLog().error( "Unable to find list of schemes!" );
+            throw new IllegalStateException();
+        }
+
         for (String _scheme : schemes) {
+
+            getLog().debug( "Possible Scheme Match: " + _scheme );
             if ( scheme.equals( _scheme ) ) {
                 return;
             }
@@ -158,5 +176,15 @@ public final class ValidateMojo extends JoJoMojoImpl {
         }
         getLog().error( stringBuffer.toString() );
         throw new IllegalStateException();
+    }
+
+    private void validateAction( String action ) {
+
+        getLog().debug( "Validating Action " + action );
+        if ( action.equalsIgnoreCase( "build" ) == false && action.equalsIgnoreCase( "archive" ) == false ) {
+
+            getLog().error( "Unsupported action " + action + "; Supported actions are:\nbuild\narchive" );
+            throw new IllegalStateException();
+        }
     }
 }
