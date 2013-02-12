@@ -121,8 +121,7 @@ public final class CompileMojo extends JoJoMojoImpl {
 
             List<String> cmd = buildCommand( scheme, true );
 
-            Properties buildSettings = getBuildSettings( cmd );
-
+            Properties buildSettings = loadBuildSettings( cmd );
             PropertiesService.storeBuildSettings( buildSettings, scheme );
 
             injectPostAction( scheme, schemeFile, buildSettings );
