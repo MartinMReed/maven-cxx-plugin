@@ -90,7 +90,9 @@ sources<br/>
 libs<br/>
 frameworks</td></tr>
 <tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>
-<tr><td>xcode</td><td>configuration (Debug/Release/etc)<br/>
+<tr><td>xcode</td><td>
+action (build or archive)<br/>
+configuration (Debug/Release/etc)<br/>
 scheme<br/>
 targetIncludes<br/>
 targetExcludes (Usually test targets)<br/>

@@ -67,8 +67,6 @@ public final class XCodeService {
     private static String[] schemes;
     private static String scheme;
 
-    private static String workspaceScheme;
-    
     private static String configuration;
 
     private static Hashtable<String, String> fileIndex;
@@ -229,24 +227,18 @@ public final class XCodeService {
 
     public static String getSchemeDirPath() {
 
-        String workspace = getWorkspace();
-
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getXcprojPath() );
         stringBuffer.append( File.separator );
-//        if ( workspace != null && workspace.length() > 0 ) {
-//            stringBuffer.append( "xcshareddata" );
-//        }
-//        else {
 
-            Properties properties = PropertiesService.getProperties();
-            String username = properties.getProperty( "user.name" );
+        Properties properties = PropertiesService.getProperties();
+        String username = properties.getProperty( "user.name" );
 
-            stringBuffer.append( "xcuserdata" );
-            stringBuffer.append( File.separator );
-            stringBuffer.append( username );
-            stringBuffer.append( ".xcuserdatad" );
-//        }
+        stringBuffer.append( "xcuserdata" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( username );
+        stringBuffer.append( ".xcuserdatad" );
+
         return stringBuffer.toString();
     }
 
@@ -482,16 +474,6 @@ public final class XCodeService {
     public static void setScheme( String scheme ) {
 
         XCodeService.scheme = scheme;
-    }
-
-    public static String getWorkspaceScheme() {
-
-        return workspaceScheme;
-    }
-
-    public static void setWorkspaceScheme( String workspaceScheme ) {
-
-        XCodeService.workspaceScheme = workspaceScheme;
     }
 
     public static final String getProject() {

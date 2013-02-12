@@ -70,12 +70,12 @@ public final class CompileMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public String scheme;
+    public String action;
 
     /**
      * @parameter
      */
-    public String workspaceScheme;
+    public String scheme;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -85,7 +85,7 @@ public final class CompileMojo extends JoJoMojoImpl {
         }
         else {
             for (String target : XCodeService.getTargets()) {
-                List<String> cmd = buildCommand( target, false );
+                List<String> cmd = buildCommand( target, action, false );
                 Properties buildSettings = loadBuildSettings( cmd );
                 PropertiesService.storeBuildSettings( buildSettings, target );
                 execute( cmd );
@@ -98,6 +98,8 @@ public final class CompileMojo extends JoJoMojoImpl {
         File schemeFile = XCodeService.findXcscheme( scheme );
         boolean expectedScheme = XCodeService.isExpectedScheme( scheme, schemeFile.getPath() );
         File schemeTmpFile = null;
+
+        getLog().debug( "Executing scheme. Expected Scheme? " + expectedScheme );
 
         try {
 
@@ -119,12 +121,20 @@ public final class CompileMojo extends JoJoMojoImpl {
                 FileUtils.copyFile( userFile, schemeFile );
             }
 
-            List<String> cmd = buildCommand( scheme, true );
+            List<String> cmd = buildCommand( scheme, action, true );
 
             Properties buildSettings = loadBuildSettings( cmd );
             PropertiesService.storeBuildSettings( buildSettings, scheme );
 
             injectPostAction( scheme, schemeFile, buildSettings );
+
+            StringBuffer command = new StringBuffer();
+            for (String part : cmd) {
+
+                command.append( part );
+                command.append( " " );
+            }
+            getLog().debug( "Command: " + command.toString() );
 
             execute( cmd );
         }
@@ -149,7 +159,7 @@ public final class CompileMojo extends JoJoMojoImpl {
         }
     }
 
-    private List<String> buildCommand( String target, boolean scheme ) {
+    private List<String> buildCommand( String target, String action, boolean scheme ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "xcodebuild" );
@@ -165,31 +175,28 @@ public final class CompileMojo extends JoJoMojoImpl {
             cmd.add( XCodeService.getXcprojPath() );
         }
 
-        if ( workspaceScheme != null ) {
-            getLog().debug( "Workspace scheme: " + workspaceScheme );
+        if ( scheme ) {
             cmd.add( "-scheme" );
-            cmd.add( workspaceScheme );
         }
         else {
-            if ( scheme ) {
-                cmd.add( "-scheme" );
-            }
-            else {
-                cmd.add( "-target" );
-            }
-            cmd.add( target );
+            cmd.add( "-target" );
         }
+        cmd.add( target );
 
         String configuration = XCodeService.getConfiguration( target );
         cmd.add( "-configuration" );
         cmd.add( configuration );
 
-        if ( scheme ) {
-            cmd.add( XCodeService.ACTION_ARCHIVE );
+        if ( action == null || action.length() == 0 ) {
+
+            cmd.add( XCodeService.ACTION_BUILD );
         }
         else {
 
-            cmd.add( XCodeService.ACTION_BUILD );
+            cmd.add( action );
+        }
+
+        if ( scheme == false ) {
 
             StringBuffer symroot = new StringBuffer();
             symroot.append( TargetDirectoryService.getTargetBuildDirPath( target ) );

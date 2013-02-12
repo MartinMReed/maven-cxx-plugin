@@ -34,6 +34,11 @@ public final class ValidateMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
+    public String action;
+
+    /**
+     * @parameter
+     */
     public String[] targetIncludes;
 
     /**
@@ -45,11 +50,6 @@ public final class ValidateMojo extends JoJoMojoImpl {
      * @parameter
      */
     public String scheme;
-
-    /**
-     * @parameter
-     */
-    public String workspaceScheme;
 
     /**
      * @parameter
@@ -77,7 +77,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
         validateOS();
 
         File workspace = XCodeService.loadWorkspace();
-        boolean force = workspace != null && workspaceScheme == null;
+        boolean force = workspace != null;
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "scheme", scheme, force );
 
         if ( workspace != null ) {
@@ -90,6 +90,11 @@ public final class ValidateMojo extends JoJoMojoImpl {
         if ( scheme != null ) {
             XCodeService.loadSchemes();
             validateScheme( scheme );
+        }
+
+        if ( action != null && action.length() > 0 ) {
+
+            validateAction( action );
         }
 
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "provisioningProfile", provisioningProfile, false );
@@ -171,5 +176,15 @@ public final class ValidateMojo extends JoJoMojoImpl {
         }
         getLog().error( stringBuffer.toString() );
         throw new IllegalStateException();
+    }
+
+    private void validateAction( String action ) {
+
+        getLog().debug( "Validating Action " + action );
+        if ( action.equalsIgnoreCase( "build" ) == false && action.equalsIgnoreCase( "archive" ) == false ) {
+
+            getLog().error( "Unsupported action " + action + "; Supported actions are:\nbuild\narchive" );
+            throw new IllegalStateException();
+        }
     }
 }

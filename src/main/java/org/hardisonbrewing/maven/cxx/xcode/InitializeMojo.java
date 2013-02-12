@@ -59,11 +59,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
     /**
      * @parameter
      */
-    public String workspaceScheme;
-
-    /**
-     * @parameter
-     */
     public Keychain keychain;
 
     @Override
