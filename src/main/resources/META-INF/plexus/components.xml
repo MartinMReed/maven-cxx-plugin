@@ -300,7 +300,8 @@
 								org.hardisonbrewing:maven-cxx-plugin:xcode-validate</validate>
 							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-initialize,
-								org.hardisonbrewing:maven-cxx-plugin:xcode-convert-pbxproj</initialize>
+								org.hardisonbrewing:maven-cxx-plugin:xcode-convert-pbxproj,
+								org.hardisonbrewing:maven-cxx-plugin:xcode-convert-xcscheme</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
 							<generate-resources>org.hardisonbrewing:maven-cxx-plugin:xcode-install-provisioning-profile,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-unlock-keychain,

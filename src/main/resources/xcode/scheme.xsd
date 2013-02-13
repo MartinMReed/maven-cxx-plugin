@@ -19,6 +19,11 @@
 					<xs:sequence>
 						<xs:element name="BuildableReference" type="BuildableReference" />
 					</xs:sequence>
+					<xs:attribute name="buildForTesting" type="xs:string" />
+					<xs:attribute name="buildForRunning" type="xs:string" />
+					<xs:attribute name="buildForProfiling" type="xs:string" />
+					<xs:attribute name="buildForArchiving" type="xs:string" />
+					<xs:attribute name="buildForAnalyzing" type="xs:string" />
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
