@@ -1,5 +1,5 @@
 # Usage
-A [Maven](http://maven.apache.org/download.html) plugin with support for Adobe Air/Flex, ar, Arduino, BlackBerry PlayBook/BB10, gcc, g++, MSBuild and XCode.
+A [Maven](http://maven.apache.org/download.html) plugin with support for Adobe Air/Flex, ar, BlackBerry 10, gcc, g++, MSBuild and XCode.
 
 # Build or Download
 To build this you need to use [Maven](http://maven.apache.org/download.html) with the [hbc-maven-core](https://github.com/hardisonbrewing/hbc-maven-core) project. Alternatively you can pull the latest version of hbc-maven-core from [http://repo.hardisonbrewing.org](http://repo.hardisonbrewing.org) (see repository settings below).
@@ -50,10 +50,6 @@ The `<packaging/>` in your `pom.xml` must be set to package classifier for the t
 <table>
 <thead><th>Packaging</th><th>Target</th></thead>
 <tr><td>a</td><td>ar</td></tr>
-<tr><td><del>arduino</del></td><td><del>Arduino</del></td></tr>
-<tr><td><del>as.bar</del></td><td><del>BlackBerry 10, ActionScript main file</del></td></tr>
-<tr><td><del>js.bar</del></td><td><del>BlackBerry 10, WebWorks</del></td></tr>
-<tr><td><del>mxml.bar</del></td><td><del>BlackBerry 10, MXML main file</del></td></tr>
 <tr><td>cdt</td><td>Eclipse CDT, BlackBerry 10 QDE</td></tr>
 <tr><td>flex</td><td>Adobe Air/Flex</td></tr>
 <tr><td>msbuild</td><td>MSBuild</td></tr>
@@ -69,10 +65,6 @@ Under the plugin `<configuration/>` you may be able to specify additional settin
 <thead><th>Packaging</th><th>Configurations</th></thead>
 <tr><td>a</td><td>language<br/>
 sources</td></tr>
-<tr><td><del>arduino</del></td><td><del>sketchbook<br/>
-targetDevice<br/>
-sources</del></td></tr>
-<tr><td><del>*.bar</del></td><td/></tr>
 <tr><td>cdt</td><td>target (Release, Release-Device, etc)</td></tr>
 <tr><td>flex</td><td>target (air, apk, ipa-app-store, <a href="http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html">etc</a>)<br/>
 sourceFile (i.e. src/Main.mxml)<br/>
@@ -107,16 +99,6 @@ Usable through the `settings.xml`, `pom.xml` or commandline with a `-Dkey=value`
 <table>
 <thead><th>Packaging</th><th>Properties</th></thead>
 <tr><td>a</td><td/></tr>
-<tr><td><del>arduino</del></td><td><del>arduino.home<br/>
-avr.bin<br/>
-avrdude.config.path<br/>
-serial.port</del></td></tr>
-<tr><td><del>*.bar</del></td><td><del>adobe.flex.home<br/>
-blackberry.webworks.tablet.home<br/>
-blackberry.tablet.home<br/>
-blackberry.tablet.device.ip<br/>
-blackberry.tablet.device.password<br/>
-debug</del></td></tr>
 <tr><td>cdt</td><td/></tr>
 <tr><td>flex</td><td>adobe.flex.home</td></tr>
 <tr><td>msbuild</td><td>dotnet.framework.home</td></tr>
