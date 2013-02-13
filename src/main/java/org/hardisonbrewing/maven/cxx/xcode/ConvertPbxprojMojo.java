@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2012 Martin M Reed
+ * Copyright (c) 2010-2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -86,7 +86,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( XCodeService.getProject() );
-        stringBuffer.append( ".pbxproj.plist" );
+        stringBuffer.append( ".plist" );
         return new File( stringBuffer.toString() );
     }
 
@@ -172,20 +172,6 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         putTargets( targets, properties );
     }
 
-    public static void putTargets( String[] targets, Properties properties ) {
-
-        XCodeService.setTargets( targets );
-
-        String _targets = "";
-        for (String target : targets) {
-            if ( !_targets.isEmpty() ) {
-                _targets += ",";
-            }
-            _targets += target;
-        }
-        properties.put( XCodeService.PROP_TARGETS, _targets );
-    }
-
     private String[] getTargets( Dict dict ) {
 
         List<String> targets = PlistService.getStringArray( dict, XCodeService.PROP_TARGETS );
@@ -230,6 +216,20 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         String[] _targets = new String[targets.size()];
         targets.toArray( _targets );
         return _targets;
+    }
+
+    public static void putTargets( String[] targets, Properties properties ) {
+
+        XCodeService.setTargets( targets );
+
+        String _targets = "";
+        for (String target : targets) {
+            if ( !_targets.isEmpty() ) {
+                _targets += ",";
+            }
+            _targets += target;
+        }
+        properties.put( XCodeService.PROP_TARGETS, _targets );
     }
 
     private void putDefaultCongurationName( Dict dict, Properties properties ) {

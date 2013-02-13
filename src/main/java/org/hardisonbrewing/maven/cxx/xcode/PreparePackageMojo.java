@@ -150,7 +150,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
     private String getProductFileInclude( String target ) {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( PropertiesService.getTargetProductName( target ) );
+        stringBuffer.append( PropertiesService.getXCodeProperty( target, XCodeService.PROP_PRODUCT_REFERENCE ) );
         stringBuffer.append( "*" );
         stringBuffer.append( File.separator );
         stringBuffer.append( "**" );

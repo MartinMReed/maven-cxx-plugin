@@ -53,7 +53,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
         stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( XCodeService.getProject() );
-        stringBuffer.append( ".pbxproj.properties" );
+        stringBuffer.append( ".properties" );
         return stringBuffer.toString();
     }
 
@@ -62,7 +62,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
         storeProperties( properties, getXCodePropertiesPath() );
     }
 
-    public static final String getXCodePropertiesKey( String prefix, String key ) {
+    private static String getXCodePropertiesKey( String prefix, String key ) {
 
         StringBuffer stringBuffer = new StringBuffer();
         if ( prefix != null ) {
@@ -82,11 +82,6 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
 
         key = getXCodePropertiesKey( prefix, key );
         return (String) getXCodeProperties().get( key );
-    }
-
-    public static final String getTargetProductName( String target ) {
-
-        return getXCodeProperty( target, XCodeService.PROP_PRODUCT_REFERENCE );
     }
 
     public static final Properties getBuildSettings( String target ) {
@@ -120,7 +115,8 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
         stringBuffer.append( File.separator );
-        stringBuffer.append( "environment.properties" );
+        stringBuffer.append( target );
+        stringBuffer.append( ".environment.properties" );
         return stringBuffer.toString();
     }
 }

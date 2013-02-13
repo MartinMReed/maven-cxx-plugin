@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2010-2013 Martin M Reed
+ * Copyright (c) 2013 Todd Grooms
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,9 +17,6 @@
  */
 package org.hardisonbrewing.maven.cxx.xcode;
 
-import generated.xcode.BuildAction;
-import generated.xcode.BuildActionEntries;
-import generated.xcode.BuildActionEntries.BuildActionEntry;
 import generated.xcode.BuildableReference;
 import generated.xcode.Scheme;
 
@@ -30,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
@@ -51,9 +48,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.codehaus.plexus.util.cli.StreamConsumer;
-import org.hardisonbrewing.jaxb.JAXB;
 import org.hardisonbrewing.maven.core.FileUtils;
-import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.w3c.dom.Document;
@@ -67,6 +62,14 @@ import org.w3c.dom.NodeList;
  */
 public final class CompileMojo extends JoJoMojoImpl {
 
+    private static final String ARCHIVE_ACTION = "ArchiveAction";
+    private static final String POST_ACTIONS = "PostActions";
+
+    /**
+     * @parameter
+     */
+    public String action;
+
     /**
      * @parameter
      */
@@ -74,6 +77,10 @@ public final class CompileMojo extends JoJoMojoImpl {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+
+        if ( action == null ) {
+            action = XCodeService.ACTION_BUILD;
+        }
 
         if ( scheme != null ) {
             executeScheme( scheme );
@@ -105,12 +112,12 @@ public final class CompileMojo extends JoJoMojoImpl {
             }
             else {
 
-                schemeTmpFile = new File( XCodeService.getSchemeDirPath() );
+                schemeTmpFile = new File( XCodeService.getUserDataDirPath() );
                 schemeTmpFile.mkdir();
 
                 File userFile = schemeFile;
 
-                schemeFile = new File( XCodeService.getSchemePath( scheme ) );
+                schemeFile = new File( XCodeService.getSchemePath( scheme, false ) );
                 FileUtils.ensureParentExists( schemeFile.getPath() );
 
                 FileUtils.copyFile( userFile, schemeFile );
@@ -173,12 +180,9 @@ public final class CompileMojo extends JoJoMojoImpl {
         cmd.add( "-configuration" );
         cmd.add( configuration );
 
-        if ( scheme ) {
-            cmd.add( XCodeService.ACTION_ARCHIVE );
-        }
-        else {
+        cmd.add( action );
 
-            cmd.add( XCodeService.ACTION_BUILD );
+        if ( !scheme ) {
 
             StringBuffer symroot = new StringBuffer();
             symroot.append( TargetDirectoryService.getTargetBuildDirPath( target ) );
@@ -229,38 +233,65 @@ public final class CompileMojo extends JoJoMojoImpl {
         return properties;
     }
 
-    private void injectPostAction( String target, File file, Properties buildSettings ) throws Exception {
+    private void injectPostAction( String schemeName, File file, Properties buildSettings ) throws Exception {
 
+        Scheme scheme = SchemeService.unmarshal( file );
         Document document = loadSchemeDocument( file );
-        Element root = (Element) document.getFirstChild();
 
-        NodeList archiveActions = root.getElementsByTagName( "ArchiveAction" );
-        Element archiveAction = (Element) archiveActions.item( 0 );
-
-        Element postActions;
-
-        NodeList _postActions = archiveAction.getElementsByTagName( "PostActions" );
-        if ( _postActions.getLength() > 0 ) {
-            postActions = (Element) _postActions.item( 0 );
-        }
-        else {
-            postActions = document.createElement( "PostActions" );
-            archiveAction.appendChild( postActions );
-        }
-
-        String script = "env > " + PropertiesService.getBuildEnvironmentPropertiesPath( target );
-
-        Element postAction = createPostAction( document, script, file, buildSettings );
-        postActions.appendChild( postAction );
+        injectPostAction( schemeName, scheme, document, "BuildAction" );
+        injectPostAction( schemeName, scheme, document, ARCHIVE_ACTION );
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.transform( new DOMSource( document ), new StreamResult( file ) );
     }
 
+    private void injectPostAction( String schemeName, Scheme scheme, Document document, String action ) throws Exception {
+
+        Element root = (Element) document.getFirstChild();
+
+        NodeList archiveActions = root.getElementsByTagName( action );
+        Element archiveAction = (Element) archiveActions.item( 0 );
+
+        Element postActions;
+
+        NodeList _postActions = archiveAction.getElementsByTagName( POST_ACTIONS );
+        if ( _postActions.getLength() > 0 ) {
+            postActions = (Element) _postActions.item( 0 );
+        }
+        else {
+            postActions = document.createElement( POST_ACTIONS );
+            archiveAction.appendChild( postActions );
+        }
+
+        BuildableReference[] buildableReferences;
+
+        if ( ARCHIVE_ACTION.equals( action ) ) {
+
+//            Properties buildSettings = PropertiesService.getBuildSettings( schemeName );
+//            String target = (String) buildSettings.get( "TARGET_NAME" );
+//
+//            BuildableReference buildableReference = SchemeService.getBuildableReference( scheme, target );
+//
+//            Element postAction = createPostAction( document, buildableReference, schemeName );
+//            postActions.appendChild( postAction );
+
+            buildableReferences = SchemeService.getBuildableReferences( scheme, true );
+        }
+        else {
+            buildableReferences = SchemeService.getBuildableReferences( scheme, false );
+        }
+
+        for (BuildableReference buildableReference : buildableReferences) {
+            String target = buildableReference.getBlueprintName();
+            Element postAction = createPostAction( document, buildableReference, target );
+            postActions.appendChild( postAction );
+        }
+    }
+
     private Document loadSchemeDocument( File file ) throws ParserConfigurationException {
 
-        FullScheme fullScheme = unmarshal( file, FullScheme.class );
+        FullScheme fullScheme = SchemeService.unmarshal( file, FullScheme.class );
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -282,7 +313,9 @@ public final class CompileMojo extends JoJoMojoImpl {
         return document;
     }
 
-    private Element createPostAction( Document document, String script, File file, Properties buildSettings ) throws Exception {
+    private Element createPostAction( Document document, BuildableReference buildableReference, String target ) throws Exception {
+
+        String script = "env > \"" + PropertiesService.getBuildEnvironmentPropertiesPath( target ) + "\"";
 
         Element executionAction = document.createElement( "ExecutionAction" );
         executionAction.setAttribute( "ActionType", "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction" );
@@ -291,10 +324,6 @@ public final class CompileMojo extends JoJoMojoImpl {
         actionContent.setAttribute( "title", "Run Script" );
         actionContent.setAttribute( "scriptText", script );
         executionAction.appendChild( actionContent );
-
-        Scheme scheme = unmarshal( file, Scheme.class );
-        String target = (String) buildSettings.get( "TARGET_NAME" );
-        BuildableReference buildableReference = getBuildableReference( scheme, target );
 
         Element environmentBuildable = document.createElement( "EnvironmentBuildable" );
         actionContent.appendChild( environmentBuildable );
@@ -314,40 +343,6 @@ public final class CompileMojo extends JoJoMojoImpl {
         element.setAttribute( "BlueprintName", buildableReference.getBlueprintName() );
         element.setAttribute( "ReferencedContainer", buildableReference.getReferencedContainer() );
         return element;
-    }
-
-    private BuildableReference getBuildableReference( Scheme scheme, String target ) {
-
-        BuildAction buildAction = scheme.getBuildAction();
-        BuildActionEntries _buildActionEntries = buildAction.getBuildActionEntries();
-        List<BuildActionEntry> buildActionEntries = _buildActionEntries.getBuildActionEntry();
-
-        for (int i = 0; i < buildActionEntries.size(); i++) {
-            BuildActionEntry buildActionEntry = buildActionEntries.get( i );
-            BuildableReference buildableReference = buildActionEntry.getBuildableReference();
-            if ( target.equals( buildableReference.getBlueprintName() ) ) {
-                return buildableReference;
-            }
-        }
-
-        getLog().error( "Unable to locate BuildableReference for target: " + target );
-        throw new IllegalStateException();
-    }
-
-    private <T> T unmarshal( File file, Class<T> clazz ) {
-
-        if ( !file.exists() ) {
-            JoJoMojo.getMojo().getLog().error( "Unable to locate Xcscheme file: " + file );
-            throw new IllegalStateException();
-        }
-
-        try {
-            return JAXB.unmarshal( file, clazz );
-        }
-        catch (JAXBException e) {
-            JoJoMojo.getMojo().getLog().error( "Unable to unmarshal Xcscheme file: " + file );
-            throw new IllegalStateException( e );
-        }
     }
 
     @XmlAccessorType( XmlAccessType.FIELD )

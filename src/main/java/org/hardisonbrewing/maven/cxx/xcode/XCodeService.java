@@ -44,7 +44,7 @@ public final class XCodeService {
     public static final String PROP_BUILD_CONFIG_LIST = "buildConfigurationList";
     public static final String PROP_PRODUCT_REFERENCE = "productReference";
     public static final String PROP_TARGETS = "targets";
-    public static final String PROP_SCHEME = "targets";
+    public static final String PROP_SCHEME = "scheme";
 
     public static final String BUILD_INFOPLIST_PATH = "INFOPLIST_PATH";
     public static final String BUILD_BUILT_PRODUCTS_DIR = "BUILT_PRODUCTS_DIR";
@@ -57,6 +57,8 @@ public final class XCodeService {
 
     public static final String ACTION_BUILD = "build";
     public static final String ACTION_ARCHIVE = "archive";
+
+    public static final String TRUE_YES = "YES";
 
     private static String project;
     private static String projectPath;
@@ -118,17 +120,17 @@ public final class XCodeService {
 
     public static final File findXcscheme( String scheme ) {
 
-        Properties properties = PropertiesService.getProperties();
-        String username = properties.getProperty( "user.name" );
-
-        // specific user
-        File[] files = listSchemes( scheme, username );
+        // shared
+        File[] files = listSchemes( scheme, null );
         if ( files != null && files.length > 0 ) {
             return files[0];
         }
 
-        // shared
-        files = listSchemes( scheme, null );
+        Properties properties = PropertiesService.getProperties();
+        String username = properties.getProperty( "user.name" );
+
+        // specific user
+        files = listSchemes( scheme, username );
         if ( files != null && files.length > 0 ) {
             return files[0];
         }
@@ -174,8 +176,17 @@ public final class XCodeService {
 
     public static boolean isExpectedScheme( String scheme, String filePath ) {
 
-        String schemePath = getSchemePath( scheme );
-        return filePath.matches( schemePath );
+        String schemePath = getSchemePath( scheme, true );
+        if ( filePath.matches( schemePath ) ) {
+            return true;
+        }
+
+        schemePath = getSchemePath( scheme, false );
+        if ( filePath.matches( schemePath ) ) {
+            return true;
+        }
+
+        return false;
     }
 
     public static File[] listSchemes() {
@@ -225,33 +236,34 @@ public final class XCodeService {
         return stringBuffer.toString();
     }
 
-    public static String getSchemeDirPath() {
-
-        String workspace = getWorkspace();
+    public static String getSharedDataDirPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getXcprojPath() );
         stringBuffer.append( File.separator );
-//        if ( workspace != null && workspace.length() > 0 ) {
-//            stringBuffer.append( "xcshareddata" );
-//        }
-//        else {
-
-            Properties properties = PropertiesService.getProperties();
-            String username = properties.getProperty( "user.name" );
-
-            stringBuffer.append( "xcuserdata" );
-            stringBuffer.append( File.separator );
-            stringBuffer.append( username );
-            stringBuffer.append( ".xcuserdatad" );
-//        }
+        stringBuffer.append( "xcshareddata" );
         return stringBuffer.toString();
     }
 
-    public static String getSchemePath( String scheme ) {
+    public static String getUserDataDirPath() {
+
+        Properties properties = PropertiesService.getProperties();
+        String username = properties.getProperty( "user.name" );
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getSchemeDirPath() );
+        stringBuffer.append( getXcprojPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "xcuserdata" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( username );
+        stringBuffer.append( ".xcuserdatad" );
+        return stringBuffer.toString();
+    }
+
+    public static String getSchemePath( String scheme, boolean shared ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( shared ? getSharedDataDirPath() : getUserDataDirPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( "xcschemes" );
         stringBuffer.append( File.separator );
@@ -334,6 +346,7 @@ public final class XCodeService {
             return null;
         }
 
+        target = getBuildTargetName( target );
         Properties environmentProperties = PropertiesService.getBuildEnvironmentProperties( target );
 
         StringBuffer stringBuffer = new StringBuffer();
@@ -352,6 +365,7 @@ public final class XCodeService {
 
         if ( isArchiveAction( target ) ) {
 
+            target = getBuildTargetName( target );
             Properties environmentProperties = PropertiesService.getBuildEnvironmentProperties( target );
 
             StringBuffer stringBuffer = new StringBuffer();
