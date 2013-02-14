@@ -47,6 +47,11 @@ public final class ConvertSchemeMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
+        if ( scheme == null ) {
+            getLog().info( "Scheme not specified, skipping." );
+            return;
+        }
+
         File schemeFile = XCodeService.findXcscheme( this.scheme );
         Scheme scheme = SchemeService.unmarshal( schemeFile );
 
