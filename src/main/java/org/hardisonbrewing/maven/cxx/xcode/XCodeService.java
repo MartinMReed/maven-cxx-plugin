@@ -375,50 +375,87 @@ public final class XCodeService {
             return stringBuffer.toString();
         }
 
-        Properties buildSettings = PropertiesService.getBuildSettings( target );
+        Properties properties;
+
+        // environment properties report configuration specified in scheme and not what we ran
+//        if ( scheme != null ) {
+//            properties = PropertiesService.getBuildEnvironmentProperties( target );
+//        }
+//        else {
+        properties = PropertiesService.getBuildSettings( target );
+//        }
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( buildSettings.get( BUILD_BUILT_PRODUCTS_DIR ) );
+        stringBuffer.append( properties.get( BUILD_BUILT_PRODUCTS_DIR ) );
         return stringBuffer.toString();
     }
 
     public static final String getProductFilePath( String target ) {
 
-        Properties buildSettings = PropertiesService.getBuildSettings( target );
+        Properties properties;
+
+        if ( scheme != null ) {
+            properties = PropertiesService.getBuildEnvironmentProperties( target );
+        }
+        else {
+            properties = PropertiesService.getBuildSettings( target );
+        }
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getProductDirPath( target ) );
         stringBuffer.append( File.separator );
-        stringBuffer.append( buildSettings.get( BUILD_FULL_PRODUCT_NAME ) );
+        stringBuffer.append( properties.get( BUILD_FULL_PRODUCT_NAME ) );
         return stringBuffer.toString();
     }
 
     public static final String getEmbeddedInfoPlistPath( String target ) {
 
-        Properties buildSettings = PropertiesService.getBuildSettings( target );
+        Properties properties;
+
+        if ( scheme != null ) {
+            properties = PropertiesService.getBuildEnvironmentProperties( target );
+        }
+        else {
+            properties = PropertiesService.getBuildSettings( target );
+        }
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getProductDirPath( target ) );
         stringBuffer.append( File.separator );
-        stringBuffer.append( buildSettings.get( BUILD_INFOPLIST_PATH ) );
+        stringBuffer.append( properties.get( BUILD_INFOPLIST_PATH ) );
         return stringBuffer.toString();
     }
 
     public static final String getEmbeddedProvisoningProfilePath( String target ) {
 
-        Properties buildSettings = PropertiesService.getBuildSettings( target );
+        Properties properties;
+
+        if ( scheme != null ) {
+            properties = PropertiesService.getBuildEnvironmentProperties( target );
+        }
+        else {
+            properties = PropertiesService.getBuildSettings( target );
+        }
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getProductFilePath( target ) );
         stringBuffer.append( File.separator );
-        stringBuffer.append( buildSettings.get( BUILD_EMBEDDED_PROFILE_NAME ) );
+        stringBuffer.append( properties.get( BUILD_EMBEDDED_PROFILE_NAME ) );
         return stringBuffer.toString();
     }
 
     public static final String getBuildTargetName( String target ) {
 
-        Properties buildSettings = PropertiesService.getBuildSettings( target );
-        return (String) buildSettings.get( BUILD_TARGET_NAME );
+        Properties properties;
+
+        if ( scheme != null && !isArchiveAction( target ) ) {
+            properties = PropertiesService.getBuildEnvironmentProperties( target );
+        }
+        else {
+            properties = PropertiesService.getBuildSettings( target );
+        }
+
+        return (String) properties.get( BUILD_TARGET_NAME );
     }
 
     public static final String getConfiguration( String target ) {

@@ -36,14 +36,20 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
      */
     public String scheme;
 
+    private boolean archiveAction;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         if ( scheme != null ) {
+            archiveAction = XCodeService.isArchiveAction( scheme );
+        }
+
+        if ( archiveAction ) {
 
             String target = XCodeService.getBuildTargetName( scheme );
 
-            copyProductFile( target );
+            copyArchiveFile( target );
 
             if ( XCodeService.isApplicationType( target ) ) {
                 copyProvisioningFile( target );
@@ -53,8 +59,8 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
             copyIconFile( target );
 
-            String[] excludes = new String[] { getProductFileInclude( target ) };
-            copyProductFiles( scheme, excludes );
+//            String[] excludes = new String[] { getProductFileInclude( target ) };
+//            copyProductFiles( scheme, excludes );
         }
         else {
 
@@ -62,7 +68,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
             for (String target : targets) {
 
-                copyProductFiles( target, null );
+                copyProductFile( target );
 
                 if ( XCodeService.isApplicationType( target ) ) {
                     copyProvisioningFile( target );
@@ -112,38 +118,36 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         prepareTargetFile( target, bundleIconFile, bundleIconFile.getName() );
     }
 
+    private void copyArchiveFile( String target ) {
+
+        String archivePath = XCodeService.getArchivePath( target );
+        File archiveFile = new File( archivePath );
+        String directoryRoot = archiveFile.getParent();
+
+        getLog().info( "Copying archive for target[" + target + "]: " + archiveFile );
+
+        for (File file : FileUtils.listFilesRecursive( archiveFile )) {
+            prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
+        }
+    }
+
     private void copyProductFile( String target ) {
 
-        if ( XCodeService.isArchiveAction( target ) ) {
+        String directoryRoot = XCodeService.getProductDirPath( target );
+        File productDir = new File( directoryRoot );
 
-            String archivePath = XCodeService.getArchivePath( target );
-            File archiveFile = new File( archivePath );
-            String directoryRoot = archiveFile.getParent();
+        File productFile = new File( XCodeService.getProductFilePath( target ) );
 
-            getLog().info( "Copying archive for target[" + target + "]: " + archiveFile );
-
-            for (File file : FileUtils.listFilesRecursive( archiveFile )) {
-                prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
-            }
+        if ( !productFile.isDirectory() ) {
+            prepareTargetFile( target, productFile, getFilename( directoryRoot, productFile ) );
         }
-        else {
 
-            String directoryRoot = XCodeService.getProductDirPath( target );
-            File productDir = new File( directoryRoot );
+        getLog().info( "Copying product files for target[" + target + "] from: " + productDir );
 
-            File productFile = new File( XCodeService.getProductFilePath( target ) );
+        String[] includes = new String[] { getProductFileInclude( target ) };
 
-            if ( !productFile.isDirectory() ) {
-                prepareTargetFile( target, productFile, getFilename( directoryRoot, productFile ) );
-            }
-
-            getLog().info( "Copying product files for target[" + target + "] from: " + productDir );
-
-            String[] includes = new String[] { getProductFileInclude( target ) };
-
-            for (File file : FileUtils.listFilesRecursive( productDir, includes, null )) {
-                prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
-            }
+        for (File file : FileUtils.listFilesRecursive( productDir, includes, null )) {
+            prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
         }
     }
 
@@ -175,18 +179,6 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
         destFilePath.append( XCodeService.MOBILEPROVISION_EXTENSION );
 
         prepareTargetFile( target, src, destFilePath.toString() );
-    }
-
-    private void copyProductFiles( String target, String[] excludes ) {
-
-        String directoryRoot = XCodeService.getProductDirPath( target );
-        File productDir = new File( directoryRoot );
-
-        getLog().info( "Copying files from: " + productDir );
-
-        for (File file : FileUtils.listFilesRecursive( productDir, null, excludes )) {
-            prepareTargetFile( target, file, getFilename( directoryRoot, file ) );
-        }
     }
 
     private String getFilename( String directoryRoot, File file ) {
@@ -224,7 +216,7 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
 
     private final void prepareTargetFile( String target, File src, String filename ) {
 
-        if ( scheme == null ) {
+        if ( !archiveAction ) {
 
             String[] targets = XCodeService.getTargets();
 
