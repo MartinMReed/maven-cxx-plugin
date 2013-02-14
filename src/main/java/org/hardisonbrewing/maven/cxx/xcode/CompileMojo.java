@@ -21,7 +21,6 @@ import generated.xcode.BuildableReference;
 import generated.xcode.Scheme;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,7 +82,12 @@ public final class CompileMojo extends JoJoMojoImpl {
         }
 
         if ( scheme != null ) {
-            executeScheme( scheme );
+            try {
+                executeScheme( scheme );
+            }
+            catch (Exception e) {
+                throw new IllegalStateException( e );
+            }
         }
         else {
             for (String target : XCodeService.getTargets()) {
@@ -95,7 +99,7 @@ public final class CompileMojo extends JoJoMojoImpl {
         }
     }
 
-    private void executeScheme( String scheme ) {
+    private void executeScheme( String scheme ) throws Exception {
 
         File schemeFile = XCodeService.findXcscheme( scheme );
         boolean expectedScheme = XCodeService.isExpectedScheme( scheme, schemeFile.getPath() );
@@ -131,23 +135,12 @@ public final class CompileMojo extends JoJoMojoImpl {
 
             execute( cmd );
         }
-        catch (Exception e) {
-            getLog().error( "Unable to inject Scheme with PostAction" );
-            throw new IllegalStateException( e );
-        }
         finally {
-
-            try {
-                if ( expectedScheme ) {
-                    FileUtils.copyFile( schemeTmpFile, schemeFile );
-                }
-                else {
-                    FileUtils.deleteDirectory( schemeTmpFile );
-                }
+            if ( expectedScheme ) {
+                FileUtils.copyFile( schemeTmpFile, schemeFile );
             }
-            catch (IOException e) {
-                getLog().error( "Unable to cleanup injected Scheme resource: " + schemeTmpFile );
-                throw new IllegalStateException( e );
+            else {
+                FileUtils.deleteDirectory( schemeTmpFile );
             }
         }
     }
