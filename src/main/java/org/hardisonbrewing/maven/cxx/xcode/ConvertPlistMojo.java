@@ -38,7 +38,7 @@ public final class ConvertPlistMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if ( scheme != null ) {
+        if ( scheme != null && XCodeService.isArchiveAction( scheme ) ) {
             String target = XCodeService.getBuildTargetName( scheme );
             execute( target );
         }
