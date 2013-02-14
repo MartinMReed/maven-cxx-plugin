@@ -82,7 +82,8 @@ sources<br/>
 libs<br/>
 frameworks</td></tr>
 <tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>
-<tr><td>xcode</td><td>configuration (Debug/Release/etc)<br/>
+<tr><td>xcode</td><td>action (build/archive/etc)<br/>
+configuration (Debug/Release/etc)<br/>
 scheme<br/>
 targetIncludes<br/>
 targetExcludes (Usually test targets)<br/>
@@ -272,6 +273,8 @@ Usable through the `settings.xml`, `pom.xml` or commandline with a `-Dkey=value`
             <artifactId>maven-cxx-plugin</artifactId>
             <extensions>true</extensions>
             <configuration>
+              <!-- <action/> not required - defaults to 'build' -->
+              <action>archive</action>
               <provisioningProfile>Komodododo_AdHoc_Dist.mobileprovision</provisioningProfile>
               <codesignCertificate>distribution_identity.cer</codesignCertificate>
             </configuration>
