@@ -85,8 +85,7 @@ public final class ConvertPbxprojMojo extends JoJoMojoImpl {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( XCodeService.getProject() );
-        stringBuffer.append( ".plist" );
+        stringBuffer.append( "project.plist" );
         return new File( stringBuffer.toString() );
     }
 

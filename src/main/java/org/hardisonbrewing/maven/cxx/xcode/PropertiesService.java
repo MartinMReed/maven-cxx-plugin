@@ -52,8 +52,7 @@ public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesS
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( TargetDirectoryService.getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
-        stringBuffer.append( XCodeService.getProject() );
-        stringBuffer.append( ".properties" );
+        stringBuffer.append( "project.properties" );
         return stringBuffer.toString();
     }
 
