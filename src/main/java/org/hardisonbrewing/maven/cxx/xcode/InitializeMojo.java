@@ -67,7 +67,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
         XCodeService.setConfiguration( configuration );
 
         File workspace = XCodeService.loadWorkspace();
-
         if ( workspace != null ) {
 
             getLog().debug( "Using workspace " + workspace );

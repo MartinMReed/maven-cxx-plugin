@@ -288,7 +288,14 @@ public final class XCodeService {
     public static String getSharedDataDirPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getXcprojPath() );
+        if ( XCodeService.getXcworkspacePath() != null ) {
+
+            stringBuffer.append( XCodeService.getXcworkspacePath() );
+        }
+        else {
+
+            stringBuffer.append( getXcprojPath() );
+        }
         stringBuffer.append( File.separator );
         stringBuffer.append( "xcshareddata" );
         return stringBuffer.toString();
@@ -300,7 +307,14 @@ public final class XCodeService {
         String username = properties.getProperty( "user.name" );
 
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append( getXcprojPath() );
+        if ( XCodeService.getXcworkspacePath() != null ) {
+
+            stringBuffer.append( XCodeService.getXcworkspacePath() );
+        }
+        else {
+
+            stringBuffer.append( getXcprojPath() );
+        }
         stringBuffer.append( File.separator );
         stringBuffer.append( "xcuserdata" );
         stringBuffer.append( File.separator );
