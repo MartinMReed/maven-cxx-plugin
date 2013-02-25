@@ -66,34 +66,35 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         XCodeService.setConfiguration( configuration );
 
-        String projectPath;
-
         File workspace = XCodeService.loadWorkspace();
 
         if ( workspace != null ) {
+
+            getLog().debug( "Using workspace " + workspace );
             initWorkspace( workspace );
-            projectPath = XCodeService.getSchemeXcprojPath( scheme );
-        }
-        else {
-            File project = XCodeService.loadProject();
-            projectPath = project.getPath();
         }
 
+        File project = XCodeService.loadProject();
+        String projectPath = project.getPath();
         initProject( projectPath );
 
         if ( scheme != null ) {
+
             initScheme( scheme );
         }
 
         if ( provisioningProfile != null ) {
+
             ProvisioningProfileService.assertProvisioningProfile( provisioningProfile );
         }
 
         if ( codesignCertificate != null ) {
+
             CodesignCertificateService.assertCodesignCertificate( codesignCertificate );
         }
 
         if ( keychain != null ) {
+
             initKeychain( keychain );
         }
     }
@@ -108,6 +109,8 @@ public final class InitializeMojo extends JoJoMojoImpl {
     }
 
     private void initProject( String projectPath ) {
+
+        getLog().debug( "Initializing project with Path: " + projectPath );
 
         XCodeService.setXcprojPath( projectPath );
 

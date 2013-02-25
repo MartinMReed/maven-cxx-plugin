@@ -24,7 +24,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.maven.plugin.logging.Log;
 import org.hardisonbrewing.maven.core.FileUtils;
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
 
 public final class XCodeService {
@@ -105,24 +107,65 @@ public final class XCodeService {
         return null;
     }
 
+    public static final String getSchemeXcworkspacePath( String scheme ) {
+
+        return XCodeService.findSchemeWorkspaceOrProjectFilePath( scheme, XCWORKSPACE_EXTENSION );
+    }
+
     public static final String getSchemeXcprojPath( String scheme ) {
 
-        File schemeFile = findXcscheme( scheme );
+        return XCodeService.findSchemeWorkspaceOrProjectFilePath( scheme, XCODEPROJ_EXTENSION );
+    }
+
+    private static final String findSchemeWorkspaceOrProjectFilePath( String scheme, String extension ) {
+
+        Log log = JoJoMojo.getMojo().getLog();
+        if ( scheme == null || extension == null ) {
+
+            log.error( "Scheme or extension is null." );
+            return null;
+        }
+
+        File schemeFile = XCodeService.findSchemeFile( scheme );
         if ( schemeFile == null ) {
+
+            log.warn( "Schemefile not found!" );
             return null;
         }
 
         String schemePath = schemeFile.getPath();
-        int lastIndexOf = schemePath.lastIndexOf( XCODEPROJ_EXTENSION );
-        schemePath = schemePath.substring( 0, lastIndexOf + XCODEPROJ_EXTENSION.length() );
+        int lastIndexOf = schemePath.lastIndexOf( extension );
+        schemePath = schemePath.substring( 0, lastIndexOf + extension.length() );
+
+        log.debug( "Scheme Path: " + schemePath );
+
         return schemePath;
+    }
+
+    private static final File findSchemeFile( String scheme ) {
+
+        Log log = JoJoMojo.getMojo().getLog();
+        log.debug( "Looking for Scheme path for Scheme " + scheme );
+        File schemeFile = findXcscheme( scheme );
+        if ( schemeFile == null ) {
+
+            return null;
+        }
+
+        log.debug( "Using scheme file " + schemeFile );
+
+        return schemeFile;
     }
 
     public static final File findXcscheme( String scheme ) {
 
+        Log log = JoJoMojo.getMojo().getLog();
+
         // shared
         File[] files = listSchemes( scheme, null );
         if ( files != null && files.length > 0 ) {
+
+            log.debug( "Using shared scheme" );
             return files[0];
         }
 
@@ -132,12 +175,16 @@ public final class XCodeService {
         // specific user
         files = listSchemes( scheme, username );
         if ( files != null && files.length > 0 ) {
+
+            log.debug( "Using specific user" );
             return files[0];
         }
 
         // any user
         files = listSchemes( scheme, "*" );
         if ( files == null || files.length == 0 ) {
+
+            log.debug( "Using any user" );
             return null;
         }
 
@@ -151,6 +198,8 @@ public final class XCodeService {
                 latest = file;
             }
         }
+
+        log.debug( "Using latest modified" );
 
         return latest;
     }
