@@ -16,12 +16,9 @@
  */
 package org.hardisonbrewing.maven.cxx.msbuild;
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.core.ProjectService;
 
 /**
  * @goal msbuild-initialize
@@ -37,35 +34,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        if ( project == null ) {
-            project = findProjectFile();
-        }
-        else {
-            StringBuffer projectPath = new StringBuffer();
-            projectPath.append( ProjectService.getBaseDirPath() );
-            projectPath.append( File.separator );
-            projectPath.append( project );
-            project = projectPath.toString();
-        }
-
-        MSBuildService.setProject( project );
-    }
-
-    private String findProjectFile() {
-
-        File[] projects = MSBuildService.listProjects();
-
-        if ( projects != null && projects.length > 0 ) {
-
-            if ( projects.length > 1 ) {
-                getLog().error( "Multiple project files available. Please specify a <project/> in the pom.xml" );
-                throw new IllegalStateException();
-            }
-
-            return projects[0].getPath();
-        }
-
-        getLog().error( "Unable to determine the project file. Please specify a <project/> in the pom.xml" );
-        throw new IllegalStateException();
+        String projectFilePath = MSBuildService.findProjectFilePath( project );
+        MSBuildService.setProjectFilePath( projectFilePath );
     }
 }

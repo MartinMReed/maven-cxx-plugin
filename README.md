@@ -76,7 +76,8 @@ keystore/keystore<br/>
 keystore/storepass<br/>
 keystore/keypass<br/>
 keystore/alias</td></tr>
-<tr><td>msbuild</td><td>project</td></tr>
+<tr><td>msbuild</td><td>project<br/>
+assemblyVersion</td></tr>
 <tr><td>o</td><td>language<br/>
 sources<br/>
 libs<br/>
@@ -241,8 +242,10 @@ Usable through the `settings.xml`, `pom.xml` or commandline with a `-Dkey=value`
         <artifactId>maven-cxx-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
+          <!-- <assemblyVersion/> not required - defaults to ${project.version} -->
+          <assemblyVersion>1.0.123</assemblyVersion>
           <!-- <project/> not required if found automatically -->
-          <project>Komodododo.csproj</project>
+          <project>Komodododo/Komodododo.csproj</project>
         </configuration>
       </plugin>
     </plugins>
