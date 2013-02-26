@@ -16,43 +16,36 @@
  */
 package org.hardisonbrewing.maven.cxx.msbuild;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.Commandline;
+import org.codehaus.plexus.util.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
- * @goal msbuild-compile
+ * @goal msbuild-revert-assembly-info
  * @phase compile
  */
-public final class CompileMojo extends JoJoMojoImpl {
+public final class RevertAssemblyInfoMojo extends JoJoMojoImpl {
+
+    /**
+     * @parameter
+     */
+    public String project;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "MSBuild" );
-        cmd.add( MSBuildService.getProjectFilePath() );
-
-        cmd.add( "/p:OutDir=" + TargetDirectoryService.getBinDirectoryPath() );
-
-        Commandline commandLine = buildCommandline( cmd );
-        CommandLineService.addDotnetEnvVars( commandLine );
-        execute( commandLine );
-    }
-
-    @Override
-    protected Commandline buildCommandline( List<String> cmd ) {
+        File assemblyInfoFile = MSBuildService.getAssemblyInfoFile( project );
+        File assemblyInfoBakFile = TargetDirectoryService.getAssemblyInfoBakFile();
 
         try {
-            return CommandLineService.build( cmd );
+            FileUtils.copyFile( assemblyInfoBakFile, assemblyInfoFile );
         }
-        catch (CommandLineException e) {
-            throw new IllegalStateException( e );
+        catch (Exception e) {
+            getLog().error( "Unable to revert assembly info: " + assemblyInfoFile );
+            throw new IllegalStateException();
         }
     }
 }

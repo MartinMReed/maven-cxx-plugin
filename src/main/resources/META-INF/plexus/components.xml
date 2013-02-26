@@ -176,9 +176,10 @@
 							<initialize>org.hardisonbrewing:maven-cxx-plugin:initialize,
 								org.hardisonbrewing:maven-cxx-plugin:msbuild-initialize</initialize>
 							<generate-sources>org.hardisonbrewing:maven-cxx-plugin:dependency-copy</generate-sources>
-							<generate-resources></generate-resources>
-							<compile>org.hardisonbrewing:maven-cxx-plugin:msbuild-compile</compile>
-							<prepare-package></prepare-package>
+							<process-sources>org.hardisonbrewing:maven-cxx-plugin:msbuild-assembly-info</process-sources>
+							<compile>org.hardisonbrewing:maven-cxx-plugin:msbuild-compile,
+								org.hardisonbrewing:maven-cxx-plugin:msbuild-generate-build-settings,
+								org.hardisonbrewing:maven-cxx-plugin:msbuild-revert-assembly-info</compile>
 							<package>org.hardisonbrewing:maven-cxx-plugin:msbuild-package</package>
 							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
 							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
