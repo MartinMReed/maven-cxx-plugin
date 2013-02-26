@@ -49,11 +49,9 @@ The `<packaging/>` in your `pom.xml` must be set to package classifier for the t
 
 <table>
 <thead><th>Packaging</th><th>Target</th></thead>
-<tr><td>a</td><td>ar</td></tr>
 <tr><td>cdt</td><td>Eclipse CDT, BlackBerry 10 QDE</td></tr>
 <tr><td>flex</td><td>Adobe Air/Flex</td></tr>
 <tr><td>msbuild</td><td>MSBuild</td></tr>
-<tr><td>o</td><td>gcc/g++</td></tr>
 <tr><td>qnx</td><td>BlackBerry 10, Makefile</td></tr>
 <tr><td>xcode</td><td>xcodebuild</td></tr>
 </table>
@@ -63,8 +61,6 @@ Under the plugin `<configuration/>` you may be able to specify additional settin
 
 <table>
 <thead><th>Packaging</th><th>Configurations</th></thead>
-<tr><td>a</td><td>language<br/>
-sources</td></tr>
 <tr><td>cdt</td><td>target (Release, Release-Device, etc)</td></tr>
 <tr><td>flex</td><td>target (air, apk, ipa-app-store, <a href="http://help.adobe.com/en_US/air/build/WS901d38e593cd1bac1e63e3d128cdca935b-8000.html">etc</a>)<br/>
 sourceFile (i.e. src/Main.mxml)<br/>
@@ -78,10 +74,6 @@ keystore/keypass<br/>
 keystore/alias</td></tr>
 <tr><td>msbuild</td><td>project<br/>
 assemblyVersion</td></tr>
-<tr><td>o</td><td>language<br/>
-sources<br/>
-libs<br/>
-frameworks</td></tr>
 <tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>
 <tr><td>xcode</td><td>action (build/archive/etc)<br/>
 configuration (Debug/Release/etc)<br/>
@@ -100,83 +92,12 @@ Usable through the `settings.xml`, `pom.xml` or commandline with a `-Dkey=value`
 
 <table>
 <thead><th>Packaging</th><th>Properties</th></thead>
-<tr><td>a</td><td/></tr>
 <tr><td>cdt</td><td/></tr>
 <tr><td>flex</td><td>adobe.flex.home</td></tr>
 <tr><td>msbuild</td><td>dotnet.framework.home</td></tr>
-<tr><td>o</td><td/></tr>
 <tr><td>qnx</td><td/></tr>
 <tr><td>xcode</td><td/></tr>
 </table>
-
-# Sample: C++ Library POM
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-  <groupId>org.hardisonbrewing</groupId>
-    <artifactId>commons-c-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-  <groupId>org.hardisonbrewing</groupId>
-  <artifactId>libhbc_math</artifactId>
-  <name>${project.artifactId}</name>
-  <packaging>a</packaging>
-  <build>
-    <!-- <sourceDirectory/> not required -->
-    <sourceDirectory>src</sourceDirectory> 
-    <resources>
-     <resource>
-      <directory>src</directory>
-        <includes>
-          <include>**/*.h</include>
-        </includes>
-     </resource>
-     <resource>
-      <directory>third-party</directory>
-        <includes>
-          <include>**/*.h</include>
-        </includes>
-     </resource> 
-    </resources>
-    <plugins>
-     <plugin>
-      <groupId>org.hardisonbrewing</groupId>
-      <artifactId>maven-cxx-plugin</artifactId>
-      <extensions>true</extensions>
-      <configuration>
-        <!-- language of c++ will delegate to g++ instead of gcc -->
-        <language>c++</language>
-        <sources>
-          <source>
-            <!-- no <directory/> means use <sourceDirectory/> -->
-            <includes>
-              <include>**/*.cc</include>
-            </includes>
-<!--             <excludes>-->
-<!--                <exclude>**/*.m</exclude>-->
-<!--             </excludes>-->
-          </source> 
-          <source>
-            <directory>third-party</directory>
-<!--             <includes>-->
-<!--              <include>**/*.cc</include>-->
-<!--             </includes>-->
-            <excludes>
-              <exclude>**/*.m</exclude>
-            </excludes>
-          </source>
-        </sources>
-      </configuration>
-     </plugin>
-    </plugins>
-  </build>
-</project>
-```
 
 # Sample: Adobe Air/Flex Project POM
 
