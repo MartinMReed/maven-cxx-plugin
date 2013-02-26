@@ -1,5 +1,5 @@
 # Usage
-A [Maven](http://maven.apache.org/download.html) plugin with support for Adobe Air/Flex, ar, BlackBerry 10, gcc, g++, MSBuild and XCode.
+A [Maven](http://maven.apache.org/download.html) plugin with support for Adobe Air/Flex, BlackBerry 10, MSBuild and XCode.
 
 # Build or Download
 To build this you need to use [Maven](http://maven.apache.org/download.html) with the [hbc-maven-core](https://github.com/hardisonbrewing/hbc-maven-core) project. Alternatively you can pull the latest version of hbc-maven-core from [http://repo.hardisonbrewing.org](http://repo.hardisonbrewing.org) (see repository settings below).
