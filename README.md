@@ -42,7 +42,6 @@ To download this plugin without building it manually, you can add the following 
 Continuous Integration: [Bamboo Status](http://bamboo.hardisonbrewing.org/browse/MVN-CXX)
 
 # Setting up your pom.xml
-Packages that are <del>struck out</del> have been disabled, but are still present in the source code.
 
 ## Specify the packaging
 The `<packaging/>` in your `pom.xml` must be set to package classifier for the type of tool you're project should build for. See supported tools and package types below:
