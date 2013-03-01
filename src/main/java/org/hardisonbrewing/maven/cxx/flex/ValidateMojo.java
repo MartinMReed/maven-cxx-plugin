@@ -19,6 +19,7 @@ package org.hardisonbrewing.maven.cxx.flex;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.cxx.generic.ValidationService;
 
 /**
  * @goal flex-validate
@@ -54,18 +55,18 @@ public class ValidateMojo extends JoJoMojoImpl {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.ADOBE_FLEX_HOME, true );
+        ValidationService.checkPropertyExists( PropertiesService.ADOBE_FLEX_HOME );
 
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "target", target, true );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "descriptorFile", descriptorFile, true );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "sourceFile", sourceFile, true );
+        ValidationService.assertConfigurationExists( "target", target );
+        ValidationService.assertConfigurationExists( "descriptorFile", descriptorFile );
+        ValidationService.assertConfigurationExists( "sourceFile", sourceFile );
 
-        boolean iosTarget = FlexService.isIosTarget( target );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "provisioningProfile", provisioningProfile, iosTarget );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "keystore", keystore, true );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keystore><keystore/></keystore>", keystore.keystore, true );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keystore><storepass/></keystore>", keystore.storepass, true );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keystore><alias/></keystore>", keystore.alias, false );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keystore><keypass/></keystore>", keystore.keypass, false );
+        if ( FlexService.isIosTarget( target ) ) {
+            ValidationService.assertConfigurationExists( "provisioningProfile", provisioningProfile );
+        }
+
+        ValidationService.assertConfigurationExists( "keystore", keystore );
+        ValidationService.assertConfigurationExists( "<keystore><keystore/></keystore>", keystore.keystore );
+        ValidationService.assertConfigurationExists( "<keystore><storepass/></keystore>", keystore.storepass );
     }
 }

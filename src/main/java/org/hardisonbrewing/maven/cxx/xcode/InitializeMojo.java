@@ -69,6 +69,8 @@ public final class InitializeMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
+        XCodeService.setXcodePath( loadXcodePath() );
+
         XCodeService.setConfiguration( configuration );
 
         String projectPath;
@@ -103,11 +105,23 @@ public final class InitializeMojo extends JoJoMojoImpl {
         }
 
         try {
-            initOcunit2Junit();
+            installOcunit2Junit();
         }
         catch (IOException e) {
             throw new IllegalStateException( e );
         }
+    }
+
+    private String loadXcodePath() {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "xcode-select" );
+        cmd.add( "--print-path" );
+
+        StringStreamConsumer streamConsumer = new StringStreamConsumer();
+        execute( cmd, streamConsumer, null );
+
+        return streamConsumer.getOutput().trim();
     }
 
     private void initWorkspace( File workspace ) {
@@ -142,7 +156,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         String keychainPath;
         if ( keychain.keychain == null ) {
-            keychainPath = defaultKeychain();
+            keychainPath = loadDefaultKeychain();
         }
         else {
             keychainPath = findKeychainPath( keychain.keychain );
@@ -151,7 +165,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
         XCodeService.setKeychainPath( keychainPath );
     }
 
-    private String defaultKeychain() {
+    private String loadDefaultKeychain() {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "security" );
@@ -200,15 +214,14 @@ public final class InitializeMojo extends JoJoMojoImpl {
         return userHome + path;
     }
 
-    private void initOcunit2Junit() throws IOException {
+    private void installOcunit2Junit() throws IOException {
 
-        String srcPath = PropertiesService.getProperty( PropertiesService.OCUNIT_2_JUNIT_HOME );
-        File destFile = new File( TargetDirectoryService.getOcunit2JunitPath() );
-
-        if ( srcPath != null ) {
-            FileUtils.copyFile( new File( srcPath ), destFile );
+        // don't extract our copy if provided by the user
+        if ( PropertiesService.hasProperty( PropertiesService.OCUNIT_2_JUNIT_HOME ) ) {
             return;
         }
+
+        File destFile = new File( TargetDirectoryService.getOcunit2JunitPath() );
 
         if ( destFile.exists() ) {
             destFile.delete();

@@ -23,6 +23,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.ProjectService;
+import org.hardisonbrewing.maven.cxx.generic.ValidationService;
 
 /**
  * @goal msbuild-validate
@@ -38,13 +39,11 @@ public final class ValidateMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "project", project, false );
-
         if ( project != null ) {
             validateProjectFile( project );
         }
 
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.DOTNET_FRAMEWORK_HOME, true );
+        ValidationService.checkPropertyExists( PropertiesService.DOTNET_FRAMEWORK_HOME );
     }
 
     private void validateProjectFile( String project ) {
