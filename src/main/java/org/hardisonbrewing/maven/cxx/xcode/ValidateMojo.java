@@ -24,6 +24,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.cxx.generic.ValidationService;
 
 /**
  * @goal xcode-validate
@@ -51,66 +52,46 @@ public final class ValidateMojo extends JoJoMojoImpl {
      */
     public Keychain keychain;
 
-    /**
-     * @parameter
-     */
-    public String provisioningProfile;
-
-    /**
-     * @parameter
-     */
-    public String configuration;
-
-    /**
-     * @parameter
-     */
-    public String codesignCertificate;
-
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
         validateOS();
 
+        validateOcunit2JunitPath();
+
+        if ( keychain != null ) {
+            ValidationService.assertConfigurationExists( "<keychain><password/></keychain>", keychain.password );
+        }
+
         File workspace = XCodeService.loadWorkspace();
 
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "scheme", scheme, workspace != null );
-
         if ( workspace != null ) {
+            ValidationService.assertConfigurationExists( "scheme", scheme );
             validateWorkspace();
         }
         else {
-            validateProject();
+            File project = XCodeService.loadProject();
+            validateProject( project );
         }
 
         if ( scheme != null ) {
             XCodeService.loadSchemes();
             validateScheme( scheme );
         }
-
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "provisioningProfile", provisioningProfile, false );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "configuration", configuration, false );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "codesignCertificate", codesignCertificate, false );
-
-        String keychainPassword = keychain == null ? null : keychain.password;
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "keychain", keychain, false );
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keychain><password/></keychain>", keychainPassword, keychain != null );
-
-        validateOcunit2JunitPath();
     }
 
     private void validateOS() {
 
         Properties properties = PropertiesService.getProperties();
         String osName = properties.getProperty( "os.name" );
+
         if ( !"Mac OS X".equals( osName ) ) {
             getLog().error( "Unsupported OS: " + osName );
             throw new IllegalStateException();
         }
     }
 
-    private void validateProject() {
-
-        File project = XCodeService.loadProject();
+    private void validateProject( File project ) {
 
         if ( project == null ) {
             JoJoMojo.getMojo().getLog().error( "Unable to locate project entry! Expected a file with the extension `" + XCodeService.XCODEPROJ_EXTENSION + "`." );
@@ -163,8 +144,6 @@ public final class ValidateMojo extends JoJoMojoImpl {
     }
 
     private void validateOcunit2JunitPath() {
-
-        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.OCUNIT_2_JUNIT_HOME, false );
 
         String path = PropertiesService.getProperty( PropertiesService.OCUNIT_2_JUNIT_HOME );
 

@@ -77,6 +77,8 @@ public final class XCodeService {
 
     private static String keychainPath;
 
+    private static String xcodePath;
+
     private XCodeService() {
 
         // do nothing
@@ -581,5 +583,15 @@ public final class XCodeService {
     public static void setKeychainPath( String keychainPath ) {
 
         XCodeService.keychainPath = keychainPath;
+    }
+
+    public static String getXcodePath() {
+
+        return xcodePath;
+    }
+
+    public static void setXcodePath( String xcodePath ) {
+
+        XCodeService.xcodePath = xcodePath;
     }
 }

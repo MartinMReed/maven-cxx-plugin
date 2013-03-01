@@ -27,6 +27,7 @@ import org.hardisonbrewing.maven.cxx.cdt.CProjectService;
 import org.hardisonbrewing.maven.cxx.cdt.CdtService;
 import org.hardisonbrewing.maven.cxx.cdt.toolchain.QccToolChain;
 import org.hardisonbrewing.maven.cxx.cdt.toolchain.ToolChain.Builder;
+import org.hardisonbrewing.maven.cxx.generic.ValidationService;
 import org.hardisonbrewing.maven.cxx.qnx.PropertiesService;
 import org.hardisonbrewing.maven.cxx.qnx.QnxService;
 
@@ -60,7 +61,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
         }
 
         if ( isBlackBerryNdkHomeRequired() ) {
-            org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.BLACKBERRY_NDK_HOME, true );
+            ValidationService.checkPropertyExists( PropertiesService.BLACKBERRY_NDK_HOME );
         }
 
         String qnxHostUsrDirPath = QnxService.getQnxHostUsrDirPath();
