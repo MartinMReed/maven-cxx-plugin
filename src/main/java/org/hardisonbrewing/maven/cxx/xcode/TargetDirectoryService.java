@@ -37,4 +37,27 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
         stringBuffer.append( XCodeService.getConfiguration( target ) );
         return stringBuffer.toString();
     }
+
+    public static final String getOcunit2JunitPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "ocunit2junit.rb" );
+        return stringBuffer.toString();
+    }
+
+    public static final File getBuildLogFile() {
+
+        return new File( getBuildLogPath() );
+    }
+
+    public static final String getBuildLogPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "build.log" );
+        return stringBuffer.toString();
+    }
 }

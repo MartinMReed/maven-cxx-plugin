@@ -77,6 +77,7 @@ assemblyVersion</td></tr>
 <tr><td>xcode</td><td>action (build/archive/etc)<br/>
 configuration (Debug/Release/etc)<br/>
 scheme<br/>
+skipTests (Defaults to maven.test.skip)<br/>
 targetIncludes<br/>
 targetExcludes (Usually test targets)<br/>
 provisioningProfile<br/>
@@ -95,7 +96,7 @@ Usable through the `settings.xml`, `pom.xml` or commandline with a `-Dkey=value`
 <tr><td>flex</td><td>adobe.flex.home</td></tr>
 <tr><td>msbuild</td><td>dotnet.framework.home</td></tr>
 <tr><td>qnx</td><td/></tr>
-<tr><td>xcode</td><td/></tr>
+<tr><td>xcode</td><td>ocunit2junit.path</td></tr>
 </table>
 
 # Sample: Adobe Air/Flex Project POM

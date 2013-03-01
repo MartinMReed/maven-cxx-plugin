@@ -21,6 +21,9 @@ import generated.xcode.BuildableReference;
 import generated.xcode.Scheme;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,12 +47,14 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 import org.hardisonbrewing.maven.core.cli.CommandLineService;
+import org.hardisonbrewing.maven.core.cli.LogStreamConsumer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -74,6 +79,11 @@ public final class CompileMojo extends JoJoMojoImpl {
      */
     public String scheme;
 
+    /**
+     * @parameter  default-value="${maven.test.skip}"
+     */
+    public boolean skipTests;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -84,18 +94,33 @@ public final class CompileMojo extends JoJoMojoImpl {
         if ( scheme != null ) {
             try {
                 executeScheme( scheme );
+                return;
             }
             catch (Exception e) {
                 throw new IllegalStateException( e );
             }
         }
-        else {
+
+        OutputStream outputStream = null;
+
+        try {
+
+            outputStream = new FileOutputStream( TargetDirectoryService.getBuildLogFile() );
+            StreamConsumer systemOut = new LogCopyStreamConsumer( outputStream, LogStreamConsumer.LEVEL_INFO );
+            StreamConsumer systemErr = new LogCopyStreamConsumer( outputStream, LogStreamConsumer.LEVEL_ERROR );
+
             for (String target : XCodeService.getTargets()) {
                 List<String> cmd = buildCommand( target, false );
                 Properties buildSettings = loadBuildSettings( cmd );
                 PropertiesService.storeBuildSettings( buildSettings, target );
-                execute( cmd );
+                execute( cmd, systemOut, systemErr );
             }
+        }
+        catch (Exception e) {
+            throw new IllegalStateException( e );
+        }
+        finally {
+            IOUtil.close( outputStream );
         }
     }
 
@@ -133,7 +158,16 @@ public final class CompileMojo extends JoJoMojoImpl {
 
             injectPostAction( scheme, schemeFile, buildSettings );
 
-            execute( cmd );
+            OutputStream outputStream = null;
+            try {
+                outputStream = new FileOutputStream( TargetDirectoryService.getBuildLogFile() );
+                StreamConsumer systemOut = new LogCopyStreamConsumer( outputStream, LogStreamConsumer.LEVEL_INFO );
+                StreamConsumer systemErr = new LogCopyStreamConsumer( outputStream, LogStreamConsumer.LEVEL_ERROR );
+                execute( cmd, systemOut, systemErr );
+            }
+            finally {
+                IOUtil.close( outputStream );
+            }
         }
         finally {
             if ( expectedScheme ) {
@@ -198,6 +232,11 @@ public final class CompileMojo extends JoJoMojoImpl {
             getLog().info( "No codesign identity found. Disabling signing..." );
             cmd.add( "CODE_SIGN_IDENTITY=" );
             cmd.add( "CODE_SIGNING_REQUIRED=NO" );
+        }
+
+        if ( !skipTests ) {
+            cmd.add( "TEST_AFTER_BUILD=YES" );
+            cmd.add( "RUN_UNIT_TEST_WITH_IOS_SIM=YES" );
         }
 
         return cmd;
@@ -372,6 +411,32 @@ public final class CompileMojo extends JoJoMojoImpl {
             String key = line.substring( 0, indexOf ).trim();
             String value = line.substring( indexOf + 1 ).trim();
             properties.put( key, value );
+        }
+    }
+
+    private static class LogCopyStreamConsumer extends LogStreamConsumer {
+
+        private final OutputStream outputStream;
+
+        public LogCopyStreamConsumer(OutputStream outputStream, int level) {
+
+            super( level );
+
+            this.outputStream = outputStream;
+        }
+
+        @Override
+        public void consumeLine( String line ) {
+
+            super.consumeLine( line );
+
+            try {
+                outputStream.write( line.getBytes() );
+                outputStream.write( "\r\n".getBytes() );
+            }
+            catch (IOException e) {
+                throw new IllegalStateException( e );
+            }
         }
     }
 }

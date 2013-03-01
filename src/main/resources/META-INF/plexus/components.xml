@@ -224,6 +224,7 @@
 								org.hardisonbrewing:maven-cxx-plugin:xcode-unlock-keychain,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-install-codesign-certificate</generate-resources>
 							<compile>org.hardisonbrewing:maven-cxx-plugin:xcode-compile,
+								org.hardisonbrewing:maven-cxx-plugin:xcode-ocunit2junit,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-convert-plist,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-ipa-manifest</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:xcode-generate-ipa,
