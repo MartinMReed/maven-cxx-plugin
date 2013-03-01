@@ -21,9 +21,9 @@ import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.PropertiesService;
 
 /**
  * @goal xcode-validate
@@ -94,6 +94,8 @@ public final class ValidateMojo extends JoJoMojoImpl {
         String keychainPassword = keychain == null ? null : keychain.password;
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "keychain", keychain, false );
         org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkConfigurationExists( "<keychain><password/></keychain>", keychainPassword, keychain != null );
+
+        validateOcunit2JunitPath();
     }
 
     private void validateOS() {
@@ -153,10 +155,27 @@ public final class ValidateMojo extends JoJoMojoImpl {
         stringBuffer.append( scheme );
         stringBuffer.append( "` was not found. Available options are:" );
         for (String _scheme : schemes) {
-            stringBuffer.append( "\n  " );
+            stringBuffer.append( "\r\n  " );
             stringBuffer.append( _scheme );
         }
         getLog().error( stringBuffer.toString() );
         throw new IllegalStateException();
+    }
+
+    private void validateOcunit2JunitPath() {
+
+        org.hardisonbrewing.maven.cxx.generic.ValidateMojo.checkPropertyExists( PropertiesService.OCUNIT_2_JUNIT_HOME, false );
+
+        String path = PropertiesService.getProperty( PropertiesService.OCUNIT_2_JUNIT_HOME );
+
+        if ( path != null && !FileUtils.fileExists( path ) ) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( "File not found for property `" );
+            stringBuffer.append( PropertiesService.OCUNIT_2_JUNIT_HOME );
+            stringBuffer.append( "`: " );
+            stringBuffer.append( path );
+            getLog().error( stringBuffer.toString() );
+            throw new IllegalStateException();
+        }
     }
 }

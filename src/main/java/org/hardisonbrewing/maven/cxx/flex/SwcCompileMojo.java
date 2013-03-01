@@ -106,7 +106,7 @@ public class SwcCompileMojo extends JoJoMojoImpl {
             outputStream = new DataOutputStream( new FileOutputStream( configFile ) );
 
             // config xml: http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf69084-7ac6.html
-            outputStream.writeChars( "<?xml version=\"1.0\"?>\n<flex-config>\n" );
+            outputStream.writeChars( "<?xml version=\"1.0\"?>\r\n<flex-config>\r\n" );
 
             String targetDirectoryPath = TargetDirectoryService.getTargetDirectoryPath();
             String generatedResourcesDirectoryPath = TargetDirectoryService.getGeneratedResourcesDirectoryPath();
@@ -115,7 +115,7 @@ public class SwcCompileMojo extends JoJoMojoImpl {
                 outputStream.writeChars( FileUtils.getCanonicalPath( file.getPath(), generatedResourcesDirectoryPath ) );
                 outputStream.writeChars( "</name><path>" );
                 outputStream.writeChars( FileUtils.getCanonicalPath( file.getPath(), targetDirectoryPath ) );
-                outputStream.writeChars( "</path></include-file>\n" );
+                outputStream.writeChars( "</path></include-file>\r\n" );
             }
 
             outputStream.writeChars( "</flex-config>" );
