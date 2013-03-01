@@ -80,6 +80,11 @@ public final class CompileMojo extends JoJoMojoImpl {
     public String scheme;
 
     /**
+     * @parameter
+     */
+    public String sdk;
+
+    /**
      * @parameter  default-value="${maven.test.skip}"
      */
     public boolean skipTests;
@@ -206,6 +211,11 @@ public final class CompileMojo extends JoJoMojoImpl {
         String configuration = XCodeService.getConfiguration( target );
         cmd.add( "-configuration" );
         cmd.add( configuration );
+
+        if ( sdk != null ) {
+            cmd.add( "-sdk" );
+            cmd.add( sdk );
+        }
 
         cmd.add( action );
 
