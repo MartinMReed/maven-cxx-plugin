@@ -17,13 +17,19 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.cli.CommandLineException;
+import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
+import org.codehaus.plexus.util.cli.Commandline;
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.core.cli.CommandLineService;
 import org.hardisonbrewing.maven.cxx.generic.ValidationService;
 
 /**
@@ -31,6 +37,8 @@ import org.hardisonbrewing.maven.cxx.generic.ValidationService;
  * @phase validate
  */
 public final class ValidateMojo extends JoJoMojoImpl {
+
+    private static final String DOT_APP = ".app";
 
     /**
      * @parameter
@@ -52,6 +60,16 @@ public final class ValidateMojo extends JoJoMojoImpl {
      */
     public Keychain keychain;
 
+    /**
+     * @parameter
+     */
+    public String simulatorSdk;
+
+    /**
+     * @parameter  default-value="${maven.test.skip}"
+     */
+    public boolean skipTests;
+
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -61,6 +79,14 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
         if ( keychain != null ) {
             ValidationService.assertConfigurationExists( "<keychain><password/></keychain>", keychain.password );
+        }
+
+        // we need to set this before we can validate the simulator SDK
+        XCodeService.setXcodePath( loadXcodePath() );
+
+        // this needs to run after we have loaded the Xcode.app path
+        if ( !skipTests && simulatorSdk != null ) {
+            validateSimulatorSdk( simulatorSdk );
         }
 
         File workspace = XCodeService.loadWorkspace();
@@ -78,6 +104,35 @@ public final class ValidateMojo extends JoJoMojoImpl {
             XCodeService.loadSchemes();
             validateScheme( scheme );
         }
+    }
+
+    @Override
+    protected Commandline buildCommandline( List<String> cmd ) {
+
+        // there is no target directory yet, so don't use it as the working directory
+
+        try {
+            return CommandLineService.build( cmd );
+        }
+        catch (CommandLineException e) {
+            throw new IllegalStateException( e.getMessage() );
+        }
+    }
+
+    private String loadXcodePath() {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "xcode-select" );
+        cmd.add( "--print-path" );
+
+        StringStreamConsumer streamConsumer = new StringStreamConsumer();
+        execute( cmd, streamConsumer, null );
+
+        String path = streamConsumer.getOutput().trim();
+
+        int indexOf = path.indexOf( DOT_APP );
+        path = path.substring( 0, indexOf + DOT_APP.length() );
+        return path;
     }
 
     private void validateOS() {
@@ -154,6 +209,24 @@ public final class ValidateMojo extends JoJoMojoImpl {
             stringBuffer.append( "`: " );
             stringBuffer.append( path );
             getLog().error( stringBuffer.toString() );
+            throw new IllegalStateException();
+        }
+    }
+
+    private void validateSimulatorSdk( String version ) {
+
+        try {
+            Double.parseDouble( version );
+        }
+        catch (NumberFormatException e) {
+            getLog().error( "Invalid simulator version[" + version + "]. Must be a number (i.e. 4.0, 4.2)." );
+            throw new IllegalStateException();
+        }
+
+        String simulatorSdkPath = XCodeService.getSimulatorSdkPath( version );
+
+        if ( !FileUtils.fileExists( simulatorSdkPath ) ) {
+            getLog().error( "Simulator SDK[" + version + "] not found: " + simulatorSdkPath );
             throw new IllegalStateException();
         }
     }
