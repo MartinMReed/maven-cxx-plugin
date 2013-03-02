@@ -78,6 +78,7 @@ assemblyVersion</td></tr>
 scheme<br/>
 configuration (Debug/Release/etc)<br/>
 sdk (iphonesimulator, iphoneos, iphoneos4.2)<br/>
+simulatorSdk (4.0, 4.2)<br/>
 skipTests (Defaults to maven.test.skip)<br/>
 targetIncludes<br/>
 targetExcludes (Usually test targets)<br/>

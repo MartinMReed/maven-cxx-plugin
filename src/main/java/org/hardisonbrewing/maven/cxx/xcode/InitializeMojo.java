@@ -69,8 +69,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        XCodeService.setXcodePath( loadXcodePath() );
-
         XCodeService.setConfiguration( configuration );
 
         String projectPath;
@@ -110,18 +108,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
         catch (IOException e) {
             throw new IllegalStateException( e );
         }
-    }
-
-    private String loadXcodePath() {
-
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "xcode-select" );
-        cmd.add( "--print-path" );
-
-        StringStreamConsumer streamConsumer = new StringStreamConsumer();
-        execute( cmd, streamConsumer, null );
-
-        return streamConsumer.getOutput().trim();
     }
 
     private void initWorkspace( File workspace ) {

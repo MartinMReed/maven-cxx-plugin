@@ -36,7 +36,7 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
 
     private static final String CODESIGN_ALLOCATE = "CODESIGN_ALLOCATE";
     private static final String CODESIGN_ALLOCATE_XCODE_4_3 = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate";
-    private static final String CODESIGN_ALLOCATE_XCODE_4_5 = /* "/Applications/Xcode.app/Contents/Developer" */"/usr/bin/codesign_allocate";
+    private static final String CODESIGN_ALLOCATE_XCODE_4_5 = /*/Applications/Xcode.app*/"/Contents/Developer/usr/bin/codesign_allocate";
 
     /**
      * @parameter
