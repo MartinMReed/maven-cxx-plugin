@@ -42,12 +42,22 @@ public final class AssemblyInfoMojo extends JoJoMojoImpl {
     public String project;
 
     /**
+     * @parameter default-value="true"
+     */
+    public boolean assemblyVersionUpdate;
+
+    /**
      * @parameter default-value="${project.version}"
      */
     public String assemblyVersion;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+
+        if ( !assemblyVersionUpdate ) {
+            getLog().info( "Assembly version update disabled, skipping." );
+            return;
+        }
 
         File assemblyInfoFile = MSBuildService.getAssemblyInfoFile( project );
         File assemblyInfoBakFile = TargetDirectoryService.getAssemblyInfoBakFile();

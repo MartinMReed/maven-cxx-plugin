@@ -38,7 +38,13 @@ public final class StartSimulatorMojo extends AbstractSimulatorMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if ( skipTests || !testOnSimulator ) {
+        if ( skipTests ) {
+            getLog().info( "Tests disabled, skipping." );
+            return;
+        }
+
+        if ( !testOnSimulator ) {
+            getLog().info( "Test on simulator disabled, skipping." );
             return;
         }
 

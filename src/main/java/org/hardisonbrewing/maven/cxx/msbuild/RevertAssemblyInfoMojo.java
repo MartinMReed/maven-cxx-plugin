@@ -34,8 +34,18 @@ public final class RevertAssemblyInfoMojo extends JoJoMojoImpl {
      */
     public String project;
 
+    /**
+     * @parameter default-value="true"
+     */
+    public boolean assemblyVersionUpdate;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+
+        if ( !assemblyVersionUpdate ) {
+            getLog().info( "Assembly version update disabled, skipping." );
+            return;
+        }
 
         File assemblyInfoFile = MSBuildService.getAssemblyInfoFile( project );
         File assemblyInfoBakFile = TargetDirectoryService.getAssemblyInfoBakFile();

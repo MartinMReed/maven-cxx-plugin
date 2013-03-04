@@ -72,7 +72,8 @@ keystore/storepass<br/>
 keystore/keypass<br/>
 keystore/alias</td></tr>
 <tr><td>msbuild</td><td>project<br/>
-assemblyVersion</td></tr>
+assemblyVersion (Default: ${project.version})<br/>
+assemblyVersionUpdate (Default: true)</td></tr>
 <tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>
 <tr><td>xcode</td><td>action (build/archive/etc)<br/>
 scheme<br/>
