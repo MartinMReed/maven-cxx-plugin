@@ -68,6 +68,8 @@ public final class AssemblyInfoMojo extends JoJoMojoImpl {
 
         try {
 
+            FileUtils.copyFile( assemblyInfoFile, assemblyInfoBakFile );
+
             reader = new BufferedReader( new FileReader( assemblyInfoFile ) );
             writer = new FileWriter( assemblyInfoGenFile );
 
@@ -83,7 +85,6 @@ public final class AssemblyInfoMojo extends JoJoMojoImpl {
                 writer.write( "\r\n" );
             }
 
-            FileUtils.copyFile( assemblyInfoFile, assemblyInfoBakFile );
             FileUtils.copyFile( assemblyInfoGenFile, assemblyInfoFile );
         }
         catch (Exception e) {
@@ -105,6 +106,7 @@ public final class AssemblyInfoMojo extends JoJoMojoImpl {
                 stringBuffer.append( matcher.group( 1 ) );
                 stringBuffer.append( replacement );
                 stringBuffer.append( matcher.group( 2 ) );
+                getLog().info( "Updated: " + stringBuffer );
                 return stringBuffer.toString();
             }
         }
