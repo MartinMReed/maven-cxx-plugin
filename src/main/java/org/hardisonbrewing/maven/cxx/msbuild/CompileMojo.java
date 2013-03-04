@@ -37,7 +37,6 @@ public final class CompileMojo extends JoJoMojoImpl {
         List<String> cmd = new LinkedList<String>();
         cmd.add( "MSBuild" );
         cmd.add( MSBuildService.getProjectFilePath() );
-
         cmd.add( "/p:OutDir=" + TargetDirectoryService.getBinDirectoryPath() );
 
         Commandline commandLine = buildCommandline( cmd );
