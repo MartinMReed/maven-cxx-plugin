@@ -66,7 +66,7 @@ public final class ValidateMojo extends JoJoMojoImpl {
     public String simulatorSdk;
 
     /**
-     * @parameter  default-value="${maven.test.skip}"
+     * @parameter default-value="${maven.test.skip}"
      */
     public boolean skipTests;
 

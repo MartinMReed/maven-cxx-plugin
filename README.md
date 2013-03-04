@@ -79,7 +79,8 @@ scheme<br/>
 configuration (Debug/Release/etc)<br/>
 sdk (iphonesimulator, iphoneos, iphoneos4.2)<br/>
 simulatorSdk (4.0, 4.2)<br/>
-skipTests (Defaults to maven.test.skip)<br/>
+skipTests (Default: -Dmaven.test.skip)<br/>
+testOnSimulator (Default: true)<br/>
 targetIncludes<br/>
 targetExcludes (Usually test targets)<br/>
 provisioningProfile<br/>

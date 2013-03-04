@@ -24,9 +24,14 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 public abstract class AbstractSimulatorMojo extends JoJoMojoImpl {
 
     /**
-     * @parameter  default-value="${maven.test.skip}"
+     * @parameter default-value="${maven.test.skip}"
      */
     public boolean skipTests;
+
+    /**
+     * @parameter default-value="true"
+     */
+    public boolean testOnSimulator;
 
     protected void killSimulator() {
 
