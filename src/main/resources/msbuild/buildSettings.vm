@@ -2,7 +2,7 @@
   <Import Project="${project}" />
   <Target Name="Environment">
 #foreach ($property in $properties)
-    <Message Text="${envvar_marker}${property}=\$(${property})" />
+    <Message Text="${envvar_marker}${property}=$(${property})" />
 #end
   </Target>
 </Project>
