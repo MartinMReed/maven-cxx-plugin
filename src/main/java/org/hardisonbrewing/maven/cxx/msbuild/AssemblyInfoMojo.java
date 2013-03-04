@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 
 /**
@@ -64,7 +64,7 @@ public final class AssemblyInfoMojo extends JoJoMojoImpl {
             Pattern assemblyVersionPattern = getAssemblyRegex( "AssemblyVersion" );
             Pattern assemblyFileVersionPattern = getAssemblyRegex( "AssemblyFileVersion" );
 
-            assemblyVersion = assemblyVersion.replace( "-SNAPSHOT", "*" );
+            assemblyVersion = assemblyVersion.replace( "-SNAPSHOT", ".*" );
 
             String line;
             while (( line = reader.readLine() ) != null) {
