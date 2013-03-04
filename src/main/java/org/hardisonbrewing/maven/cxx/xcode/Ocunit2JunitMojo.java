@@ -30,7 +30,7 @@ import org.hardisonbrewing.maven.core.JoJoMojoImpl;
 public final class Ocunit2JunitMojo extends JoJoMojoImpl {
 
     /**
-     * @parameter  default-value="${maven.test.skip}"
+     * @parameter default-value="${maven.test.skip}"
      */
     public boolean skipTests;
 

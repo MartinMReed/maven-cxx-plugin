@@ -50,9 +50,14 @@ public abstract class AbstractCompileMojo extends JoJoMojoImpl {
     public String sdk;
 
     /**
-     * @parameter  default-value="${maven.test.skip}"
+     * @parameter default-value="${maven.test.skip}"
      */
     public boolean skipTests;
+
+    /**
+     * @parameter default-value="true"
+     */
+    public boolean testOnSimulator;
 
     protected List<String> buildCommand( String target ) {
 
@@ -121,7 +126,9 @@ public abstract class AbstractCompileMojo extends JoJoMojoImpl {
 
         if ( !skipTests ) {
             cmd.add( "TEST_AFTER_BUILD=YES" );
-            cmd.add( "RUN_UNIT_TEST_WITH_IOS_SIM=YES" );
+            if ( testOnSimulator ) {
+                cmd.add( "RUN_UNIT_TEST_WITH_IOS_SIM=YES" );
+            }
         }
 
         return cmd;
