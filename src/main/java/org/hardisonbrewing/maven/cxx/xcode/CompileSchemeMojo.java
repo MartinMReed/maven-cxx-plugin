@@ -72,65 +72,67 @@ public final class CompileSchemeMojo extends AbstractCompileMojo {
         }
 
         try {
-            compile( scheme );
+
+            File schemeFile = XCodeService.findXcscheme( scheme );
+            boolean expectedScheme = XCodeService.isExpectedScheme( scheme, schemeFile.getPath() );
+            File schemeTmpFile = null;
+
+//            getLog().info( "schemeFile[" + schemeFile.getPath() + "], expectedScheme[" + expectedScheme + "]" );
+
+            try {
+
+                if ( expectedScheme ) {
+                    File targetDirectory = TargetDirectoryService.getTargetDirectory();
+                    schemeTmpFile = new File( targetDirectory, schemeFile.getName() );
+                    FileUtils.copyFile( schemeFile, schemeTmpFile );
+                }
+                else {
+
+                    schemeTmpFile = new File( XCodeService.getUserDataDirPath() );
+                    schemeTmpFile.mkdir();
+
+                    File userFile = schemeFile;
+
+                    schemeFile = new File( XCodeService.getSchemePath( scheme, false ) );
+                    FileUtils.ensureParentExists( schemeFile.getPath() );
+
+                    FileUtils.copyFile( userFile, schemeFile );
+                }
+
+                List<String> cmd = buildCommand( scheme );
+                Properties buildSettings = loadBuildSettings( cmd );
+                PropertiesService.storeBuildSettings( buildSettings, scheme );
+
+                injectPostAction( scheme, schemeFile, buildSettings );
+
+                // copy the build output to a log file that can be used for unit test result parsing
+                File buildLogFile = TargetDirectoryService.getBuildLogFile();
+                getLog().info( "Saving build log to file: " + buildLogFile );
+
+                OutputStream outputStream = null;
+
+                try {
+
+                    outputStream = new FileOutputStream( TargetDirectoryService.getBuildLogFile() );
+                    StreamConsumer systemOut = new LogCopyStreamConsumer( outputStream, LogStreamConsumer.LEVEL_INFO );
+                    StreamConsumer systemErr = new LogCopyStreamConsumer( outputStream, LogStreamConsumer.LEVEL_ERROR );
+                    execute( cmd, systemOut, systemErr );
+                }
+                finally {
+                    IOUtil.close( outputStream );
+                }
+            }
+            finally {
+                if ( expectedScheme ) {
+                    FileUtils.copyFile( schemeTmpFile, schemeFile );
+                }
+                else {
+                    FileUtils.deleteDirectory( schemeTmpFile );
+                }
+            }
         }
         catch (Exception e) {
             throw new IllegalStateException( e );
-        }
-    }
-
-    private void compile( String scheme ) throws Exception {
-
-        File schemeFile = XCodeService.findXcscheme( scheme );
-        boolean expectedScheme = XCodeService.isExpectedScheme( scheme, schemeFile.getPath() );
-        File schemeTmpFile = null;
-
-//        getLog().info( "schemeFile[" + schemeFile.getPath() + "], expectedScheme[" + expectedScheme + "]" );
-
-        try {
-
-            if ( expectedScheme ) {
-                File targetDirectory = TargetDirectoryService.getTargetDirectory();
-                schemeTmpFile = new File( targetDirectory, schemeFile.getName() );
-                FileUtils.copyFile( schemeFile, schemeTmpFile );
-            }
-            else {
-
-                schemeTmpFile = new File( XCodeService.getUserDataDirPath() );
-                schemeTmpFile.mkdir();
-
-                File userFile = schemeFile;
-
-                schemeFile = new File( XCodeService.getSchemePath( scheme, false ) );
-                FileUtils.ensureParentExists( schemeFile.getPath() );
-
-                FileUtils.copyFile( userFile, schemeFile );
-            }
-
-            List<String> cmd = buildCommand( scheme );
-            Properties buildSettings = loadBuildSettings( cmd );
-            PropertiesService.storeBuildSettings( buildSettings, scheme );
-
-            injectPostAction( scheme, schemeFile, buildSettings );
-
-            OutputStream outputStream = null;
-            try {
-                outputStream = new FileOutputStream( TargetDirectoryService.getBuildLogFile() );
-                StreamConsumer systemOut = new LogCopyStreamConsumer( outputStream, LogStreamConsumer.LEVEL_INFO );
-                StreamConsumer systemErr = new LogCopyStreamConsumer( outputStream, LogStreamConsumer.LEVEL_ERROR );
-                execute( cmd, systemOut, systemErr );
-            }
-            finally {
-                IOUtil.close( outputStream );
-            }
-        }
-        finally {
-            if ( expectedScheme ) {
-                FileUtils.copyFile( schemeTmpFile, schemeFile );
-            }
-            else {
-                FileUtils.deleteDirectory( schemeTmpFile );
-            }
         }
     }
 

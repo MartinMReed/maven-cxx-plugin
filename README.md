@@ -100,7 +100,7 @@ Usable through the `settings.xml`, `pom.xml` or commandline with a `-Dkey=value`
 <tr><td>flex</td><td>adobe.flex.home</td></tr>
 <tr><td>msbuild</td><td>dotnet.framework.home</td></tr>
 <tr><td>qnx</td><td/></tr>
-<tr><td>xcode</td><td>ocunit2junit.path</td></tr>
+<tr><td>xcode</td><td/></tr>
 </table>
 
 # Sample: Adobe Air/Flex Project POM

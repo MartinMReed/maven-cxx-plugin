@@ -17,6 +17,7 @@
  */
 package org.hardisonbrewing.maven.cxx.xcode;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -41,6 +42,10 @@ public final class CompileMojo extends AbstractCompileMojo {
             getLog().info( "Scheme specified, skipping." );
             return;
         }
+
+        // copy the build output to a log file that can be used for unit test result parsing
+        File buildLogFile = TargetDirectoryService.getBuildLogFile();
+        getLog().info( "Saving build log to file: " + buildLogFile );
 
         OutputStream outputStream = null;
 
