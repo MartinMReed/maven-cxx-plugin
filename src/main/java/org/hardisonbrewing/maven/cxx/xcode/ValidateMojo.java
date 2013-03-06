@@ -75,8 +75,6 @@ public final class ValidateMojo extends JoJoMojoImpl {
 
         validateOS();
 
-        validateOcunit2JunitPath();
-
         if ( keychain != null ) {
             ValidationService.assertConfigurationExists( "<keychain><password/></keychain>", keychain.password );
         }
@@ -196,21 +194,6 @@ public final class ValidateMojo extends JoJoMojoImpl {
         }
         getLog().error( stringBuffer.toString() );
         throw new IllegalStateException();
-    }
-
-    private void validateOcunit2JunitPath() {
-
-        String path = PropertiesService.getProperty( PropertiesService.OCUNIT_2_JUNIT_HOME );
-
-        if ( path != null && !FileUtils.fileExists( path ) ) {
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append( "File not found for property `" );
-            stringBuffer.append( PropertiesService.OCUNIT_2_JUNIT_HOME );
-            stringBuffer.append( "`: " );
-            stringBuffer.append( path );
-            getLog().error( stringBuffer.toString() );
-            throw new IllegalStateException();
-        }
     }
 
     private void validateSimulatorSdk( String version ) {

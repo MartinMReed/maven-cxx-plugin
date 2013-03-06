@@ -227,7 +227,6 @@
 								org.hardisonbrewing:maven-cxx-plugin:xcode-compile,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-compile-scheme,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-stop-simulator,
-								org.hardisonbrewing:maven-cxx-plugin:xcode-ocunit2junit,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-convert-plist,
 								org.hardisonbrewing:maven-cxx-plugin:xcode-ipa-manifest</compile>
 							<prepare-package>org.hardisonbrewing:maven-cxx-plugin:xcode-generate-ipa,

@@ -18,10 +18,6 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -30,7 +26,6 @@ import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.cli.CommandLineUtils.StringStreamConsumer;
 import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
@@ -100,13 +95,6 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         if ( keychain != null ) {
             initKeychain( keychain );
-        }
-
-        try {
-            installOcunit2Junit();
-        }
-        catch (IOException e) {
-            throw new IllegalStateException( e );
         }
     }
 
@@ -198,35 +186,5 @@ public final class InitializeMojo extends JoJoMojoImpl {
         Properties properties = PropertiesService.getProperties();
         String userHome = properties.getProperty( "user.home" );
         return userHome + path;
-    }
-
-    private void installOcunit2Junit() throws IOException {
-
-        // don't extract our copy if provided by the user
-        if ( PropertiesService.hasProperty( PropertiesService.OCUNIT_2_JUNIT_HOME ) ) {
-            return;
-        }
-
-        File destFile = new File( TargetDirectoryService.getOcunit2JunitPath() );
-
-        if ( destFile.exists() ) {
-            destFile.delete();
-        }
-
-        FileUtils.ensureParentExists( destFile );
-        destFile.createNewFile();
-
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-
-        try {
-            inputStream = getClass().getResourceAsStream( "/xcode/ocunit2junit.rb" );
-            outputStream = new FileOutputStream( destFile );
-            IOUtil.copy( inputStream, outputStream );
-        }
-        finally {
-            IOUtil.close( inputStream );
-            IOUtil.close( outputStream );
-        }
     }
 }

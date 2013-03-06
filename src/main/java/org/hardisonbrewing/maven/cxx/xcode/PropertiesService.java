@@ -24,8 +24,6 @@ import org.hardisonbrewing.maven.core.FileUtils;
 
 public class PropertiesService extends org.hardisonbrewing.maven.cxx.PropertiesService {
 
-    public static final String OCUNIT_2_JUNIT_HOME = "ocunit2junit.path";
-
     private static Properties properties;
 
     protected PropertiesService() {
