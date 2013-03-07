@@ -35,7 +35,7 @@ public final class CompileMojo extends JoJoMojoImpl {
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         List<String> cmd = new LinkedList<String>();
-        cmd.add( "MSBuild" );
+        cmd.add( "msbuild" );
         cmd.add( MSBuildService.getProjectFilePath() );
         cmd.add( "/p:OutDir=" + TargetDirectoryService.getBinDirectoryPath() );
 

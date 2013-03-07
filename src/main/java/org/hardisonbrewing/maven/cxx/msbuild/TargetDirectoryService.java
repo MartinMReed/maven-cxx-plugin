@@ -25,6 +25,15 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
         // do nothing
     }
 
+    public static final String getTestResultPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "test-report.xml" );
+        return stringBuffer.toString();
+    }
+
     public static final String getBinDirectoryPath() {
 
         StringBuffer stringBuffer = new StringBuffer();

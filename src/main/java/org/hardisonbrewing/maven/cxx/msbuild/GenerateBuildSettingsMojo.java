@@ -51,7 +51,7 @@ public final class GenerateBuildSettingsMojo extends JoJoMojoImpl {
         generateTargetFile( buildSettingsFile );
 
         List<String> cmd = new LinkedList<String>();
-        cmd.add( "MSBuild" );
+        cmd.add( "msbuild" );
         cmd.add( buildSettingsFile.getPath() );
         cmd.add( "/t:Environment" );
 
@@ -93,6 +93,7 @@ public final class GenerateBuildSettingsMojo extends JoJoMojoImpl {
         properties.add( MSBuildService.BUILD_CONFIGURATION );
         properties.add( MSBuildService.BUILD_XAP_OUTPUTS );
         properties.add( MSBuildService.BUILD_ASSEMBLY_NAME );
+        properties.add( MSBuildService.BUILD_TEST_PROJECT_TYPE );
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put( "project", MSBuildService.getProjectFilePath() );
