@@ -138,6 +138,7 @@
 							<compile>org.hardisonbrewing:maven-cxx-plugin:msbuild-compile,
 								org.hardisonbrewing:maven-cxx-plugin:msbuild-generate-build-settings,
 								org.hardisonbrewing:maven-cxx-plugin:msbuild-revert-assembly-info</compile>
+							<test>org.hardisonbrewing:maven-cxx-plugin:msbuild-test</test>
 							<package>org.hardisonbrewing:maven-cxx-plugin:msbuild-package</package>
 							<install>org.apache.maven.plugins:maven-install-plugin:install</install>
 							<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>

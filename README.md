@@ -72,6 +72,7 @@ keystore/storepass<br/>
 keystore/keypass<br/>
 keystore/alias</td></tr>
 <tr><td>msbuild</td><td>project<br/>
+skipTests (Default: -Dmaven.test.skip)<br/>
 assemblyVersion (Default: ${project.version})<br/>
 assemblyVersionUpdate (Default: true)</td></tr>
 <tr><td>qnx</td><td>target (Application w/ bar-descriptor.xml)</td></tr>

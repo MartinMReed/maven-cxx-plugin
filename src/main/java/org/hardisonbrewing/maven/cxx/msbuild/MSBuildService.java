@@ -33,6 +33,7 @@ public class MSBuildService {
     public static final String BUILD_CONFIGURATION = "Configuration";
     public static final String BUILD_XAP_FILENAME = "XapFilename";
     public static final String BUILD_XAP_OUTPUTS = "XapOutputs";
+    public static final String BUILD_TEST_PROJECT_TYPE = "TestProjectType";
 
     public static final String ASSEMBLY_INFO_CS = "AssemblyInfo.cs";
 
