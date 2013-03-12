@@ -25,6 +25,20 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
         // do nothing
     }
 
+    public static final File getTestCoverageFile() {
+
+        return new File( getTestCoveragePath() );
+    }
+
+    public static final String getTestCoveragePath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "test.coverage" );
+        return stringBuffer.toString();
+    }
+
     public static final String getTestResultPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
