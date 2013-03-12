@@ -23,7 +23,10 @@ import java.util.List;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.cli.Commandline;
+import org.codehaus.plexus.util.cli.StreamConsumer;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
+import org.hardisonbrewing.maven.core.cli.LogStreamConsumer;
 
 /**
  * @goal msbuild-test
@@ -56,6 +59,112 @@ public final class TestMojo extends JoJoMojoImpl {
             return;
         }
 
+        shutdownCoverage();
+        killMonitorTask();
+
+        try {
+            instrumentFiles();
+            startCoverage();
+            executeTest();
+        }
+        finally {
+            shutdownCoverage();
+            killMonitorTask();
+        }
+    }
+
+    private void startCoverage() {
+
+        File file = TargetDirectoryService.getTestCoverageFile();
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "vsperfcmd" );
+        cmd.add( "/start:coverage" );
+        cmd.add( "/output:" + file.getName() );
+
+        final Commandline commandLine = buildCommandline( cmd );
+        CommandLineService.addDotnetEnvVars( commandLine );
+        commandLine.setWorkingDirectory( file.getParent() );
+
+        boolean[] monitorLock = new boolean[1];
+        final StreamConsumer systemOut = new MyLogStreamConsumer( monitorLock, LogStreamConsumer.LEVEL_INFO );
+        final StreamConsumer systemErr = new MyLogStreamConsumer( monitorLock, LogStreamConsumer.LEVEL_ERROR );
+
+        new Thread() {
+
+            @Override
+            public void run() {
+
+                execute( commandLine, systemOut, systemErr );
+            }
+        }.start();
+
+        synchronized (monitorLock) {
+            while (!monitorLock[0]) {
+                try {
+                    monitorLock.wait();
+                }
+                catch (Exception e) {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    private static final class MyLogStreamConsumer extends LogStreamConsumer {
+
+        private final boolean[] monitorLock;
+
+        public MyLogStreamConsumer(boolean[] monitorLock, int level) {
+
+            super( level );
+
+            this.monitorLock = monitorLock;
+        }
+
+        @Override
+        public void consumeLine( String line ) {
+
+            if ( !monitorLock[0] ) {
+                synchronized (monitorLock) {
+                    if ( !monitorLock[0] ) {
+                        monitorLock[0] = true;
+                        monitorLock.notify();
+                    }
+                }
+            }
+
+            super.consumeLine( line );
+        }
+    }
+
+    private void instrumentFiles() {
+
+        File binDir = new File( TargetDirectoryService.getBinDirectoryPath() );
+        String[] filePaths = FileUtils.listFilePathsRecursive( binDir, new String[] { "**/*.dll" }, null );
+
+        for (String filePath : filePaths) {
+
+            String assemblyName = filePath.substring( 0, filePath.length() - "dll".length() );
+            String pdbFilePath = assemblyName + "pdb";
+
+            if ( !FileUtils.exists( pdbFilePath ) ) {
+                continue;
+            }
+
+            List<String> cmd = new LinkedList<String>();
+            cmd.add( "vsinstr" );
+            cmd.add( "/coverage" );
+            cmd.add( filePath );
+
+            Commandline commandLine = buildCommandline( cmd );
+            CommandLineService.addDotnetEnvVars( commandLine );
+            execute( commandLine );
+        }
+    }
+
+    private void executeTest() {
+
         StringBuffer filePath = new StringBuffer();
         filePath.append( TargetDirectoryService.getBinDirectoryPath() );
         filePath.append( File.separator );
@@ -71,5 +180,38 @@ public final class TestMojo extends JoJoMojoImpl {
         Commandline commandLine = buildCommandline( cmd );
         CommandLineService.addDotnetEnvVars( commandLine );
         execute( commandLine );
+    }
+
+    private void shutdownCoverage() {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "vsperfcmd" );
+        cmd.add( "/shutdown" );
+
+        try {
+            Commandline commandLine = buildCommandline( cmd );
+            CommandLineService.addDotnetEnvVars( commandLine );
+            execute( commandLine );
+        }
+        catch (Exception e) {
+            // do nothing
+        }
+    }
+
+    private void killMonitorTask() {
+
+        List<String> cmd = new LinkedList<String>();
+        cmd.add( "taskkill" );
+        cmd.add( "/F" );
+        cmd.add( "/IM" );
+        cmd.add( "vsperfmon.exe" );
+
+        try {
+            Commandline commandLine = buildCommandline( cmd );
+            execute( commandLine );
+        }
+        catch (Exception e) {
+            // do nothing
+        }
     }
 }
