@@ -70,19 +70,26 @@ public final class AssemblyInfoMojo extends JoJoMojoImpl {
 
             FileUtils.copyFile( assemblyInfoFile, assemblyInfoBakFile );
 
-            reader = new BufferedReader( new FileReader( assemblyInfoFile ) );
-            writer = new FileWriter( assemblyInfoGenFile );
+            try {
 
-            Pattern assemblyVersionPattern = getAssemblyRegex( "AssemblyVersion" );
-            Pattern assemblyFileVersionPattern = getAssemblyRegex( "AssemblyFileVersion" );
+                reader = new BufferedReader( new FileReader( assemblyInfoFile ) );
+                writer = new FileWriter( assemblyInfoGenFile );
 
-            assemblyVersion = assemblyVersion.replace( "-SNAPSHOT", ".*" );
+                Pattern assemblyVersionPattern = getAssemblyRegex( "AssemblyVersion" );
+                Pattern assemblyFileVersionPattern = getAssemblyRegex( "AssemblyFileVersion" );
 
-            String line;
-            while (( line = reader.readLine() ) != null) {
-                line = updateVersion( line, assemblyVersion, assemblyVersionPattern, assemblyFileVersionPattern );
-                writer.write( line );
-                writer.write( "\r\n" );
+                assemblyVersion = assemblyVersion.replace( "-SNAPSHOT", ".*" );
+
+                String line;
+                while (( line = reader.readLine() ) != null) {
+                    line = updateVersion( line, assemblyVersion, assemblyVersionPattern, assemblyFileVersionPattern );
+                    writer.write( line );
+                    writer.write( "\r\n" );
+                }
+            }
+            finally {
+                IOUtil.close( reader );
+                IOUtil.close( writer );
             }
 
             FileUtils.copyFile( assemblyInfoGenFile, assemblyInfoFile );
@@ -90,10 +97,6 @@ public final class AssemblyInfoMojo extends JoJoMojoImpl {
         catch (Exception e) {
             getLog().error( "Unable to update assembly info: " + assemblyInfoFile );
             throw new IllegalStateException();
-        }
-        finally {
-            IOUtil.close( reader );
-            IOUtil.close( writer );
         }
     }
 
