@@ -31,6 +31,8 @@ import org.hardisonbrewing.maven.core.ProjectService;
 
 public final class XCodeService {
 
+    private static final String XCODE_SDK_DIR = /*/Applications/Xcode.app*/"/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs";
+
     public static final String MOBILEPROVISION_EXTENSION = "mobileprovision";
     public static final String XCSCHEME_EXTENSION = "xcscheme";
     public static final String XCODEPROJ_EXTENSION = "xcodeproj";
@@ -79,9 +81,23 @@ public final class XCodeService {
 
     private static String keychainPath;
 
+    private static String xcodePath;
+
     private XCodeService() {
 
         // do nothing
+    }
+
+    public static String getSimulatorSdkPath( String version ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( XCodeService.getXcodePath() );
+        stringBuffer.append( XCODE_SDK_DIR );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "iPhoneSimulator" );
+        stringBuffer.append( version );
+        stringBuffer.append( ".sdk" );
+        return stringBuffer.toString();
     }
 
     public static String getProductType( String target ) {
@@ -644,5 +660,15 @@ public final class XCodeService {
     public static void setKeychainPath( String keychainPath ) {
 
         XCodeService.keychainPath = keychainPath;
+    }
+
+    public static String getXcodePath() {
+
+        return xcodePath;
+    }
+
+    public static void setXcodePath( String xcodePath ) {
+
+        XCodeService.xcodePath = xcodePath;
     }
 }

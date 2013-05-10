@@ -25,12 +25,66 @@ public class TargetDirectoryService extends org.hardisonbrewing.maven.core.Targe
         // do nothing
     }
 
+    public static final File getTestCoverageFile() {
+
+        return new File( getTestCoveragePath() );
+    }
+
+    public static final String getTestCoveragePath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "test.coverage" );
+        return stringBuffer.toString();
+    }
+
+    public static final String getTestResultPath() {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "test-report.xml" );
+        return stringBuffer.toString();
+    }
+
     public static final String getBinDirectoryPath() {
 
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append( getTargetDirectoryPath() );
         stringBuffer.append( File.separator );
         stringBuffer.append( "bin" );
+        return stringBuffer.toString();
+    }
+
+    public static final String getAssemblyInfoGenPath() {
+
+        return getAssemblyInfoPath( "gen" );
+    }
+
+    public static final File getAssemblyInfoGenFile() {
+
+        return new File( getAssemblyInfoGenPath() );
+    }
+
+    public static final String getAssemblyInfoBakPath() {
+
+        return getAssemblyInfoPath( "bak" );
+    }
+
+    public static final File getAssemblyInfoBakFile() {
+
+        return new File( getAssemblyInfoBakPath() );
+    }
+
+    private static final String getAssemblyInfoPath( String ext ) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( getTargetDirectoryPath() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( MSBuildService.ASSEMBLY_INFO_CS );
+        stringBuffer.append( "." );
+        stringBuffer.append( ext );
         return stringBuffer.toString();
     }
 }

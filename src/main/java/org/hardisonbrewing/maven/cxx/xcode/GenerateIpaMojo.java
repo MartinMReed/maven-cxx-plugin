@@ -36,7 +36,7 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
 
     private static final String CODESIGN_ALLOCATE = "CODESIGN_ALLOCATE";
     private static final String CODESIGN_ALLOCATE_XCODE_4_3 = "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate";
-    private static final String CODESIGN_ALLOCATE_XCODE_4_5 = "/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate";
+    private static final String CODESIGN_ALLOCATE_XCODE_4_5 = /*/Applications/Xcode.app*/"/Contents/Developer/usr/bin/codesign_allocate";
 
     /**
      * @parameter
@@ -113,8 +113,9 @@ public final class GenerateIpaMojo extends JoJoMojoImpl {
             return codesignAllocation;
         }
 
-        if ( FileUtils.exists( CODESIGN_ALLOCATE_XCODE_4_5 ) ) {
-            return CODESIGN_ALLOCATE_XCODE_4_5;
+        String codesignAllocate45Path = XCodeService.getXcodePath() + CODESIGN_ALLOCATE_XCODE_4_5;
+        if ( FileUtils.exists( codesignAllocate45Path ) ) {
+            return codesignAllocate45Path;
         }
 
         if ( FileUtils.exists( CODESIGN_ALLOCATE_XCODE_4_3 ) ) {

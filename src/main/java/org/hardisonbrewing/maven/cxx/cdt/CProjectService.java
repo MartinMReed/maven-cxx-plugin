@@ -287,7 +287,7 @@ public class CProjectService {
         stringBuffer.append( superClass );
         stringBuffer.append( "]. Available options are:" );
         for (Tool tool : toolChain.getTool()) {
-            stringBuffer.append( "\n  " );
+            stringBuffer.append( "\r\n  " );
             stringBuffer.append( tool.getSuperClass() );
         }
         JoJoMojo.getMojo().getLog().error( stringBuffer.toString() );
@@ -408,7 +408,7 @@ public class CProjectService {
         stringBuffer.append( "]. Available options are:" );
         for (Cconfiguration cconfiguration : getCconfigurations( cproject, module )) {
             Configuration configuration = getBuildConfiguration( cconfiguration );
-            stringBuffer.append( "\n  " );
+            stringBuffer.append( "\r\n  " );
             stringBuffer.append( configuration.getName() );
         }
         JoJoMojo.getMojo().getLog().error( stringBuffer.toString() );

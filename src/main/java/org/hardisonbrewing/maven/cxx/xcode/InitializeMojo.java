@@ -132,7 +132,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
 
         String keychainPath;
         if ( keychain.keychain == null ) {
-            keychainPath = defaultKeychain();
+            keychainPath = loadDefaultKeychain();
         }
         else {
             keychainPath = findKeychainPath( keychain.keychain );
@@ -141,7 +141,7 @@ public final class InitializeMojo extends JoJoMojoImpl {
         XCodeService.setKeychainPath( keychainPath );
     }
 
-    private String defaultKeychain() {
+    private String loadDefaultKeychain() {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "security" );

@@ -19,6 +19,7 @@ package org.hardisonbrewing.maven.cxx.msbuild;
 import java.io.File;
 
 import org.hardisonbrewing.maven.core.FileUtils;
+import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
 
 public class MSBuildService {
@@ -32,8 +33,11 @@ public class MSBuildService {
     public static final String BUILD_CONFIGURATION = "Configuration";
     public static final String BUILD_XAP_FILENAME = "XapFilename";
     public static final String BUILD_XAP_OUTPUTS = "XapOutputs";
+    public static final String BUILD_TEST_PROJECT_TYPE = "TestProjectType";
 
-    private static String project;
+    public static final String ASSEMBLY_INFO_CS = "AssemblyInfo.cs";
+
+    private static String projectFilePath;
 
     protected MSBuildService() {
 
@@ -47,13 +51,59 @@ public class MSBuildService {
         return FileUtils.listFilesRecursive( baseDir, includes, null );
     }
 
-    public static String getProject() {
+    public static String findProjectFilePath( String project ) {
 
-        return project;
+        if ( project != null ) {
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append( ProjectService.getBaseDirPath() );
+            stringBuffer.append( File.separator );
+            stringBuffer.append( project );
+            return stringBuffer.toString();
+        }
+
+        File[] projects = listProjects();
+
+        if ( projects != null && projects.length > 0 ) {
+
+            if ( projects.length > 1 ) {
+                JoJoMojo.getMojo().getLog().error( "Multiple project files available. Please specify a <project/> in the pom.xml" );
+                throw new IllegalStateException();
+            }
+
+            return projects[0].getPath();
+        }
+
+        JoJoMojo.getMojo().getLog().error( "Unable to determine the project file. Please specify a <project/> in the pom.xml" );
+        throw new IllegalStateException();
     }
 
-    public static void setProject( String project ) {
+    public static final File getAssemblyInfoFile( String project ) {
 
-        MSBuildService.project = project;
+        String projectFilePath = getProjectFilePath();
+
+        // can be null if assembly info mojo is called directly
+        if ( projectFilePath == null ) {
+            projectFilePath = findProjectFilePath( project );
+        }
+
+        File projectFile = new File( projectFilePath );
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append( projectFile.getParent() );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( "Properties" );
+        stringBuffer.append( File.separator );
+        stringBuffer.append( ASSEMBLY_INFO_CS );
+        return new File( stringBuffer.toString() );
+    }
+
+    public static String getProjectFilePath() {
+
+        return projectFilePath;
+    }
+
+    public static void setProjectFilePath( String projectFilePath ) {
+
+        MSBuildService.projectFilePath = projectFilePath;
     }
 }

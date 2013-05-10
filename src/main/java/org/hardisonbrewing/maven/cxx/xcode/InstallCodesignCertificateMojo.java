@@ -62,7 +62,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         validateExpirationDate( certificateFile, keychainPath );
         storeIdentity( certificateFile, keychainPath );
 
-        String serialNumber = getSerialNumber( certificateFile, keychainPath );
+        String serialNumber = loadSerialNumber( certificateFile, keychainPath );
         if ( hasSerialNumber( serialNumber, keychainPath ) ) {
             getLog().info( "Codesign certificate already installed, skipping." );
             return;
@@ -73,7 +73,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
 
     private void validateExpirationDate( File file, String keychainPath ) {
 
-        String expirationDate = getExpirationDate( file, keychainPath );
+        String expirationDate = loadExpirationDate( file, keychainPath );
         DateFormat dateFormat = new SimpleDateFormat( CERT_DATE_FORMAT );
 
         Date date;
@@ -92,7 +92,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         }
     }
 
-    private String getExpirationDate( File file, String keychainPath ) {
+    private String loadExpirationDate( File file, String keychainPath ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "certtool" );
@@ -114,7 +114,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
 
     private void storeIdentity( File file, String keychainPath ) {
 
-        String identity = getIdentity( file, keychainPath );
+        String identity = loadIdentity( file, keychainPath );
 
         getLog().info( XCodeService.CODE_SIGN_IDENTITY + ": " + identity );
 
@@ -136,7 +136,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         execute( cmd );
     }
 
-    private String getSerialNumber( File file, String keychainPath ) {
+    private String loadSerialNumber( File file, String keychainPath ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "certtool" );
@@ -156,7 +156,7 @@ public class InstallCodesignCertificateMojo extends JoJoMojoImpl {
         return streamConsumer.getOutput().trim();
     }
 
-    private String getIdentity( File file, String keychainPath ) {
+    private String loadIdentity( File file, String keychainPath ) {
 
         List<String> cmd = new LinkedList<String>();
         cmd.add( "certtool" );

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,50 +14,48 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.o;
+package org.hardisonbrewing.maven.cxx.msbuild;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.hardisonbrewing.maven.core.FileUtils;
 import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.SourceFiles;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
- * @goal o-assemble
+ * @goal msbuild-revert-assembly-info
  * @phase compile
  */
-public class AssembleMojo extends JoJoMojoImpl {
+public final class RevertAssemblyInfoMojo extends JoJoMojoImpl {
 
     /**
      * @parameter
      */
-    public String language;
+    public String project;
+
+    /**
+     * @parameter default-value="true"
+     */
+    public boolean assemblyVersionUpdate;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
-
-        if ( sources == null ) {
-            getLog().info( "No sources found... skipping assembler" );
+        if ( !assemblyVersionUpdate ) {
+            getLog().info( "Assembly version update disabled, skipping." );
             return;
         }
 
-        for (String source : sources) {
+        File assemblyInfoFile = MSBuildService.getAssemblyInfoFile( project );
+        File assemblyInfoBakFile = TargetDirectoryService.getAssemblyInfoBakFile();
 
-            List<String> cmd = new LinkedList<String>();
-            cmd.add( "c++".equals( language ) ? "g++" : "gcc" );
-
-            cmd.add( "-o" );
-            cmd.add( SourceFiles.replaceExtension( source, "o" ) );
-
-            cmd.add( "-c" );
-            cmd.add( SourceFiles.replaceExtension( source, "s" ) );
-
-            execute( cmd );
+        try {
+            FileUtils.copyFile( assemblyInfoBakFile, assemblyInfoFile );
+        }
+        catch (Exception e) {
+            getLog().error( "Unable to revert assembly info: " + assemblyInfoFile );
+            throw new IllegalStateException();
         }
     }
 }

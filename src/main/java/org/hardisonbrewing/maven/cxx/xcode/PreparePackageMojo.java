@@ -58,9 +58,6 @@ public final class PreparePackageMojo extends JoJoMojoImpl {
             }
 
             copyIconFile( target );
-
-//            String[] excludes = new String[] { getProductFileInclude( target ) };
-//            copyProductFiles( scheme, excludes );
         }
         else {
 

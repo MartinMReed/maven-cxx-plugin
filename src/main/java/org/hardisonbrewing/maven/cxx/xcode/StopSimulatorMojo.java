@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2011 Martin M Reed
+ * Copyright (c) 2013 Martin M Reed
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,43 +14,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.hardisonbrewing.maven.cxx.a;
-
-import java.util.LinkedList;
-import java.util.List;
+package org.hardisonbrewing.maven.cxx.xcode;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.hardisonbrewing.maven.core.JoJoMojoImpl;
-import org.hardisonbrewing.maven.cxx.SourceFiles;
-import org.hardisonbrewing.maven.cxx.TargetDirectoryService;
 
 /**
- * @goal a-archive
- * @phase compile
+ * @goal xcode-stop-simulator
+ * @phase prepare-package
  */
-public final class ArchiveMojo extends JoJoMojoImpl {
+public final class StopSimulatorMojo extends AbstractSimulatorMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        String[] sources = TargetDirectoryService.getProcessableSourceFilePaths();
-
-        if ( sources == null ) {
-            getLog().info( "No source files. Skipping..." );
+        if ( skipTests ) {
+            getLog().info( "Tests disabled, skipping." );
             return;
         }
 
-        List<String> cmd = new LinkedList<String>();
-        cmd.add( "ar" );
-        cmd.add( "-rs" );
-
-        cmd.add( getProject().getArtifactId() + ".a" );
-
-        for (int i = 0; i < sources.length; i++) {
-            cmd.add( SourceFiles.replaceExtension( sources[i], "o" ) );
+        if ( !testOnSimulator ) {
+            getLog().info( "Test on simulator disabled, skipping." );
+            return;
         }
 
-        execute( cmd );
+        killSimulator();
     }
 }
