@@ -17,6 +17,7 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
@@ -28,14 +29,31 @@ public class ProvisioningProfileService {
     public static File getProvisioningProfile( String name ) {
 
         if ( name == null ) {
+
             JoJoMojo.getMojo().getLog().info( "Provisioning profile not specified, skipping." );
+            return null;
         }
 
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( ProjectService.getBaseDirPath() );
-        filePath.append( File.separator );
-        filePath.append( name );
-        return new File( filePath.toString() );
+        String filePath;
+        if ( name.startsWith( File.separator ) ) {
+
+            filePath = name;
+        }
+        else if ( name.startsWith( "~/" ) ) {
+
+            Properties properties = PropertiesService.getProperties();
+            String userHome = properties.getProperty( "user.home" );
+            filePath = userHome + name.substring( 1 );
+        }
+        else {
+
+            StringBuffer filePathBuffer = new StringBuffer();
+            filePathBuffer.append( ProjectService.getBaseDirPath() );
+            filePathBuffer.append( File.separator );
+            filePathBuffer.append( name );
+            filePath = filePathBuffer.toString();
+        }
+        return new File( filePath );
     }
 
     public static void assertProvisioningProfile( String name ) {

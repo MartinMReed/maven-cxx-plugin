@@ -17,6 +17,7 @@
 package org.hardisonbrewing.maven.cxx.xcode;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.hardisonbrewing.maven.core.JoJoMojo;
 import org.hardisonbrewing.maven.core.ProjectService;
@@ -26,13 +27,30 @@ public class CodesignCertificateService {
     public static File getCertificateFile( String certificateFile ) {
 
         if ( certificateFile == null ) {
+
             JoJoMojo.getMojo().getLog().info( "Codesign certificate not specified, skipping." );
+            return null;
         }
 
-        StringBuffer filePath = new StringBuffer();
-        filePath.append( ProjectService.getBaseDirPath() );
-        filePath.append( File.separator );
-        filePath.append( certificateFile );
+        String filePath;
+        if ( certificateFile.startsWith( File.separator ) ) {
+
+            filePath = certificateFile;
+        }
+        else if ( certificateFile.startsWith( "~/" ) ) {
+
+            Properties properties = PropertiesService.getProperties();
+            String userHome = properties.getProperty( "user.home" );
+            filePath = userHome + certificateFile.substring( 1 );
+        }
+        else {
+
+            StringBuffer filePathBuffer = new StringBuffer();
+            filePathBuffer.append( ProjectService.getBaseDirPath() );
+            filePathBuffer.append( File.separator );
+            filePathBuffer.append( certificateFile );
+            filePath = filePathBuffer.toString();
+        }
         return new File( filePath.toString() );
     }
 
@@ -40,6 +58,7 @@ public class CodesignCertificateService {
 
         File file = getCertificateFile( codesignCertificate );
         if ( !file.exists() ) {
+
             JoJoMojo.getMojo().getLog().error( "Unable to locate codesign certificate: " + file );
             throw new IllegalStateException();
         }
